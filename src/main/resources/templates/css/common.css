@@ -39,8 +39,21 @@
     height: 900px;
     border-right: 1px solid lightgray;
 }
-
-
+#search_box{
+    width: 280;
+    height: 40px;
+    border-bottom: 1px solid lightgray;
+    /* background-color: RGB(208,190,231); */
+    background-color: RGB(198,189,244);
+    padding: 10% 30px 10% 30px;
+}
+#searchText{
+    height: 100%;
+    width: 85%;
+    background-color: RGB(182,168,223);
+    border: none;
+    border-radius: 5px;
+}
 
 
 /* chat */

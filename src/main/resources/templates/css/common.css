@@ -3,6 +3,10 @@
     margin: 0;
 }
 
+html{
+    height: 100%
+}
+
 #wrap {
     width: 1000px;
     margin: 20px auto;

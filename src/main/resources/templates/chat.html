@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/common.css">
     <link rel="stylesheet" href="css/chat.css">
+    <script src="js/chat.js"></script>
     <title>Document</title>
 </head>
 
@@ -138,15 +139,22 @@
                 </div>
             </div>
             <div id="chat_writer_wrap">
-                <div id="chat_writer_header"></div>
-                <div>
-                    <form action="" method="post">
-                        <textarea name="" id="char_writer" cols="30" rows="10"
-                            placeholder="메시지를 입력해주세요. (Enter: 전송/Shift + Enter 줄바꿈)">
-
-                        </textarea>
-                    </form>
+                <form action="" method="post" enctype="multipart/form-data"></form>
+                <div id="chat_writer_header">
+                    <label for="send_file">
+                        <img src="img/send_file.png" alt="">
+                    </label>
+                    <input type="file" name="" id="send_file" multiple onchange="sendFile()">
+                    <div id="send_file_name">
+                    </div>
                 </div>
+                <div>
+                    <textarea name="" id="chat_writer" cols="30" rows="10"
+                        placeholder="메시지를 입력해주세요. (Enter: 전송/Shift + Enter 줄바꿈)">
+                        </textarea>
+
+                </div>
+                </form>
             </div>
         </div>
     </div>

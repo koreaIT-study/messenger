@@ -7,6 +7,7 @@
     display: flex;
     display: flex;
     padding: 28px 0 0 17px;
+
 }
 
 #chat_icon {
@@ -28,18 +29,17 @@
     height: 650px;
 }
 
-#char_writer {
-    width: 100%;
+#chat_writer {
     padding-top: 10px;
-    max-height: 139px;
+    max-height: 88px;
     padding-left: 5px;
-    max-width: 543px;
+    min-width: 542px;
 }
 
 #chat_msg_wrap>div {
     padding: 20px;
-    height: 650px;
-    overflow: scroll;
+    height: 610px;
+    overflow-x: hidden;
 }
 
 .chat_person_wrap {
@@ -79,12 +79,9 @@
 
 .my_chat_wrapper {
     text-align: right;
+
 }
 
-/* .my_chat_flexable{
-    display: flex;
-    align-items: baseline;
-} */
 
 .my_chat {
     background: RGB(198, 189, 244);
@@ -93,4 +90,25 @@
     margin: 5px 0;
     margin-right: 5px;
     display: inline-block;
+}
+
+#chat_writer_header {
+    height: 50px;
+    border: 1px solid black;
+    display: flex;
+}
+
+#chat_writer_header img {
+    opacity: 0.8;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+#send_file {
+    display: none;
+}
+
+#send_file_name {
+    overflow-y: hidden;
+    padding: 4px;
 }

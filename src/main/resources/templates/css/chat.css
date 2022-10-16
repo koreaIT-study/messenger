@@ -31,18 +31,15 @@
 #char_writer {
     width: 100%;
     padding-top: 10px;
-    /* resize: none; */
-    /* overflow: hidden; */
-    /* min-height: 25px; */
-    /* min-width: 101px; */
     max-height: 139px;
-    /* padding-right: 50px; */
     padding-left: 5px;
     max-width: 543px;
 }
 
 #chat_msg_wrap>div {
     padding: 20px;
+    height: 650px;
+    overflow: scroll;
 }
 
 .chat_person_wrap {
@@ -84,8 +81,13 @@
     text-align: right;
 }
 
+/* .my_chat_flexable{
+    display: flex;
+    align-items: baseline;
+} */
+
 .my_chat {
-    background-color: white;
+    background: RGB(198, 189, 244);
     padding: 5px 11px;
     border-radius: 12px;
     margin: 5px 0;

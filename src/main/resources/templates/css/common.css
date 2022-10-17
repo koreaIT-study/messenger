@@ -30,7 +30,11 @@
 .header_profile{
     margin-bottom: 30px;
 }
-
+.btn-img{
+    width: 30px;
+    height: 30px;
+    vertical-align: middle;
+}
 
 /* friend_list */
 #friend_list{
@@ -40,22 +44,73 @@
     border-right: 1px solid lightgray;
 }
 #search_box{
-    width: 280;
+    width: 270;
     height: 40px;
     border-bottom: 1px solid lightgray;
     /* background-color: RGB(208,190,231); */
-    background-color: RGB(198,189,244);
-    padding: 10% 30px 10% 30px;
+    /* background-color: RGB(198,189,244); */
+    padding: 10% 10px 10% 10px;
 }
 #searchText{
     height: 100%;
-    width: 85%;
-    background-color: RGB(182,168,223);
+    width: 200px;
+    background-color: #EAEDED ;
     border: none;
     border-radius: 5px;
+    margin-left: 10px;
+    padding-left: 20px;
 }
-
-
+#friend-plus{
+    margin-left: 10px;
+}
+.friend-list-box{
+    height: 789px;
+}
+.list-box::-webkit-scrollbar{
+    width: 10px;
+}
+.list-box::-webkit-scrollbar-thumb{
+    background-color: lightgray;
+    border: none;
+}
+.friend-box{
+    width: 320px;
+    height: 50px;
+    padding: 15px;
+    border-bottom: 0.5px solid lightgray;
+}
+.friend-profil{
+    background-color: aqua;
+    width: 50px;
+    height: 50px;
+    float: left;
+    border-radius: 50%;
+    margin-right: 10px;
+    border: 0.5px solid lightgrey;
+}
+.friend-title{
+    font-size: 15px;
+    display: inline-block;
+    width: 230px;
+    vertical-align: top;
+    font-weight: bold;
+}
+.friend-msg{
+    font-size: 14px;
+    display: inline-block;
+    width: 230px;
+    vertical-align: sub;
+    color: gray;
+}
+ul{
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.list-box{
+    overflow: overlay;
+    height: 100%;
+}
 /* chat */
 #chat{
     width: 550px;

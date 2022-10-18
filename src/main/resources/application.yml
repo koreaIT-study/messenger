@@ -5,8 +5,8 @@ spring:
   mvc:
     view:
       suffix: .html
-  thymeleaf:
-    prefix: classpath:/templates
+#  thymeleaf:
+#    prefix: classpath:/templates
 
 
 logging:

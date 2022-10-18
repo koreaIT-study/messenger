@@ -5,14 +5,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-@Controller
+@RestController
 public class UserController {
 	
 	@GetMapping("/login")
-	public String login() {
-//		ModelAndView mv = new ModelAndView();
-//		mv.setViewName("sign_in");
+	public ModelAndView login() {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("sign_in");
 		
-		return "chat";
+		return mv;
 	}
 }

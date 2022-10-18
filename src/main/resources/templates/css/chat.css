@@ -28,6 +28,13 @@
     background-color: #EBEAEA;
     height: 650px;
 }
+#chat_msg_wrap>div::-webkit-scrollbar{
+    width: 10px;
+}
+#chat_msg_wrap>div::-webkit-scrollbar-thumb{
+    background-color: lightgray;
+    border: none;
+}
 
 #chat_writer {
     padding-top: 10px;

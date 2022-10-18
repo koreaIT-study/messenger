@@ -14,7 +14,7 @@
 
 .sign_in_wrap{
     width: 1000px;
-    margin: auto;
+    margin: 20px auto;
     height: 900px;
     border: 1px solid lightgray;
     border-radius: 12px;
@@ -83,7 +83,7 @@
 .sign_up{
     position:absolute;
     left:calc(50% - 340px);
-    top:50px;
+    top:72px;
     width:680px;
     height:800px;
     text-align:left;
@@ -94,7 +94,7 @@
 
 .sign_up_wrap{
     width: 1000px;
-    margin: auto;
+    margin: 20px auto;
     height: 900px;
     border: 1px solid lightgray;
     border-radius: 12px;

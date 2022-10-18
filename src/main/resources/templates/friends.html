@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/common.css">
-    <link rel="stylesheet" href="css/chat.css">
-    <link rel="stylesheet" href="css/friends.css">
-    <script src="js/chat.js"></script>
+    <link rel="stylesheet" href="../static/css/common.css">
+    <link rel="stylesheet" href="../static/css/chat.css">
+    <link rel="stylesheet" href="../static/css/friends.css">
+    <script src="../static/js/chat.js"></script>
     <title>Document</title>
 </head>
 <body>
@@ -15,19 +15,19 @@
         <!-- header -->
         <div id="header">
             <div class="header_icon">
-                <img src="img/menu_profile.png" alt="">
-                <img src="img/menu_chat.png" alt="">
+                <img src="../static/img/menu_profile.png" alt="">
+                <img src="../static/img/menu_chat.png" alt="">
             </div>
             <div class="header_icon header_profile">
-                <img src="img/my_profile.png" alt="">
+                <img src="../static/img/my_profile.png" alt="">
             </div>
         </div>
         <!-- 친구목록  -->
         <div id="friend_list">
             <div id="search_box">
                 <input type="text" placeholder="Search..." id="searchText">
-                <label for="searchText"><img src="img/search.png" class="btn-img"></label>
-                <img src="img/friend-plus.png" class="btn-img" id="friend-plus">
+                <label for="searchText"><img src="../static/img/search.png" class="btn-img"></label>
+                <img src="../static/img/friend-plus.png" class="btn-img" id="friend-plus">
             </div>
             <div class="list-box">
                 <ul class="friend-list-box">
@@ -144,7 +144,7 @@
             <div id="chat_header">
                 <div>
                     <div id="chat_icon">
-                        <img src="img/anonymous_profile.png" alt="">
+                        <img src="../static/img/anonymous_profile.png" alt="">
                     </div>
                     <div class="chat_title">
                         <div>정치/사회/경제부</div>
@@ -160,7 +160,7 @@
                     <!-- 채팅 이부분 반복 -->
                     <div class="chat_person_wrap">
                         <div class="chat_person_profile">
-                            <img src="img/anonymous_profile.png" alt="">
+                            <img src="../static/img/anonymous_profile.png" alt="">
                         </div>
                         <div class="chat_person">
                             <div class="chat_person_name">김동진</div>
@@ -186,7 +186,7 @@
                     <!-- 채팅 이부분 반복 -->
                     <div class="chat_person_wrap">
                         <div class="chat_person_profile">
-                            <img src="img/anonymous_profile.png" alt="">
+                            <img src="../static/img/anonymous_profile.png" alt="">
                         </div>
                         <div class="chat_person">
                             <div class="chat_person_name">최민재</div>
@@ -254,7 +254,7 @@
                 <form action="" method="post" enctype="multipart/form-data"></form>
                 <div id="chat_writer_header">
                     <label for="send_file">
-                        <img src="img/send_file.png" alt="">
+                        <img src="../static/img/send_file.png" alt="">
                     </label>
                     <input type="file" name="" id="send_file" multiple onchange="sendFile()">
                     <div id="send_file_name">

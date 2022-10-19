@@ -17,6 +17,14 @@ public class UserController {
 
         return mv;
     }
+    
+    @GetMapping("/sign_up")
+    public ModelAndView signUp() {
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("sign_up");
+
+        return mv;
+    }
 
     @GetMapping("friend")
     public ModelAndView friend() {

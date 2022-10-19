@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.teamride.messenger.client.config.ClientConfig;
 import com.teamride.messenger.client.config.WebClientConfig;
@@ -52,23 +53,34 @@ public class KakaoLoginController {
     @RequestMapping(value = "/oauth", produces = "application/json", method = {RequestMethod.GET,
             RequestMethod.POST})
         public void kakaoLogin(@RequestParam("code") String code,
-            HttpSession session) throws IOException {
-        log.info("kakao authorize code is :: " + code);
-            String accessToken = getKakaoAccessToken(code);
-            session.setAttribute("access_token", accessToken); // 로그아웃할 때 사용된다
-        
-            getKakaoUserInfo(accessToken);
+            HttpServletResponse resp) throws IOException {
+            log.info("kakao authorize code is :: " + code);
+            try {
+                String accessToken = getKakaoAccessToken(code);
+                session.setAttribute("access_token", accessToken); // 로그아웃할 때 사용된다
+
+                JSONObject myJson = getKakaoUserInfo(accessToken); // 자신의 정보 
+
+                // 서버쪽으로 email, nickname 전송 후 사용자 없으면 insert하고 로그인 처리
+                session.setAttribute("userEmail", "shmin7777@naver.com"); // 로그아웃할 때 사용된다
+                resp.sendRedirect("friend");
+            } catch (Exception e) {
+                log.error("kakao login error :: ", e);
+                // TODO login에 error param넣어서 에러발생 popup 넣음
+                // 어떤 error가 나는지 확인
+                resp.sendRedirect("login");
+            }
     }
         
        public String getKakaoAccessToken(String code) {
             // 카카오에 보낼 api
-            WebClient webClient = WebClient.builder()
+            WebClient webClientAuth = WebClient.builder()
                 .baseUrl("https://kauth.kakao.com")
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .build();
             
             // 카카오 서버에 요청 보내기 & 응답 받기
-            JSONObject response = webClient.post()
+            JSONObject response = webClientAuth.post()
                 .uri(uriBuilder -> uriBuilder
                     .path("/oauth/token")
                     .queryParam("grant_type", "authorization_code")
@@ -83,13 +95,7 @@ public class KakaoLoginController {
         }
        
        private JSONObject getKakaoUserInfo(String accessToken) {
-           // 카카오에 요청 보내기 및 응답 받기
-           WebClient webClient = WebClient.builder()
-               .baseUrl("https://kapi.kakao.com")
-               .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-               .build();
-               
-           JSONObject response = webClient.post()
+           JSONObject response = getKakaoApiWebClient().post()
                .uri(uriBuilder -> uriBuilder.path("/v2/user/me").build())
                .header("Authorization", "Bearer " + accessToken)
                .retrieve().bodyToMono(JSONObject.class).block();
@@ -107,35 +113,24 @@ public class KakaoLoginController {
        
        
    @GetMapping(value = "/logout")
-   public String kakaoLogout(HttpSession session) {
+   public ModelAndView kakaoLogout(HttpSession session) {
+       ModelAndView mv = new ModelAndView("sign_in");
        String accessToken = (String) session.getAttribute("access_token");
-       
-       // 카카오에 요청 보내기
-       WebClient webClient = WebClient.builder()
-           .baseUrl("https://kapi.kakao.com")
-           .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-           .build();
-           
-       JSONObject response = webClient.post()
+
+       JSONObject response = getKakaoApiWebClient().post()
            .uri(uriBuilder -> uriBuilder.path("/v1/user/logout").build())
            .header("Authorization", "Bearer " + accessToken)
            .retrieve().bodyToMono(JSONObject.class).block();
        log.info("logout response::"+response);
        // 로그아웃하면서 만료된 토큰을 세션에서 삭제
        session.removeAttribute("access_token");
-       
-       return "logout";
+       session.removeAttribute("userEmail");
+       return mv;
    }
    
    @GetMapping("/unlink")
    public void kakaoUnlink() {
-    // 카카오에 요청 보내기
-       WebClient webClient = WebClient.builder()
-           .baseUrl("https://kapi.kakao.com")
-           .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-           .build();
-       
-       JSONObject response = webClient.post()
+       JSONObject response = getKakaoApiWebClient().post()
                .uri(uriBuilder -> uriBuilder.path("/v1/user/logout").build())
                .header("Authorization", "Bearer " + session.getAttribute("access_token"))
                .retrieve().bodyToMono(JSONObject.class).block();
@@ -154,5 +149,13 @@ public class KakaoLoginController {
                 .retrieve()
                 .bodyToMono(String.class);
         
+    }
+    
+    public WebClient getKakaoApiWebClient() {
+        // 카카오에 요청 보내기
+        return WebClient.builder()
+            .baseUrl("https://kapi.kakao.com")
+            .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+            .build();
     }
 }

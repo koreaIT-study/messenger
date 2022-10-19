@@ -8,6 +8,10 @@ spring:
 #  thymeleaf:
 #    prefix: classpath:/templates
 
+messenger:
+  kakao:
+    rest_api_key: dd0b678881f8ea6c47e2012b37fb8c90
+    redirect_url: http://localhost:8081/oauth
 
 logging:
   logback:

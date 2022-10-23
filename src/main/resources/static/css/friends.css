@@ -30,15 +30,15 @@
 	filter: opacity(0.6);
 }
 
-.friend-list-box {
+#friend-list-box {
 	height: 789px;
 }
 
-.list-box::-webkit-scrollbar {
+#list-box::-webkit-scrollbar {
 	width: 10px;
 }
 
-.list-box::-webkit-scrollbar-thumb {
+#list-box::-webkit-scrollbar-thumb {
 	background-color: lightgray;
 	border: none;
 }
@@ -76,15 +76,22 @@
 	color: gray;
 }
 
+.friend-msg {
+	font-size: 14px;
+	display: inline-block;
+	width: 200px;
+	max-width: 200px;
+	vertical-align: sub;
+	color: gray;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
 ul {
 	margin: 0;
 	padding: 0;
 	list-style: none;
-}
-
-.list-box {
-	overflow: overlay;
-	height: 799px;
 }
 
 #logout {
@@ -100,4 +107,23 @@ ul {
 
 .off {
 	display: none;
+}
+
+#list-box {
+	overflow: overlay;
+	height: 799px;
+}
+
+.chatRoomLi {
+	color: darkgray;
+	font-size: 14px;
+}
+
+.right {
+	float: right;
+}
+
+.time {
+	font-size: 10px;
+	vertical-align: sub;
 }

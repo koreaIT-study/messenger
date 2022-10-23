@@ -13,15 +13,23 @@ import lombok.extern.slf4j.Slf4j;
 @Data
 @Slf4j
 public class ClientConfig {
-    private Kakao kakao = new Kakao();
-    
-    @Data
-    public class Kakao {
-       private String restApiKey;
-       private String redirectUrl;
-    }
-    
-    public static ClientConfig getClientConfigInstance() {
-        return BeanUtils.getBean(ClientConfig.class);
-    }
+	private Kakao kakao = new Kakao();
+	private Naver naver = new Naver();
+
+	@Data
+	public class Kakao {
+		private String restApiKey;
+		private String redirectUrl;
+	}
+
+	@Data
+	public class Naver {
+		private String restApiKey;
+		private String redirectUrl;
+		private String clientSecret;
+	}
+
+	public static ClientConfig getClientConfigInstance() {
+		return BeanUtils.getBean(ClientConfig.class);
+	}
 }

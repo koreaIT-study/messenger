@@ -23,8 +23,10 @@ public class LoginCheckInterceptor implements HandlerInterceptor{
         log.info("인터셉터 작동::"+request.getRequestURL().toString());
         if (request.getRequestURL().toString().contains("/login") || request.getRequestURL().toString().contains("/sign_up")
                 || request.getRequestURL().toString().contains("/kakao_login")
+                || request.getRequestURL().toString().contains("/naver_login")
                 || request.getRequestURL().toString().contains("/oauth")
                 || request.getRequestURL().toString().startsWith("https://kauth.kakao.com") 
+                || request.getRequestURL().toString().startsWith("https://nid.naver.com") 
             || request.getRequestURL().toString().startsWith("https://kapi.kakao.com")) {
             return true;
         }

@@ -14,3 +14,4 @@ function sendFile(){
     console.log(fileName)
     sendFileName.innerHTML = fileName;
 }
+

@@ -1,6 +1,7 @@
 package com.teamride.messenger.client.controller;
 
 import java.io.IOException;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -59,10 +60,7 @@ public class KakaoLoginController {
                 String accessToken = getKakaoAccessToken(code);
                 session.setAttribute("access_token", accessToken); // 로그아웃할 때 사용된다
 
-                JSONObject myJson = getKakaoUserInfo(accessToken); // 자신의 정보 
-
-                // 서버쪽으로 email, nickname 전송 후 사용자 없으면 insert하고 로그인 처리
-                session.setAttribute("userEmail", "shmin7777@naver.com"); // 로그아웃할 때 사용된다
+                getKakaoUserInfo(accessToken); // 자신의 정보 
                 resp.sendRedirect("friend");
             } catch (Exception e) {
                 log.error("kakao login error :: ", e);
@@ -91,7 +89,7 @@ public class KakaoLoginController {
                 .retrieve().bodyToMono(JSONObject.class).block();
                 
             log.info("response::"+response);
-                return (String) response.get("access_token");
+            return (String) response.get("access_token");
         }
        
        private JSONObject getKakaoUserInfo(String accessToken) {
@@ -101,30 +99,35 @@ public class KakaoLoginController {
                .retrieve().bodyToMono(JSONObject.class).block();
            
            log.info("response::"+response);
-           return response;
            // 받은 응답에서 원하는 정보 추출하기 (여기의 경우 회원 고유번호와 카카오 닉네임)
-//           Integer id = (Integer) response.get("id");
-//           Map<String, Object> map = (Map<String, Object>) 
-//           response.get("kakao_account");
-//           Map<String, Object> profile = (Map<String, Object>) map.get("profile");
-//           String name = (String) profile.get("nickname");
-           // 추출한 정보로 원하는 처리를 함
+           Map<String, Object> map = (Map<String, Object>) response.get("kakao_account");
+           Map<String, Object> profile = (Map<String, Object>) map.get("profile");
+           String name = (String) profile.get("nickname");
+           String email = (String) map.get("email");
+           
+           log.info("name::"+name);
+           log.info("email::"+email);
+           session.setAttribute("userEmail", email); // 로그아웃할 때 사용된다
+           session.setAttribute("name", name);
+           // 서버쪽으로 email, nickname 전송 후 사용자 없으면 insert하고 로그인 처리
+           return response;
        }   
        
        
    @GetMapping(value = "/logout")
    public ModelAndView kakaoLogout(HttpSession session) {
        ModelAndView mv = new ModelAndView("sign_in");
-       String accessToken = (String) session.getAttribute("access_token");
-
-       JSONObject response = getKakaoApiWebClient().post()
-           .uri(uriBuilder -> uriBuilder.path("/v1/user/logout").build())
-           .header("Authorization", "Bearer " + accessToken)
-           .retrieve().bodyToMono(JSONObject.class).block();
-       log.info("logout response::"+response);
-       // 로그아웃하면서 만료된 토큰을 세션에서 삭제
-       session.removeAttribute("access_token");
+//       String accessToken = (String) session.getAttribute("access_token");
+//
+//       JSONObject response = getKakaoApiWebClient().post()
+//           .uri(uriBuilder -> uriBuilder.path("/v1/user/logout").build())
+//           .header("Authorization", "Bearer " + accessToken)
+//           .retrieve().bodyToMono(JSONObject.class).block();
+//       log.info("logout response::"+response);
+//       // 로그아웃하면서 만료된 토큰을 세션에서 삭제
+//       session.removeAttribute("access_token");
        session.removeAttribute("userEmail");
+       session.removeAttribute("name");
        return mv;
    }
    

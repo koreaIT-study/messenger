@@ -8,7 +8,6 @@ import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import reactor.netty.http.client.HttpClient;
 import reactor.netty.resources.ConnectionProvider;
 
 @Configuration
@@ -31,7 +30,7 @@ public class WebClientConfig {
                 .build();
 
         return WebClient.builder()
-                .clientConnector(new ReactorClientHttpConnector(HttpClient.create(provider)))
+                .clientConnector(new ReactorClientHttpConnector(reactor.netty.http.client.HttpClient.create(provider)))
                 .exchangeStrategies(exchangeStrategies)
                 .defaultHeader("user-agent",
                         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.87 Safari/537.3")

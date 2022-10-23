@@ -19,6 +19,7 @@
 					src="img/menu_chat.png" alt="">
 			</div>
 			<div class="header_icon header_profile">
+				<div id="logout" onclick="location.href='logout'" class='off'>로그아웃</div>
 				<img src="img/my_profile.png" alt="">
 			</div>
 		</div>
@@ -286,4 +287,15 @@
 		</div>
 	</div>
 </body>
+<script type="text/javascript">
+var logoutWrap = document.querySelector('.header_profile');
+var logoutEl = document.getElementById('logout');
+
+logoutWrap.addEventListener('click', ()=>{
+	if(logoutEl.classList=='on')
+		logoutEl.classList='off';
+	else
+		logoutEl.classList='on';
+});
+</script>
 </html>

@@ -23,7 +23,6 @@
 
 .sign_in_tit {
 	position: relative;
-
 	text-align: center;
 	border-radius: 20px 20px 0 0;
 	color: rgb(89, 71, 145);
@@ -35,8 +34,6 @@
 	width: 528px;
 	margin: 0 auto;
 }
-
-
 
 .sign_in_body span, .sign_in_body .btn_sign_in {
 	display: inline-block;
@@ -89,7 +86,7 @@
 	border-top: none;
 }
 
-.tit_sign_in{
+.tit_sign_in {
 	margin-top: 5px;
 }
 
@@ -217,6 +214,15 @@
 }
 
 #kakao {
+	cursor: pointer;
+}
+
+.social_sign_in img {
+	width: 300px;
+	height: 45px;
+}
+
+#naver {
 	cursor: pointer;
 }
 /* 

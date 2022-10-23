@@ -21,9 +21,11 @@ public class LoginCheckInterceptor implements HandlerInterceptor{
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
         log.info("인터셉터 작동::"+request.getRequestURL().toString());
-        if (request.getRequestURL().toString().contains("/login") || request.getRequestURL().toString().contains("/sign_up")
+        if (request.getRequestURL().toString().contains("/login") 
+        		|| request.getRequestURL().toString().contains("/sign_up")
                 || request.getRequestURL().toString().contains("/kakao_login")
                 || request.getRequestURL().toString().contains("/naver_login")
+                || request.getRequestURL().toString().contains("/social_login")
                 || request.getRequestURL().toString().contains("/oauth")
                 || request.getRequestURL().toString().startsWith("https://kauth.kakao.com") 
                 || request.getRequestURL().toString().startsWith("https://nid.naver.com") 

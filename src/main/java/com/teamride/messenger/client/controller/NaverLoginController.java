@@ -23,6 +23,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriBuilder;
 
 import com.teamride.messenger.client.config.ClientConfig;
+import com.teamride.messenger.client.config.WebClientConfig;
+import com.teamride.messenger.client.dto.AdminDTO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -38,6 +40,9 @@ public class NaverLoginController {
 	
 	@Autowired
 	HttpServletResponse httpServletResponse;
+	
+	@Autowired
+	private WebClientConfig webClient;
 
 	/**
 	 * 인가 코드 받기
@@ -112,8 +117,9 @@ public class NaverLoginController {
 	/**
 	 * 토큰으로 사용자 정보 가져오기
 	 * @param accessToken
+	 * @throws IOException 
 	 */
-	public void getUserInfo(String accessToken) {
+	public void getUserInfo(String accessToken) throws IOException {
 		WebClient webclient = WebClient.builder()
 				.baseUrl("https://openapi.naver.com")
 				.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -135,7 +141,14 @@ public class NaverLoginController {
 		log.info("email::" + email);
 		log.info("name::" + name);
 		
-		// 서버쪽으로 email, nickname 전송 후 사용자 없으면 insert하고 로그인 처리
+        // 서버쪽으로 email, nickname 전송 후 사용자 없으면 insert하고 로그인 처리
+        AdminDTO adminDTO = AdminDTO.builder().email(email).name(name).build();
+        webClient.getWebClient().post().uri("/social_login")
+		  .bodyValue(adminDTO)
+		  .retrieve()
+		  .bodyToMono(Void.class)
+		  .block();
+        
         httpSession.setAttribute("userEmail", email); // 로그아웃할 때 사용된다
         httpSession.setAttribute("name", name);
 	}

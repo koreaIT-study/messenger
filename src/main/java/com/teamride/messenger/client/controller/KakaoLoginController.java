@@ -20,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.teamride.messenger.client.config.ClientConfig;
 import com.teamride.messenger.client.config.WebClientConfig;
+import com.teamride.messenger.client.dto.AdminDTO;
 
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
@@ -35,9 +36,12 @@ public class KakaoLoginController {
     
     @Autowired
     private WebClientConfig webClient;
+    
+    @Autowired
+	HttpServletResponse httpServletResponse;
 
     @GetMapping("/kakao_login")
-    public void kakaoLogin(HttpServletResponse response) {
+    public void kakaoLogin() {
         StringBuilder url = new StringBuilder();
         url.append("https://kauth.kakao.com/oauth/authorize?");
         url.append("client_id=" + REST_API_KEY);
@@ -45,7 +49,7 @@ public class KakaoLoginController {
         url.append("&response_type=code");
 
         try {
-            response.sendRedirect(url.toString());
+        	httpServletResponse.sendRedirect(url.toString());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -92,7 +96,7 @@ public class KakaoLoginController {
             return (String) response.get("access_token");
         }
        
-       private JSONObject getKakaoUserInfo(String accessToken) {
+       private JSONObject getKakaoUserInfo(String accessToken) throws IOException {
            JSONObject response = getKakaoApiWebClient().post()
                .uri(uriBuilder -> uriBuilder.path("/v2/user/me").build())
                .header("Authorization", "Bearer " + accessToken)
@@ -107,9 +111,18 @@ public class KakaoLoginController {
            
            log.info("name::"+name);
            log.info("email::"+email);
+           
+           // 서버쪽으로 email, nickname 전송 후 사용자 없으면 insert하고 로그인 처리
+           AdminDTO adminDTO = AdminDTO.builder().email(email).name(name).build();
+           webClient.getWebClient().post().uri("/social_login")
+   		  .bodyValue(adminDTO)
+   		  .retrieve()
+   		  .bodyToMono(Void.class)
+   		  .block();
+           
            session.setAttribute("userEmail", email); // 로그아웃할 때 사용된다
            session.setAttribute("name", name);
-           // 서버쪽으로 email, nickname 전송 후 사용자 없으면 insert하고 로그인 처리
+           
            return response;
        }   
        
@@ -161,4 +174,6 @@ public class KakaoLoginController {
             .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .build();
     }
+    
+    
 }

@@ -35,6 +35,7 @@ public class WebClientConfig {
                 .defaultHeader("user-agent",
                         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.87 Safari/537.3")
                 .defaultCookie("httpclient-type", "webclient")
+                .baseUrl("http://127.0.0.1:12000")
                 .build();
     }
 }

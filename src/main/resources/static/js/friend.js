@@ -50,3 +50,20 @@ function getChatRoomList(){
 window.onload = function(){
     document.getElementById('friendListBtn').click();
 }
+
+function popOpen() {
+    var modalPop = document.getElementsByClassName('.modal-wrap');
+    var modalBg = document.getElementsByClassName('modal-bg'); 
+
+    modalPop[0].setAttribute('display','block');
+    modalBg[0].setAttribute('display','block');
+}
+
+ function popClose() {
+    var modalPop = document.getElementsByClassName('.modal-wrap');
+    var modalBg = document.getElementsByClassName('modal-bg'); 
+
+    modalPop[0].setAttribute('display','none');
+    modalBg[0].setAttribute('display','none');
+
+}

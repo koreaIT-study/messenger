@@ -5,7 +5,7 @@
     top:calc(50% - 160px); */
 	margin: auto;
 	width: 680px;
-	height: 340px;
+	height: 235px;
 	text-align: center;
 	border-radius: 20px;
 	background-color: rgba(198, 189, 244, 0.3);
@@ -18,7 +18,7 @@
 	margin: 267px auto;
 	height: 400px;
 	border-radius: 12px;
-	display: flex;
+	/* display: flex; */
 }
 
 .sign_in_tit {
@@ -215,6 +215,10 @@
 
 #kakao {
 	cursor: pointer;
+}
+
+.social_sign_in {
+	margin: 50px 350px 0 350px;
 }
 
 .social_sign_in img {

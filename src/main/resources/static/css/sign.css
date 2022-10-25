@@ -57,7 +57,7 @@
 	border: none;
 	background-color: #fff;
 	vertical-align: top;
-	padding-left: 58px;
+	padding-left: 25px;
 }
 
 .sign_in_body .btn_sign_in {
@@ -150,7 +150,7 @@
 	border: none;
 	background-color: #fff;
 	vertical-align: top;
-	padding-left: 58px;
+	padding-left: 25px;
 }
 
 .sign_up_body .axi::before {

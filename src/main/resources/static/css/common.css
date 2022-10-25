@@ -31,6 +31,7 @@ html{
     width: 50px;
     height: 50px;
     margin-top: 30px;
+    cursor: pointer;
 }
 
 .header_icon {
@@ -53,4 +54,26 @@ html{
     height: 900px;
     border-top-right-radius: 12px;
     border-bottom-right-radius: 12px;
+}
+
+.modal-bg{
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 999;
+}
+
+.modal-wrap{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    height: 500px;
+    background: #fff;
+    z-index: 1000;
 }

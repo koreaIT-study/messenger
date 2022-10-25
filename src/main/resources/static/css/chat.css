@@ -120,3 +120,8 @@
     overflow-y: hidden;
     padding: 4px;
 }
+
+.my_chat_wrapper img{
+	max-width: 375px;
+	max-height: 375px;
+}

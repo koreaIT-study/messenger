@@ -1,194 +1,233 @@
-
-/* 로그인 */
-.sign_in{
-    position:absolute;
+/* 濡쒓렇�씤 */
+.sign_in {
+	/* position:absolute;
     left:calc(50% - 340px);
-    top:calc(50% - 160px);
-    width:680px;
-    height:320px;
-    text-align:left;
-    border-radius:20px;
-    background-color: rgba(198,189,244, 0.3);
-    box-shadow:2px 2px 5px rgb(182,168,223);
+    top:calc(50% - 160px); */
+	margin: auto;
+	width: 680px;
+	height: 235px;
+	text-align: center;
+	border-radius: 20px;
+	background-color: rgba(198, 189, 244, 0.3);
+	box-shadow: 2px 2px 5px rgb(182, 168, 223);
+	width: 680px;
 }
 
-.sign_in_wrap{
-    width: 1000px;
-    margin: 20px auto;
-    height: 900px;
-    border: 1px solid lightgray;
-    border-radius: 12px;
-    display: flex;
-    background-color:  rgba(208,190,231, 0.3);
-}
-.sign_in_tit{
-    position:relative;
-    height: 90px;
-    text-align:center;
-    border-radius:20px 20px 0 0;
-    color: rgb(89,71,145);
-}
-.sign_in_input{
-    position:relative;
-    padding:32px 0;
-    width:528px;
-    margin:0 auto;
-}
-.sign_in_body span,.sign_in_body .btn_sign_in{
-    display:inline-block;
-    height:44px;
-    line-height:44px;
-}
-.sign_in_body span{
-    float:left;
-    width:367px;
-    position:relative;
-    margin-bottom:10px;
-    overflow:hidden;
-    border-radius:3px}
-.sign_in_body input[type=text],.sign_in_body input[type=password]{
-    width:100%;
-    height:100%;
-    border:none;
-    background-color:#fff;
-    vertical-align:top;
-    padding-left:58px;
-}
-.sign_in_body .btn_sign_in{
-    width:151px;
-    height:101px;
-    color:#fff;
-    background-color:rgb(89,71,145);
-    text-align:center;
-    cursor:pointer;
-    border:none;
-    font-size:16px;
-    border-radius:3px;
-    box-shadow:0 0 5px rgba(0,0,0,.3);
-}
-.sign_in_body .btn_sign_in:hover{
-    box-shadow:0 0 5px rgba(255,255,255,.5);
-}
-.sign_in_body .copyright{
-    display:inline-block;
-    width:100%;
-    text-align:center;
-    color:#566b7c;
-    padding:20px 0;
-    border-top:none;
+.sign_in_wrap {
+	width: 1000px;
+	margin: 267px auto;
+	height: 400px;
+	border-radius: 12px;
+	/* display: flex; */
 }
 
-
-/* 회원가입 */
-.sign_up{
-    position:absolute;
-    left:calc(50% - 340px);
-    top:72px;
-    width:680px;
-    height:800px;
-    text-align:left;
-    border-radius:20px;
-    background-color: rgba(198,189,244, 0.3);
-    box-shadow:2px 2px 5px rgb(182,168,223);
+.sign_in_tit {
+	position: relative;
+	text-align: center;
+	border-radius: 20px 20px 0 0;
+	color: rgb(89, 71, 145);
 }
 
-.sign_up_wrap{
-    width: 1000px;
-    margin: 20px auto;
-    height: 900px;
-    border: 1px solid lightgray;
-    border-radius: 12px;
-    display: flex;
-    background-color:  rgba(208,190,231, 0.3);
-}
-.sign_up_tit{
-    position:relative;
-    height:60px;
-    text-align:center;
-    border-radius:20px 20px 0 0;
-    color: rgb(89,71,145);
-}
-.sign_up_input{
-    position:relative;
-    text-align: center;
-    padding:32px 0;
-    width:528px;
-    margin:0 auto;
-}
-.sign_up_body span,.sign_up_body .btn_sign_up{
-    display:inline-block;
-    height:44px;
-    line-height:44px;
-}
-.sign_up_body span{
-    /* float:left; */
-    width: 300px;
-    position:relative;
-    margin-bottom:10px;
-    overflow:hidden;
-    border-radius:3px}
-.sign_up_body input[type=text],.sign_up_body input[type=password]{
-    width:100%;
-    height:100%;
-    border:none;
-    background-color:#fff;
-    vertical-align:top;
-    padding-left:58px;
-}
-.sign_up_body .axi::before{
-    position:absolute;
-    left:0;
-    top:-1px;
-    display:inline-block;
-    width:45px;
-    font-size:24px;
-    color:#333;
-    text-align:center;
-}
-.sign_up_body .axi-lock3::before{
-    font-size:28px;
-    right:11px;
-}
-.sign_up_body .btn_sign_up{
-    width:100px;
-    height:50px;
-    color:#fff;
-    background-color:rgb(89,71,145);
-    text-align:center;
-    cursor:pointer;
-    border:none;
-    font-size:16px;
-    border-radius:3px;
-    box-shadow:0 0 5px rgba(0,0,0,.3);
-}
-.sign_up_body .btn_sign_up:hover{
-    box-shadow:0 0 5px rgba(255,255,255,.5);
-}
-.sign_up_body .copyright{
-    display:inline-block;
-    width:100%;
-    text-align:center;
-    color:#566b7c;
-    padding:20px 0;
-    border-top:none;
+.sign_in_input {
+	position: relative;
+	padding: 8px 0;
+	width: 528px;
+	margin: 0 auto;
 }
 
-.sign_up_body .profile_img{
-    padding-bottom: 20px;
+.sign_in_body span, .sign_in_body .btn_sign_in {
+	display: inline-block;
+	height: 44px;
+	line-height: 44px;
 }
 
-.file_button{
-    padding: 6px 25px;
-    background-color:rgb(89,71,145);
-    border-radius: 4px;
-    color: white;
-    cursor: pointer;
+.sign_in_body span {
+	float: left;
+	width: 367px;
+	position: relative;
+	margin-bottom: 10px;
+	overflow: hidden;
+	text-align: left;
+	border-radius: 3px
 }
 
-.profile_img > img{
-    width: 300px;
-    height: 300px;
-    border-radius: 100%;
+.sign_in_body input[type=text], .sign_in_body input[type=password] {
+	width: 100%;
+	height: 100%;
+	border: none;
+	background-color: #fff;
+	vertical-align: top;
+	padding-left: 25px;
+}
+
+.sign_in_body .btn_sign_in {
+	width: 151px;
+	height: 101px;
+	color: #fff;
+	background-color: rgb(89, 71, 145);
+	text-align: center;
+	cursor: pointer;
+	border: none;
+	font-size: 16px;
+	border-radius: 3px;
+	box-shadow: 0 0 5px rgba(0, 0, 0, .3);
+}
+
+.sign_in_body .btn_sign_in:hover {
+	box-shadow: 0 0 5px rgba(255, 255, 255, .5);
+}
+
+.sign_in_body .copyright {
+	display: inline-block;
+	width: 100%;
+	text-align: center;
+	color: #566b7c;
+	padding: 20px 0;
+	border-top: none;
+}
+
+.tit_sign_in {
+	margin-top: 5px;
+}
+
+/* �쉶�썝媛��엯 */
+.sign_up {
+	position: absolute;
+	left: calc(50% - 340px);
+	top: 72px;
+	width: 680px;
+	height: 800px;
+	text-align: left;
+	border-radius: 20px;
+	background-color: rgba(198, 189, 244, 0.3);
+	box-shadow: 2px 2px 5px rgb(182, 168, 223);
+}
+
+.sign_up_wrap {
+	width: 1000px;
+	margin: 20px auto;
+	height: 900px;
+	border: 1px solid lightgray;
+	border-radius: 12px;
+	display: flex;
+	background-color: rgba(208, 190, 231, 0.3);
+}
+
+.sign_up_tit {
+	position: relative;
+	height: 60px;
+	text-align: center;
+	border-radius: 20px 20px 0 0;
+	color: rgb(89, 71, 145);
+}
+
+.sign_up_input {
+	position: relative;
+	text-align: center;
+	padding: 32px 0;
+	width: 528px;
+	margin: 0 auto;
+}
+
+.sign_up_body span, .sign_up_body .btn_sign_up {
+	display: inline-block;
+	height: 44px;
+	line-height: 44px;
+}
+
+.sign_up_body span {
+	/* float:left; */
+	width: 300px;
+	position: relative;
+	margin-bottom: 10px;
+	overflow: hidden;
+	border-radius: 3px
+}
+
+.sign_up_body input[type=text], .sign_up_body input[type=password] {
+	width: 100%;
+	height: 100%;
+	border: none;
+	background-color: #fff;
+	vertical-align: top;
+	padding-left: 25px;
+}
+
+.sign_up_body .axi::before {
+	position: absolute;
+	left: 0;
+	top: -1px;
+	display: inline-block;
+	width: 45px;
+	font-size: 24px;
+	color: #333;
+	text-align: center;
+}
+
+.sign_up_body .axi-lock3::before {
+	font-size: 28px;
+	right: 11px;
+}
+
+.sign_up_body .btn_sign_up {
+	width: 100px;
+	height: 50px;
+	color: #fff;
+	background-color: rgb(89, 71, 145);
+	text-align: center;
+	cursor: pointer;
+	border: none;
+	font-size: 16px;
+	border-radius: 3px;
+	box-shadow: 0 0 5px rgba(0, 0, 0, .3);
+}
+
+.sign_up_body .btn_sign_up:hover {
+	box-shadow: 0 0 5px rgba(255, 255, 255, .5);
+}
+
+.sign_up_body .copyright {
+	display: inline-block;
+	width: 100%;
+	text-align: center;
+	color: #566b7c;
+	padding: 20px 0;
+	border-top: none;
+}
+
+.sign_up_body .profile_img {
+	padding-bottom: 20px;
+}
+
+.file_button {
+	padding: 6px 25px;
+	background-color: rgb(89, 71, 145);
+	border-radius: 4px;
+	color: white;
+	cursor: pointer;
+}
+
+.profile_img>img {
+	width: 300px;
+	height: 300px;
+	border-radius: 100%;
+}
+
+#kakao {
+	cursor: pointer;
+}
+
+.social_sign_in {
+	margin: 50px 350px 0 350px;
+}
+
+.social_sign_in img {
+	width: 300px;
+	height: 45px;
+}
+
+#naver {
+	cursor: pointer;
 }
 /* 
 .sign_in_wrap{border-radius: 12px;width: 1000px;margin: auto;height:100%;background:linear-gradient(to bottom, #f4f4f4 35%,#b4d6ed 50%,#a2cde8 51%,#f7f7f7 88%);background-size:cover;}

@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/common.css">
-    <link rel="stylesheet" href="css/sign.css">
+    <link rel="stylesheet" href="../static/css/common.css">
+    <link rel="stylesheet" href="../static/css/sign.css">
     <!-- <link rel="stylesheet" href="css/sub.css"> -->
     <title>Sign Up</title>
 </head>
@@ -24,7 +24,7 @@
                 <div class="sign_up_input" style="margin-top:10px;">
                     <div class="profile_img">
                         <!-- <img src="img/profile.jpg" alt=""> -->
-                        <img src="img/who.png" alt="">
+                        <img src="../static/img/who.png" alt="">
                     </div>
                     <div>
                         <span>
@@ -35,7 +35,8 @@
                             <input type="text" id="id" name="id" placeholder="이름" title="이름" value="">
                         </span>
                         <span>
-                            <input type="text" id="email" name="email" placeholder="이메일" title="이메일" value="">
+                            <input type="text" id="email" name="email" placeholder="이메일" title="이메일" value="" style="width: 56%;">
+                            <button type="button" class="btn_sign_up" id="checkEmail">이메일 확인</button>
                         </span>
                         <span>
                             <input type="password" name="password" id="password" placeholder="비밀번호">

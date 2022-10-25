@@ -52,18 +52,18 @@ window.onload = function(){
 }
 
 function popOpen() {
-    var modalPop = document.getElementsByClassName('.modal-wrap');
-    var modalBg = document.getElementsByClassName('modal-bg'); 
+    var modalPop = $('.modal-wrap');
+    var modalBg = $('.modal-bg');
 
-    modalPop[0].setAttribute('display','block');
-    modalBg[0].setAttribute('display','block');
+    $(modalPop[0]).show();
+    $(modalBg[0]).show();
 }
 
  function popClose() {
-    var modalPop = document.getElementsByClassName('.modal-wrap');
-    var modalBg = document.getElementsByClassName('modal-bg'); 
+    var modalPop = $('.modal-wrap');
+    var modalBg = $('.modal-bg');
 
-    modalPop[0].setAttribute('display','none');
-    modalBg[0].setAttribute('display','none');
+     $(modalPop[0]).hide();
+    $(modalBg[0]).hide();
 
 }

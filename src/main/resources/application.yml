@@ -5,10 +5,26 @@ spring:
   mvc:
     view:
       suffix: .html
+  web:
+    resources:
+      static-locations: classpath:/static/
+  devtools:
+    livereload:
+      enabled: true
+    restart:
+      enabled: true
+
 #  thymeleaf:
 #    prefix: classpath:/templates
 
-
+messenger:
+  kakao:
+    rest_api_key: dd0b678881f8ea6c47e2012b37fb8c90
+    redirect_url: http://localhost:8081/oauth
+  naver:
+    rest_api_key: uSS2XZqtURcJU2R6feyR
+    redirect_url: http://localhost:8081/api/naver/oauth
+    client_secret: vKSB1WVm2g
 logging:
   logback:
     rollingpolicy:

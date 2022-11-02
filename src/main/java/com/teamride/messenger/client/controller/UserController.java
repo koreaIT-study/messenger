@@ -4,11 +4,13 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.teamride.messenger.client.dto.AdminDTO;
+import com.teamride.messenger.client.utils.RestResponse;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -48,8 +50,8 @@ public class UserController {
     }
 
     @PostMapping("/loginAction")
-    public void loginAction(@RequestBody AdminDTO adminDTO) {
-        Mono<AdminDTO> resp = webClient.mutate().baseUrl("http://localhost:12000")
+    public RestResponse loginAction(@RequestBody AdminDTO adminDTO) {
+        Mono<RestResponse> resp = webClient.mutate().baseUrl("http://localhost:12000")
                 .build()
                 .post()
                 .uri("/loginAction")
@@ -57,7 +59,23 @@ public class UserController {
                 .accept(MediaType.APPLICATION_JSON)
                 .bodyValue(adminDTO)
                 .retrieve()
-                .bodyToMono(AdminDTO.class);
-        log.debug("mono AdminDTO : {}", resp);
+                .bodyToMono(RestResponse.class);
+        log.debug("mono RestResponse : {}", resp);
+        return new RestResponse(resp.block());
     }
+
+    @GetMapping("/smtpRequest")
+    public RestResponse smtpRequest(@RequestParam String email) {
+        log.debug("email {}", email);
+        Mono<RestResponse> resp = webClient.mutate().baseUrl("http://localhost:12000")
+                .build()
+                .get()
+                .uri(t -> t.queryParam("email", email).build())
+                .retrieve()
+                .bodyToMono(RestResponse.class);
+        log.debug("mono RestResponse {}", resp);
+
+        return new RestResponse(resp.block());
+    }
+
 }

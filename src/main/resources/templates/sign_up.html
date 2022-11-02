@@ -36,7 +36,11 @@
                         </span>
                         <span>
                             <input type="text" id="email" name="email" placeholder="이메일" title="이메일" value="" style="width: 56%;">
-                            <button type="button" class="btn_sign_up" id="checkEmail">이메일 확인</button>
+                            <button type="button" class="btn_sign_up" id="checkEmail" onclick="checkEmail()">이메일 확인</button>
+                        </span>
+                        <span>
+                            <input type="text" id="authNumInput" placeholder="인증번호 6자리를 입력해주세요." style="display: none; width: 56%;">
+                            <button type="button" class="btn_sign_up" id="checkAuthNumber" onclick="checkAuthNumber()">인증번호 확인</button>
                         </span>
                         <span>
                             <input type="password" name="password" id="password" placeholder="비밀번호">
@@ -57,9 +61,50 @@
             </div>
         </div>
     </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
     <script>
+        const USER = {
+            authNumber: undefined
+        }
         const emailRegExp = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
         const space = /\s/g;
+
+        function checkEmail() {
+            const email = document.querySelector('#email').value;
+            // const checkInput = document.querySelector('#authNumInput');
+
+            const param = {
+                email
+            }
+
+            $.ajax({
+                type : 'get',
+                url : '/smtpRequest',
+                data : param,
+                success : function (response) {
+                    console.log("🚀 ~ file: sign_up.html ~ line 81 ~ checkEmail ~ response", response)
+                    const errno = response.errno;
+
+                    if(errno === 0){
+                        checkInput.style.display = "block";
+                        USER.authNumber = response.data;
+                        alert('인증번호가 전송되었습니다.')
+                    }else{
+                        alert('처리를 실패했습니다.');
+                    }
+                }			
+            });
+        }
+
+        function checkAuthNumber() {
+            const inputNumber = document.querySelector('#authNumInput').value;
+
+            if(inputNumber === USER.authNumber){
+                alert('인증번호가 일치합니다.');
+            }else{
+                alert('인증번호가 일치하지 않습니다.');
+            }
+        }
     </script>
 </body>
 

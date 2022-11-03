@@ -33,10 +33,10 @@ public class LoginCheckInterceptor implements HandlerInterceptor{
             return true;
         }
         
-        if (httpSession.getAttribute("userEmail") == null) {
-            response.sendRedirect("/login");
-            return false;
-        }
+//        if (httpSession.getAttribute("userEmail") == null) {
+//            response.sendRedirect("/login");
+//            return false;
+//        }
         
         return true;
     }

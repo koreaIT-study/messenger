@@ -229,7 +229,7 @@
 #naver {
 	cursor: pointer;
 }
-/* 
+/*
 .sign_in_wrap{border-radius: 12px;width: 1000px;margin: auto;height:100%;background:linear-gradient(to bottom, #f4f4f4 35%,#b4d6ed 50%,#a2cde8 51%,#f7f7f7 88%);background-size:cover;}
 .sign_in{position:absolute;left:calc(50% - 340px);top:calc(50% - 160px);width:680px;height:320px;text-align:left;border-radius:20px;box-shadow:2px 2px 5px rgba(0,0,0,.6);}
 .sign_in_tit{position:relative;height:120px;background-color:rgba(7,57,115,.6);text-align:center;border-radius:20px 20px 0 0;}

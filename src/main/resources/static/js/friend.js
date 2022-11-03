@@ -50,3 +50,69 @@ function getChatRoomList(){
 window.onload = function(){
     document.getElementById('friendListBtn').click();
 }
+
+function popOpen() {
+    var modalPop = $('.modal-wrap');
+    var modalBg = $('.modal-bg');
+
+    $(modalPop[0]).show();
+    $(modalBg[0]).show();
+}
+
+ function popClose() {
+    var modalPop = $('.modal-wrap');
+    var modalBg = $('.modal-bg');
+
+     $(modalPop[0]).hide();
+    $(modalBg[0]).hide();
+
+}
+
+
+
+$(function(){
+    var roomId = $("#roomId").val() ?? 'tester';
+    var roomName = $("#roomName").val() ?? 'tester_name';
+    var userName = $('#userName').val() ?? 'tester_userNAme';
+
+    var sockJs = new SockJS("/stomp/chat");
+    var stomp = Stomp.over(sockJs);
+
+    stomp.connect({}, function(){
+        console.log("STOMP Connection");
+
+        // 메세지를 받을 때
+        // subscribe(path, callback)
+        stomp.subscribe("/sub/chat/room/" + roomId, function(chat){
+            let obj = JSON.parse(chat.body);
+            $("#chat_msg_wrap").append(obj.message);
+        })
+
+        // 메세지 보낼때
+        // send(path, header, message)
+        let param  = JSON.stringify({roomId: roomId, writer: userName});
+        stomp.send("/pub/chat/enter", {}, param);
+    })
+
+    $("#chat_writer").on("keyup",(e) => {
+        e.preventDefault();
+        if(e.keyCode != 13) return;
+        if(e.shiftKey) return;
+
+        let $textArea = $("#chat_writer");
+        let param = {
+            roomId : roomId,
+            writer : userName,
+            message : $textArea.val()
+        };
+        $textArea.val('');
+        stomp.send("/pub/chat/message", {}, JSON.stringify(param));
+
+    })
+
+
+})
+
+
+
+

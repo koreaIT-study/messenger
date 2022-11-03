@@ -1,5 +1,6 @@
 package com.teamride.messenger.client.config;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 

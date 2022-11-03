@@ -45,6 +45,7 @@ html{
     width: 30px;
     height: 30px;
     vertical-align: middle;
+    cursor: pointer;
 }
 
 /* chat */
@@ -65,6 +66,7 @@ html{
     right: 0;
     background: rgba(0, 0, 0, 0.6);
     z-index: 999;
+    display: none;
 }
 
 .modal-wrap{
@@ -76,4 +78,5 @@ html{
     height: 500px;
     background: #fff;
     z-index: 1000;
+    display: none;
 }

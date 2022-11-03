@@ -7,7 +7,7 @@
 }
 
 #search_box {
-	width: 270;
+	width: 330px;
 	height: 40px;
 	border-bottom: 1px solid lightgray;
 	/* background-color: RGB(208,190,231); */
@@ -15,8 +15,8 @@
 	padding: 30px 10px;
 }
 
-#searchText {
-	height: 100%;
+.search-text {
+	height: 40px;
 	width: 200px;
 	background-color: #EAEDED;
 	border: none;
@@ -126,4 +126,9 @@ ul {
 .time {
 	font-size: 10px;
 	vertical-align: sub;
+}
+
+.modal-search-wrap{
+	width: 100%;
+	height: 40px;
 }

@@ -5,6 +5,15 @@ spring:
   mvc:
     view:
       suffix: .html
+  web:
+    resources:
+      static-locations: classpath:/static/
+  devtools:
+    livereload:
+      enabled: true
+    restart:
+      enabled: true
+
 #  thymeleaf:
 #    prefix: classpath:/templates
 

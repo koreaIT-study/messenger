@@ -61,7 +61,7 @@ public class UserController {
                 .retrieve()
                 .bodyToMono(RestResponse.class);
         log.debug("mono RestResponse : {}", resp);
-        return new RestResponse(resp.block());
+        return resp.block();
     }
 
     @GetMapping("/smtpRequest")
@@ -75,7 +75,21 @@ public class UserController {
                 .bodyToMono(RestResponse.class);
         log.debug("mono RestResponse {}", resp);
 
-        return new RestResponse(resp.block());
+        return resp.block();
+    }
+
+    @PostMapping("/signUp")
+    public RestResponse signUp(@RequestBody AdminDTO adminDTO) {
+        Mono<RestResponse> resp = webClient.mutate().baseUrl("http://localhost:12000")
+                .build()
+                .post()
+                .uri("/signUp")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .bodyValue(adminDTO)
+                .retrieve()
+                .bodyToMono(RestResponse.class);
+        return resp.block();
     }
 
 }

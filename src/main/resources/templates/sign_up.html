@@ -32,14 +32,14 @@
                             <input type="file" id="profile_file" style="display:none" />
                         </span>
                         <span>
-                            <input type="text" id="id" name="id" placeholder="이름" title="이름" value="">
+                            <input type="text" id="name" name="name" placeholder="이름" title="이름" value="">
                         </span>
                         <span>
                             <input type="text" id="email" name="email" placeholder="이메일" title="이메일" value="" style="width: 56%;">
                             <button type="button" class="btn_sign_up" id="checkEmail" onclick="checkEmail()">이메일 확인</button>
                         </span>
-                        <span>
-                            <input type="text" id="authNumInput" placeholder="인증번호 6자리를 입력해주세요." style="display: none; width: 56%;">
+                        <span class="checkInput" style="display: none;">
+                            <input type="text" id="authNumInput" placeholder="인증번호 6자리를 입력해주세요." style="width: 56%;">
                             <button type="button" class="btn_sign_up" id="checkAuthNumber" onclick="checkAuthNumber()">인증번호 확인</button>
                         </span>
                         <span>
@@ -50,7 +50,7 @@
                         </span>
                     </div>
                     <div>
-                        <button type="button" class="btn_sign_up" onclick="">가입</button>
+                        <button type="button" class="btn_sign_up" onclick="signUp()">가입</button>
                     </div>
                 </div>
             </div>
@@ -62,16 +62,28 @@
         </div>
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-    <script>
-        const USER = {
-            authNumber: undefined
-        }
-        const emailRegExp = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
-        const space = /\s/g;
 
+    <!-- 전역변수 -->
+    <script>
+        const SignUp = {
+            authNumber: undefined,
+            vaildate: false
+        }
+    </script>
+
+    <!-- 이메일 인증 -->
+    <script>
         function checkEmail() {
+            const emailRegExp = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
+            const space = /\s/g;
+
             const email = document.querySelector('#email').value;
-            // const checkInput = document.querySelector('#authNumInput');
+            const checkInput = document.querySelector('.checkInput');
+
+            if(!emailRegExp.test(email) || !space.test(email)){
+                alert("이메일형식이 올바르지 않습니다.");
+                return;
+            }
 
             const param = {
                 email
@@ -87,7 +99,7 @@
 
                     if(errno === 0){
                         checkInput.style.display = "block";
-                        USER.authNumber = response.data;
+                        SignUp.authNumber = response.data;
                         alert('인증번호가 전송되었습니다.')
                     }else{
                         alert('처리를 실패했습니다.');
@@ -99,11 +111,51 @@
         function checkAuthNumber() {
             const inputNumber = document.querySelector('#authNumInput').value;
 
-            if(inputNumber === USER.authNumber){
+            if(inputNumber === SignUp.authNumber){
                 alert('인증번호가 일치합니다.');
+                SignUp.vaildate = true;
             }else{
                 alert('인증번호가 일치하지 않습니다.');
+                SignUp.vaildate = false;
             }
+        }
+    </script>
+
+    <!-- 회원 가입 -->
+    <script>
+        const name = document.querySelector('#name').value;
+        const email = document.querySelector('#email').value;
+        const password = document.querySelector('#password').value;
+        const passwordCheck = document.querySelector('#passwordCheck').value;
+        if(password !== passwordCheck){
+            alert("비밀번호가 일치하지 않습니다.");
+            return;
+        }
+        
+        const param = {
+            name,
+            email,
+            password
+        }
+        
+        function signUp() {
+            $.ajax({
+                type : 'get',
+                url : '/signUp',
+                data : param,
+                success : function (response) {
+                    console.log("🚀 ~ file: sign_up.html ~ line 81 ~ checkEmail ~ response", response)
+                    const errno = response.errno;
+
+                    if(errno === 0){
+                        checkInput.style.display = "block";
+                        SignUp.authNumber = response.data;
+                        alert('인증번호가 전송되었습니다.')
+                    }else{
+                        alert('처리를 실패했습니다.');
+                    }
+                }			
+            });
         }
     </script>
 </body>

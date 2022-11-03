@@ -7,6 +7,9 @@
 <link rel="stylesheet" href="css/common.css">
 <link rel="stylesheet" href="css/chat.css">
 <link rel="stylesheet" href="css/friends.css">
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 <script src="js/chat.js"></script>
 <script src="js/friend.js"></script>
 <title>Document</title>
@@ -169,10 +172,8 @@
 						<div id="send_file_name"></div>
 					</div>
 					<div>
-						<textarea name="" id="chat_writer" cols="30" rows="10"
-							placeholder="메시지를 입력해주세요. (Enter: 전송/Shift + Enter 줄바꿈)">
+						<textarea name="" id="chat_writer" cols="30" rows="10" placeholder="메시지를 입력해주세요. (Enter: 전송/Shift + Enter 줄바꿈)">
                         </textarea>
-
 					</div>
 				</form>
 			</div>
@@ -185,7 +186,7 @@
 			<img src="img/search.png" class="btn-img">
 		</div>
     </div>
-<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+
 </body>
 <script type="text/javascript">
 var logoutWrap = document.querySelector('.header_profile');

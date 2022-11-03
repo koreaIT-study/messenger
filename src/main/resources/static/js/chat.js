@@ -15,3 +15,6 @@ function sendFile(){
     sendFileName.innerHTML = fileName;
 }
 
+$(function(){
+    $('#chat_writer').val('');
+});

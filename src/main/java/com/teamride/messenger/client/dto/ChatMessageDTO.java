@@ -1,7 +1,5 @@
 package com.teamride.messenger.client.dto;
 
-import java.time.LocalDateTime;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,8 +10,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ChatMessageDTO {
-    private String roomId;
+//	private String messageId; // pk
+    private String roomId; // fk
     private String writer;
     private String message;
-    private String timestamp;
+    private String timestamp; //  보낸 시간
+    
+    // timestamp + roomId = pk
 }

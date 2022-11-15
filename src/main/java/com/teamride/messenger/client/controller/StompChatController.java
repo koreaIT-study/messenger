@@ -1,19 +1,24 @@
 package com.teamride.messenger.client.controller;
 
 import com.teamride.messenger.client.config.KafkaConstants;
+import com.teamride.messenger.client.config.WebClientConfig;
 import com.teamride.messenger.client.dto.ChatMessageDTO;
 import com.teamride.messenger.client.service.StompChatService;
+import com.teamride.messenger.client.utils.RestResponse;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import reactor.core.publisher.Mono;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -45,6 +50,10 @@ public class StompChatController {
     public void message(ChatMessageDTO message){
         log.info("::: StompChatController.message in :::" + message);
         stompChatService.sendMessage(message);
+        
+        // service 호출
+        
+       // kafkaTemplate.send(KafkaConstants.CHAT_SERVER, message);
     }
     
     @GetMapping("/sendMessage")
@@ -60,7 +69,8 @@ public class StompChatController {
         // roomId를 가진 사용자들(톡방 안의 users)을 검색해서
         // 반복문으로 send해주는 작업
         
-        kafkaTemplate.send(message.getRoomId(), message);
+//        kafkaTemplate.send(message.getRoomId(), message);
+        kafkaTemplate.send(KafkaConstants.CHAT_SERVER, message);
         
     }
     
@@ -68,7 +78,14 @@ public class StompChatController {
     @KafkaListener(topics = topicName, groupId = KafkaConstants.GROUP_ID)
     public void listen(ChatMessageDTO message) {
         log.info("Received Msg f8c67dc3ae0a3265 " + message);
+        
+        // message 받음
+        // message db저장
+        
+        
         // message의 room id확인
+
+        
         // topic : user id
         
         

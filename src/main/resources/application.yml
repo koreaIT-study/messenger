@@ -13,7 +13,14 @@ spring:
       enabled: true
     restart:
       enabled: true
-
+  kafka:
+    consumer:
+      bootstrap-servers:
+      - 35.216.1.250:9092 
+      group-id: chatting
+    producer:
+      bootstrap-servers:
+      - 35.216.1.250:9092
 #  thymeleaf:
 #    prefix: classpath:/templates
 

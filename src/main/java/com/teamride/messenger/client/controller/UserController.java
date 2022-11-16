@@ -15,7 +15,6 @@ import com.teamride.messenger.client.utils.RestResponse;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import reactor.core.publisher.Mono;
 
 @Slf4j
 @RestController
@@ -61,7 +60,7 @@ public class UserController {
     @ResponseBody
     @PostMapping("/loginAction")
     public RestResponse loginAction(@RequestBody AdminDTO adminDTO) {
-        Mono<RestResponse> resp = webClient.mutate().baseUrl("http://localhost:12000")
+    	final AdminDTO resp = webClient.mutate().baseUrl("http://localhost:12000")
                 .build()
                 .post()
                 .uri("/loginAction")
@@ -69,30 +68,30 @@ public class UserController {
                 .accept(MediaType.APPLICATION_JSON)
                 .bodyValue(adminDTO)
                 .retrieve()
-                .bodyToMono(RestResponse.class);
-        log.debug("mono RestResponse : {}", resp);
-        return resp.block();
+                .bodyToMono(AdminDTO.class).block();
+    	if(resp == null) {
+    		return new RestResponse("NOT_FOUND");
+    	}
+        return new RestResponse(resp);
     }
 
     @ResponseBody
     @GetMapping("/smtpRequest")
     public RestResponse smtpRequest(@RequestParam String email) {
-        log.debug("email {}", email);
-        Mono<RestResponse> resp = webClient.mutate().baseUrl("http://localhost:12000")
+        final String resp = webClient.mutate().baseUrl("http://localhost:12000")
                 .build()
                 .get()
                 .uri(t -> t.queryParam("email", email).build())
                 .retrieve()
-                .bodyToMono(RestResponse.class);
-        log.debug("mono RestResponse {}", resp);
+                .bodyToMono(String.class).block();
 
-        return resp.block();
+        return new RestResponse(resp);
     }
 
     @ResponseBody
     @PostMapping("/signUp")
     public RestResponse signUp(@RequestBody AdminDTO adminDTO) {
-        Mono<RestResponse> resp = webClient.mutate().baseUrl("http://localhost:12000")
+    	final Integer resp = webClient.mutate().baseUrl("http://localhost:12000")
                 .build()
                 .post()
                 .uri("/signUp")
@@ -100,8 +99,8 @@ public class UserController {
                 .accept(MediaType.APPLICATION_JSON)
                 .bodyValue(adminDTO)
                 .retrieve()
-                .bodyToMono(RestResponse.class);
-        return resp.block();
+                .bodyToMono(Integer.class).block();
+        return new RestResponse(resp);
     }
 
 }

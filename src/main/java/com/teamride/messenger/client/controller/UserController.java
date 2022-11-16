@@ -60,19 +60,23 @@ public class UserController {
     @ResponseBody
     @PostMapping("/loginAction")
     public RestResponse loginAction(@RequestBody AdminDTO adminDTO) {
-    	final AdminDTO resp = webClient.mutate().baseUrl("http://localhost:12000")
-                .build()
-                .post()
-                .uri("/loginAction")
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .bodyValue(adminDTO)
-                .retrieve()
-                .bodyToMono(AdminDTO.class).block();
-    	if(resp == null) {
-    		return new RestResponse("NOT_FOUND");
-    	}
-        return new RestResponse(resp);
+    	try {
+			final AdminDTO resp = webClient.mutate().baseUrl("http://localhost:12000")
+			        .build()
+			        .post()
+			        .uri("/loginAction")
+			        .contentType(MediaType.APPLICATION_JSON)
+			        .accept(MediaType.APPLICATION_JSON)
+			        .bodyValue(adminDTO)
+			        .retrieve()
+			        .bodyToMono(AdminDTO.class).block();
+			if(resp == null) {
+				return new RestResponse("NOT_FOUND");
+			}
+			return new RestResponse(resp);
+		} catch (Exception e) {
+			return new RestResponse(1, e.getLocalizedMessage(), null);
+		}
     }
 
     @ResponseBody

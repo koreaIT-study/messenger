@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.teamride.messenger.client.config.Constants;
 import com.teamride.messenger.client.dto.AdminDTO;
 import com.teamride.messenger.client.utils.RestResponse;
 
@@ -61,7 +62,7 @@ public class UserController {
     @PostMapping("/loginAction")
     public RestResponse loginAction(@RequestBody AdminDTO adminDTO) {
     	try {
-			final AdminDTO resp = webClient.mutate().baseUrl("http://localhost:12000")
+			final AdminDTO resp = webClient.mutate().baseUrl(Constants.SERVER_URL)
 			        .build()
 			        .post()
 			        .uri("/loginAction")
@@ -82,7 +83,7 @@ public class UserController {
     @ResponseBody
     @GetMapping("/smtpRequest")
     public RestResponse smtpRequest(@RequestParam String email) {
-        final String resp = webClient.mutate().baseUrl("http://localhost:12000")
+        final String resp = webClient.mutate().baseUrl(Constants.SERVER_URL)
                 .build()
                 .get()
                 .uri(t -> t.queryParam("email", email).build())
@@ -95,7 +96,7 @@ public class UserController {
     @ResponseBody
     @PostMapping("/signUp")
     public RestResponse signUp(@RequestBody AdminDTO adminDTO) {
-    	final Integer resp = webClient.mutate().baseUrl("http://localhost:12000")
+    	final Integer resp = webClient.mutate().baseUrl(Constants.SERVER_URL)
                 .build()
                 .post()
                 .uri("/signUp")

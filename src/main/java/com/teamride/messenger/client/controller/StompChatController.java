@@ -1,32 +1,32 @@
 package com.teamride.messenger.client.controller;
 
-import com.teamride.messenger.client.config.KafkaConstants;
-import com.teamride.messenger.client.config.WebClientConfig;
-import com.teamride.messenger.client.dto.ChatMessageDTO;
-import com.teamride.messenger.client.service.StompChatService;
-import com.teamride.messenger.client.utils.RestResponse;
+import java.time.LocalDateTime;
+import java.util.List;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import reactor.core.publisher.Mono;
+import javax.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.MediaType;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.core.KafkaProducerException;
+import org.springframework.kafka.core.KafkaSendCallback;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.Acknowledgment;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.stereotype.Controller;
+import org.springframework.util.concurrent.ListenableFuture;
+import org.springframework.util.concurrent.ListenableFutureCallback;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.UUID;
+import com.teamride.messenger.client.config.KafkaConstants;
+import com.teamride.messenger.client.dto.ChatMessageDTO;
+import com.teamride.messenger.client.service.StompChatService;
 
-import javax.annotation.Resource;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequiredArgsConstructor
@@ -94,8 +94,27 @@ public class StompChatController {
 		// 반복문으로 send해주는 작업
 
 //        kafkaTemplate.send(message.getRoomId(), message);
-		kafkaTemplate.send(KafkaConstants.CHAT_SERVER, message);
+		ListenableFuture<SendResult<String, ChatMessageDTO>> listenableFuture = kafkaTemplate.send(KafkaConstants.CHAT_SERVER, message);
+		listenableFuture.addCallback(new KafkaSendCallback<String, ChatMessageDTO>() {
 
+			@Override
+			public void onSuccess(SendResult<String, ChatMessageDTO> result) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onFailure(Throwable ex) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onFailure(KafkaProducerException ex) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 	}
 
 	@KafkaListener(topics = KafkaConstants.CHAT_CLIENT, groupId = KafkaConstants.GROUP_ID)

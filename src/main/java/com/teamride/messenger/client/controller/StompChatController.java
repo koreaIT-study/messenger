@@ -33,6 +33,7 @@ import javax.annotation.Resource;
 public class StompChatController {
     // topic : user
     // partition : room id 
+	
 	@Autowired
 	private WebClient webClient;
 	

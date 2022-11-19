@@ -20,7 +20,7 @@ public class LoginCheckInterceptor implements HandlerInterceptor{
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
-        log.info("인터셉터 작동::"+request.getRequestURL().toString());
+//        log.info("인터셉터 작동::"+request.getRequestURL().toString());
         if (request.getRequestURL().toString().contains("/login") 
         		|| request.getRequestURL().toString().contains("/sign_up")
                 || request.getRequestURL().toString().contains("/kakao_login")

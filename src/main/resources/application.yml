@@ -18,6 +18,8 @@ spring:
       bootstrap-servers:
       - 35.216.1.250:9092 
       group-id: chatting
+      enable-auto-commit: false
+      
     producer:
       bootstrap-servers:
       - 35.216.1.250:9092

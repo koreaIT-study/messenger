@@ -5,11 +5,10 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.core.KafkaProducerException;
-import org.springframework.kafka.core.KafkaSendCallback;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.kafka.support.SendResult;
@@ -94,25 +93,21 @@ public class StompChatController {
 		// 반복문으로 send해주는 작업
 
 //        kafkaTemplate.send(message.getRoomId(), message);
-		ListenableFuture<SendResult<String, ChatMessageDTO>> listenableFuture = kafkaTemplate.send(KafkaConstants.CHAT_SERVER, message);
-		listenableFuture.addCallback(new KafkaSendCallback<String, ChatMessageDTO>() {
+		ListenableFuture<SendResult<String, ChatMessageDTO>> listenableFuture = kafkaTemplate
+				.send(KafkaConstants.CHAT_SERVER, message);
+		listenableFuture.addCallback(new ListenableFutureCallback<SendResult<String, ChatMessageDTO>>() {
 
 			@Override
 			public void onSuccess(SendResult<String, ChatMessageDTO> result) {
 				// TODO Auto-generated method stub
-				
+				ProducerRecord<String, ChatMessageDTO> record = result.getProducerRecord();
+				ChatMessageDTO chatMessageDTO = record.value();
+
 			}
 
 			@Override
 			public void onFailure(Throwable ex) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void onFailure(KafkaProducerException ex) {
-				// TODO Auto-generated method stub
-				
+				throw new RuntimeException("kafka 전송 error", ex);
 			}
 		});
 	}

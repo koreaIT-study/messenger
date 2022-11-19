@@ -81,6 +81,9 @@ function popClose() {
 
 
 $(function() {
+	// 기존 채팅방이 있으면 db에서 채팅방을 만들때 id로 만들거니깐 roomId가 있을거고
+	// 없으면 uuid로 생성
+	// 친구목록에서 채팅방 만들 땐 db조회 logic 필요
 	var roomId = $("#roomId").val() ?? 'tester';
 	var roomName = $("#roomName").val() ?? 'tester_name';
 	var userName = $('#userName').val() ?? 'tester_userNAme';

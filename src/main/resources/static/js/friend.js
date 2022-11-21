@@ -78,6 +78,23 @@ function popClose() {
 
 }
 
+function openRoom(){
+	let rId = $(this).data('rId');
+	let isGroup = $(this).data('group');
+	let roomName = $('#roomName').val();
+
+	// rId 없으면 채팅창 만들기
+	if(!rId){
+		jsAjaxPostJsonCall('/room', {roomName : roomName,isGroup : isGroup}, function (response) {
+			$(this).data('rId',response.roomId);
+			rId = response.roomId;
+		})
+	}
+
+	// 채팅창 열기
+	let param = JSON.stringify({ roomId: rId, writer: $('#userName').val() });
+	stomp.send("/pub/chat/enter", {}, param);
+}
 
 
 $(function() {

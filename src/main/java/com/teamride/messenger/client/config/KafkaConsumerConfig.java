@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.clients.consumer.OffsetAndMetadata;
+import org.apache.kafka.clients.consumer.OffsetCommitCallback;
+import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,8 +19,11 @@ import org.springframework.kafka.support.serializer.JsonDeserializer;
 
 import com.teamride.messenger.client.dto.ChatMessageDTO;
 
+import lombok.extern.slf4j.Slf4j;
+
 @EnableKafka
 @Configuration
+@Slf4j
 public class KafkaConsumerConfig {
 
 	public ConsumerFactory<String, ChatMessageDTO> consumerFactory() {
@@ -46,9 +52,17 @@ public class KafkaConsumerConfig {
 		ConcurrentKafkaListenerContainerFactory<String, ChatMessageDTO> factory = new ConcurrentKafkaListenerContainerFactory<>();
 		factory.setConsumerFactory(consumerFactory());
 		factory.setConcurrency(3);
+		// default commit 5초 , sync commit
 		System.out.println("default ack mode(batch):" + factory.getContainerProperties().getAckMode());
 		factory.getContainerProperties().setAckMode(AckMode.MANUAL_IMMEDIATE); // offset 수동 커밋을 위함
-
+		factory.getContainerProperties().setCommitCallback(new OffsetCommitCallback() {
+			
+			@Override
+			public void onComplete(Map<TopicPartition, OffsetAndMetadata> offsets, Exception exception) {
+				log.info("offset commit");
+				offsets.values().forEach(c->log.info("offsets::"+c.offset()));
+			}
+		});
 		return factory;
 	}
 }

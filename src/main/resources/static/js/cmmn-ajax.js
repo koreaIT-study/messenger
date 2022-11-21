@@ -54,7 +54,7 @@ function jsAjaxPostJsonCall(url, params, callbackFunc, callbackFailFunc) {
 
     $.ajax({
         type: 'POST',
-        async: true,
+        async: false,
         url: url,
         data: ajax_data,
         dataType: "json",

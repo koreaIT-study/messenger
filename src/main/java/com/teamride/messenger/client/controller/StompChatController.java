@@ -86,7 +86,7 @@ public class StompChatController {
 	public void sendMessage() {
 		ChatMessageDTO message = ChatMessageDTO.builder()
 //                .roomId(UUID.randomUUID().toString())
-				.roomId("f8c67dc3ae0a3265").writer("hong").message("test message 입니다~")
+				.roomId("f8c67dc3ae0a3265").writer("hong").message("test message 입니다2222~")
 				.timestamp(LocalDateTime.now().toString()).build();
 
 		// roomId를 가진 사용자들(톡방 안의 users)을 검색해서
@@ -122,7 +122,6 @@ public class StompChatController {
 
 		// 사용자들이 room id를 구독하고 있어서
 		// room id 에대한 user id 조회 logic 필요 없음
-		// 단일 쓰래드로 config 붙여서 java로 만듬
 		try {
 
 			stompChatService.sendMessage(message);

@@ -47,6 +47,8 @@ function getChatRoomList(){
 	listBox.appendChild(ul);
 }*/
 
+
+
 function getFriendList() {
 
 	$('#friend-list-box').show();
@@ -59,6 +61,7 @@ function getChatRoomList() {
 
 window.onload = function() {
 	document.getElementById('friendListBtn').click();
+
 }
 
 function popOpen() {
@@ -78,31 +81,90 @@ function popClose() {
 
 }
 
-function openRoom(){
-	let rId = $(this).data('rId');
-	let isGroup = $(this).data('group');
+function openRoom(el) {
+
+	let rId = $(el).data('rid');
+	let isGroup = $(el).data('group');
 	let roomName = $('#roomName').val();
 
 	// rId 없으면 채팅창 만들기
-	if(!rId){
-		jsAjaxPostJsonCall('/room', {roomName : roomName,isGroup : isGroup}, function (response) {
+	/*if(!rId){
+		jsAjaxPostJsonCall('/chat/room', {roomName : roomName,isGroup : isGroup}, function (response) {
+			console.log(response)
 			$(this).data('rId',response.roomId);
 			rId = response.roomId;
 		})
-	}
+	}*/
+
+	console.log(rId + ":" + isGroup + ":" + roomName);
 
 	// 채팅창 열기
 	let param = JSON.stringify({ roomId: rId, writer: $('#userName').val() });
 	stomp.send("/pub/chat/enter", {}, param);
 }
 
+var sessionContainer = [];
 
-$(function() {
+function connect(el) {
+	// roomId 찾는 logic 필요
+	var roomId = searchRoomId(el);
+	
+	if (sessionContainer.includes(roomId)) {
+		// 이미 session 연결 됬으므로 view만 보여준다.
+	} else {
+		enterRoom(el, roomId);
+	}
+	
+	getMessages(roomId);
+}
+
+
+function searchRoomId(el) {
 	// 기존 채팅방이 있으면 db에서 채팅방을 만들때 id로 만들거니깐 roomId가 있을거고
 	// 없으면 uuid로 생성
 	// 친구목록에서 채팅방 만들 땐 db조회 logic 필요
-	var roomId = $("#roomId").val() ?? 'tester';
-	var roomName = $("#roomName").val() ?? 'tester_name';
+	//var roomId = $("#roomId").val() ?? 'tester';
+
+	var roomId = $(el).data('rid');
+	var userId = $(el).data('uid');
+
+	if (!roomId) { // 친구목록에서 들어오는 경우
+		// 친구의 id(userId)로 roomId(1:1 톡방)을 찾아야한다.
+
+		// server 쪽에서 roomId를 못찾으면 roomId만들고 roomId return
+	}
+	
+	return roomId;
+}
+
+
+function getMessages(roomId){
+	// roomId가 있으면 messages전부 가져와서 view에 뿌려주는 logic 필요
+}
+
+//$(function() {
+function enterRoom(el, roomId) {
+	/*	// 기존 채팅방이 있으면 db에서 채팅방을 만들때 id로 만들거니깐 roomId가 있을거고
+		// 없으면 uuid로 생성
+		// 친구목록에서 채팅방 만들 땐 db조회 logic 필요
+		//var roomId = $("#roomId").val() ?? 'tester';
+	
+		var roomId = $(el).data('rid');
+		var userId = $(el).data('uid') ?? '1';
+		var roomName = $("#roomName").val() ?? 'tester_name';
+		var userName = $('#userName').val() ?? 'tester_userNAme';
+	
+		if (!roomId) { // 친구목록에서 들어오는 경우
+			// 친구의 id(userId)로 roomId(1:1 톡방)을 찾아야한다.
+	
+			// server 쪽에서 찾으면 roomId만들고, roomId와 메시지들 db에서 전부 가져와서 뿌려주는 logic
+			// server 쪽에서 roomId를 못찾으면 roomId만들고 roomId return
+	
+		} else {
+			// 채팅방에서 들어가는 경우
+			// server쪽으로 message들 전부 가져와서 view에 뿌려줘야함
+		}*/
+
 	var userName = $('#userName').val() ?? 'tester_userNAme';
 
 	var sockJs = new SockJS("/stomp/chat");
@@ -124,6 +186,8 @@ $(function() {
 		stomp.send("/pub/chat/enter", {}, param);
 	})
 
+	sessionContainer.push(roomId);
+
 	$("#chat_writer").on("keyup", (e) => {
 		e.preventDefault();
 		if (e.keyCode != 13) return;
@@ -140,8 +204,8 @@ $(function() {
 
 	})
 
-
-})
+}
+//})
 
 
 

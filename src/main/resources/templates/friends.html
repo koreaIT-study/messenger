@@ -1,20 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="css/common.css">
-<link rel="stylesheet" href="css/chat.css">
-<link rel="stylesheet" href="css/friends.css">
-<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-<script
-	src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
-<script
-	src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
-<script src="js/chat.js"></script>
-<script src="js/friend.js"></script>
-<title>Document</title>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="css/common.css">
+	<link rel="stylesheet" href="css/chat.css">
+	<link rel="stylesheet" href="css/friends.css">
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+	<script src="js/chat.js"></script>
+	<script src="js/friend.js"></script>
+	<script src="/js/cmmn-ajax.js"></script>
+	<title>Document</title>
 </head>
 <body>
 	<div id="wrap">
@@ -41,7 +40,7 @@
 			</div>
 			<div id="list-box">
 				<ul id="friend-list-box">
-					<li id="hong">
+					<li id="hong" data-rId="uuid" data-group="Y">
 						<div class="friend-box">
 							<div class="friend-profil"></div>
 							<div class="friend-title">민석홍</div>
@@ -50,7 +49,7 @@
 					</li>
 				</ul>
 				<ul id="room-list-box">
-					<li>
+					<li data-rId="uuid2">
 						<div class="friend-box">
 							<div class="friend-profil"></div>
 							<div class="friend-title">

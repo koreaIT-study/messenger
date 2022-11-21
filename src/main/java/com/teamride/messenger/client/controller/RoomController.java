@@ -14,7 +14,7 @@ import java.util.List;
 @RestController
 public class RoomController {
 
-    private ChatRoomRepository chatRoomRepository;
+    private final ChatRoomRepository chatRoomRepository;
 
     @GetMapping(value = "/rooms")
     public List<ChatRoomDTO> rooms(){
@@ -23,9 +23,10 @@ public class RoomController {
     }
 
     @PostMapping(value = "/room")
-    public ChatRoomDTO create(@RequestParam String roomName){
-        log.info("# Create Chat Room , name: " + roomName);
-        return chatRoomRepository.createChatRoomDTO(roomName);
+    public ChatRoomDTO create(@RequestBody ChatRoomDTO room){
+        log.info("# Create Chat Room , name: " + room);
+        log.info("chatRoomRepository : {}" , chatRoomRepository);
+        return chatRoomRepository.createChatRoomDTO(room);
     }
 
     @GetMapping(value = "/room")

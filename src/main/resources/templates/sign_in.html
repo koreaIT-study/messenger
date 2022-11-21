@@ -97,16 +97,19 @@
 
     jsAjaxPostJsonCall('/loginAction', params, function (response) {
       const errno = response.errno;
-      if (errno === 0) {
-        const data = response.data;
-        if (data === "NOT_FOUND") {
-          alert("아이디 또는 비밀번호를 잘못 입력했습니다.");
-        } else {
-          location.href = "/friend"
-        }
-      } else {
+      if (errno !== 0) {
         _cmmnAlert.postFailed();
+        return;
       }
+
+      const data = response.data;
+
+      if (data === "NOT_FOUND") {
+        alert("아이디 또는 비밀번호를 잘못 입력했습니다.");
+        return;
+      }
+
+      location.href = "/friend"
     })
   }
 </script>

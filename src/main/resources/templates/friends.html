@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -30,6 +30,7 @@
 				<div id="logout" onclick="location.href='logout'" class='off'>로그아웃</div>
 				<img src="img/my_profile.png" alt="" id="profileBtn">
 			</div>
+			<input type="hidden" th:value="${userId}" id="myId">
 		</div>
 		<!-- 친구목록  -->
 		<div id="friend_list">
@@ -239,4 +240,6 @@ logoutWrap.addEventListener('click', ()=>{
 		logoutEl.classList='on';
 });
 </script>
+
+
 </html>

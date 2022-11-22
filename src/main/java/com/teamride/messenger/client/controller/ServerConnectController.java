@@ -2,9 +2,12 @@ package com.teamride.messenger.client.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -20,6 +23,9 @@ public class ServerConnectController {
 	@Autowired
 	private WebClient webClient;
 	
+	@Autowired
+	private HttpSession httpSession;
+	
 	@GetMapping("/get-chat-message")
 	public void getChatMessage(String roomId) {
 		Mono<List<ChatMessageDTO>> resp = webClient.mutate()
@@ -33,4 +39,5 @@ public class ServerConnectController {
 		});
 
 	}
+	
 }

@@ -54,6 +54,7 @@ public class UserController {
     public ModelAndView friend() {
     	log.info("login session :: {}", httpSession.getAttribute(Constants.LOGIN_SESSION));
         ModelAndView mv = new ModelAndView("friends");
+        mv.addObject(Constants.LOGIN_SESSION, httpSession.getAttribute(Constants.LOGIN_SESSION));
         return mv;
     }
 

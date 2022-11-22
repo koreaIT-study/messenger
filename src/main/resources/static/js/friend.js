@@ -47,9 +47,13 @@ function getChatRoomList(){
 	listBox.appendChild(ul);
 }*/
 
-
-function getFriendList(){
+function getFriendList() {
 	// 전체 친구 목록 가져오기
+	// getFriends
+	const userId = $('#myId').val();
+	jsParamAjaxCall('GET', '/getFriends', { userId: userId }, function(response) {
+		console.log(response)
+	});
 }
 
 function getFriendListMenu() {

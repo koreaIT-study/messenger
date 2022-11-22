@@ -61,7 +61,7 @@ function getChatRoomList() {
 
 window.onload = function() {
 	document.getElementById('friendListBtn').click();
-
+	$('#chat').hide();
 }
 
 function popOpen() {
@@ -108,7 +108,7 @@ var sessionContainer = [];
 function connect(el) {
 	// roomId 찾는 logic 필요
 	var roomId = searchRoomId(el);
-	
+	$('#chat').show();
 	if (sessionContainer.includes(roomId)) {
 		// 이미 session 연결 됬으므로 view만 보여준다.
 	} else {
@@ -176,6 +176,11 @@ function enterRoom(el, roomId) {
 		// 메세지를 받을 때
 		// subscribe(path, callback)
 		stomp.subscribe("/sub/chat/room/" + roomId, function(chat) {
+			let obj = JSON.parse(chat.body);
+			$("#chat_msg_wrap").append(obj.message);
+		})
+		
+		stomp.subscribe("/sub/chat/user/" + userId, function(chat) {
 			let obj = JSON.parse(chat.body);
 			$("#chat_msg_wrap").append(obj.message);
 		})

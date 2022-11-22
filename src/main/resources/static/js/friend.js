@@ -48,20 +48,26 @@ function getChatRoomList(){
 }*/
 
 
+function getFriendList(){
+	// 전체 친구 목록 가져오기
+}
 
-function getFriendList() {
+function getFriendListMenu() {
 
 	$('#friend-list-box').show();
 	$('#room-list-box').hide();
 }
-function getChatRoomList() {
+function getChatRoomListMenu() {
 	$('#friend-list-box').hide();
 	$('#room-list-box').show();
+}
+function chatRoomHide() {
+	$('#chat').hide();
 }
 
 window.onload = function() {
 	document.getElementById('friendListBtn').click();
-	$('#chat').hide();
+	chatRoomHide();
 }
 
 function popOpen() {
@@ -114,7 +120,7 @@ function connect(el) {
 	} else {
 		enterRoom(el, roomId);
 	}
-	
+
 	getMessages(roomId);
 }
 
@@ -133,12 +139,12 @@ function searchRoomId(el) {
 
 		// server 쪽에서 roomId를 못찾으면 roomId만들고 roomId return
 	}
-	
+
 	return roomId;
 }
 
 
-function getMessages(roomId){
+function getMessages(roomId) {
 	// roomId가 있으면 messages전부 가져와서 view에 뿌려주는 logic 필요
 }
 
@@ -179,7 +185,7 @@ function enterRoom(el, roomId) {
 			let obj = JSON.parse(chat.body);
 			$("#chat_msg_wrap").append(obj.message);
 		})
-		
+
 		stomp.subscribe("/sub/chat/user/" + userId, function(chat) {
 			let obj = JSON.parse(chat.body);
 			$("#chat_msg_wrap").append(obj.message);

@@ -1,5 +1,7 @@
 package com.teamride.messenger.client.controller;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class UserController {
     private final WebClient webClient;
+    private final HttpSession httpSession;
 
     @GetMapping("/login")
     public ModelAndView login() {
@@ -49,6 +52,7 @@ public class UserController {
 
     @GetMapping("friend")
     public ModelAndView friend() {
+    	log.info("login session :: {}", httpSession.getAttribute(Constants.LOGIN_SESSION));
         ModelAndView mv = new ModelAndView("friends");
         return mv;
     }
@@ -62,8 +66,7 @@ public class UserController {
     @PostMapping("/loginAction")
     public RestResponse loginAction(@RequestBody AdminDTO adminDTO) {
     	try {
-			final AdminDTO resp = webClient.mutate().baseUrl(Constants.SERVER_URL)
-			        .build()
+			final AdminDTO resp = webClient
 			        .post()
 			        .uri("/loginAction")
 			        .contentType(MediaType.APPLICATION_JSON)
@@ -74,6 +77,8 @@ public class UserController {
 			if(resp == null) {
 				return new RestResponse("NOT_FOUND");
 			}
+			
+			httpSession.setAttribute(Constants.LOGIN_SESSION, resp.getId());
 			return new RestResponse(resp);
 		} catch (Exception e) {
 			return new RestResponse(1, e.getLocalizedMessage(), null);
@@ -83,8 +88,7 @@ public class UserController {
     @ResponseBody
     @GetMapping("/smtpRequest")
     public RestResponse smtpRequest(@RequestParam String email) {
-        final String resp = webClient.mutate().baseUrl(Constants.SERVER_URL)
-                .build()
+        final String resp = webClient
                 .get()
                 .uri(t -> t.queryParam("email", email).build())
                 .retrieve()
@@ -96,8 +100,7 @@ public class UserController {
     @ResponseBody
     @PostMapping("/signUp")
     public RestResponse signUp(@RequestBody AdminDTO adminDTO) {
-    	final Integer resp = webClient.mutate().baseUrl(Constants.SERVER_URL)
-                .build()
+    	final Integer resp = webClient
                 .post()
                 .uri("/signUp")
                 .contentType(MediaType.APPLICATION_JSON)

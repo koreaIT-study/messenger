@@ -53,6 +53,24 @@ function getFriendList() {
 	const userId = $('#myId').val();
 	jsParamAjaxCall('GET', '/getFriends', { userId: userId }, function(response) {
 		console.log(response)
+		let friendList = response.data;
+		let friendListHtml = "";
+
+		for (let i = 0; i < friendList.length; i++) {
+			friendListHtml += "<li id='" +friendList[i].friendId+  "' data-rid='"+friendList[i].roomId+ "' data-uid='"+friendList[i].friendId+"' data-group='N' ondblclick='connect(this);'>"
+			friendListHtml += 	"<div class='friend-box'>"
+	   		friendListHtml +=		 "<div class='friend-profil'></div>"
+	   		friendListHtml +=		 "<div class='friend-title'>"+friendList[i].name+"</div>"
+	   		friendListHtml +=		 "<div class='friend-msg'>상메상메상메</div>"
+			friendListHtml +=	"</div>"
+			friendListHtml += "</li>"
+			
+		}
+	
+	$('#friend-list-box').html(friendListHtml);
+
+
+
 	});
 }
 
@@ -71,7 +89,7 @@ function chatRoomHide() {
 
 window.onload = function() {
 	document.getElementById('friendListBtn').click();
-	chatRoomHide();
+	getFriendList();
 }
 
 function popOpen() {

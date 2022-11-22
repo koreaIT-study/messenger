@@ -1,19 +1,22 @@
 package com.teamride.messenger.client.controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpSession;
 
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.teamride.messenger.client.config.Constants;
 import com.teamride.messenger.client.dto.AdminDTO;
+import com.teamride.messenger.client.dto.FriendInfoDTO;
 import com.teamride.messenger.client.utils.RestResponse;
 
 import lombok.RequiredArgsConstructor;
@@ -63,7 +66,6 @@ public class UserController {
                 .build();
     }
 
-    @ResponseBody
     @PostMapping("/loginAction")
     public RestResponse loginAction(@RequestBody AdminDTO adminDTO) {
     	try {
@@ -86,7 +88,6 @@ public class UserController {
 		}
     }
 
-    @ResponseBody
     @GetMapping("/smtpRequest")
     public RestResponse smtpRequest(@RequestParam String email) {
         final String resp = webClient
@@ -98,7 +99,6 @@ public class UserController {
         return new RestResponse(resp);
     }
 
-    @ResponseBody
     @PostMapping("/signUp")
     public RestResponse signUp(@RequestBody AdminDTO adminDTO) {
     	final Integer resp = webClient
@@ -109,6 +109,17 @@ public class UserController {
                 .bodyValue(adminDTO)
                 .retrieve()
                 .bodyToMono(Integer.class).block();
+        return new RestResponse(resp);
+    }
+    
+    @GetMapping("/getFriends")
+    public RestResponse getFriends(int userId) {
+    	final List<FriendInfoDTO> resp = webClient
+                .get()
+                .uri("/getFriends?userId="+userId)
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<List<FriendInfoDTO>>(){})
+                .block();
         return new RestResponse(resp);
     }
 

@@ -53,23 +53,23 @@ function getFriendList() {
 	const userId = $('#myId').val();
 	jsParamAjaxCall('GET', '/getFriends', { userId: userId }, function(response) {
 		const errno = response.errno;
-		if(errno === 0){
+		if (errno === 0) {
 			const friendList = response.data;
 			let friendListHtml = "";
-	
+
 			for (let i = 0; i < friendList.length; i++) {
-				friendListHtml += "<li id='" +friendList[i].friendId+  "' data-rid='"+friendList[i].roomId+ "' data-uid='"+friendList[i].friendId+"' data-group='N' ondblclick='connect(this);'>"
-				friendListHtml += 	"<div class='friend-box'>"
-				friendListHtml +=		 "<div class='friend-profil'></div>"
-				friendListHtml +=		 "<div class='friend-title'>"+friendList[i].name+"</div>"
-				friendListHtml +=		 "<div class='friend-msg'>상메상메상메</div>"
-				friendListHtml +=	"</div>"
+				friendListHtml += "<li id='" + friendList[i].friendId + "' data-rid='" + friendList[i].roomId + "' data-uid='" + friendList[i].friendId + "' data-group='N' ondblclick='connect(this);'>"
+				friendListHtml += "<div class='friend-box'>"
+				friendListHtml += "<div class='friend-profil'></div>"
+				friendListHtml += "<div class='friend-title'>" + friendList[i].name + "</div>"
+				friendListHtml += "<div class='friend-msg'>상메상메상메</div>"
+				friendListHtml += "</div>"
 				friendListHtml += "</li>"
-				
+
 			}
 			$('#friend-list-box').html(friendListHtml);
 		} else {
-			_cmmnAlert.getFailed();	
+			_cmmnAlert.getFailed();
 		}
 	});
 }
@@ -142,7 +142,6 @@ function connect(el) {
 	} else {
 		enterRoom(el, roomId);
 	}
-
 	getMessages(roomId);
 }
 
@@ -158,7 +157,7 @@ function searchRoomId(el) {
 
 	if (!roomId) { // 친구목록에서 들어오는 경우
 		// 친구의 id(userId)로 roomId(1:1 톡방)을 찾아야한다.
-
+		roomId = 1; // example
 		// server 쪽에서 roomId를 못찾으면 roomId만들고 roomId return
 	}
 
@@ -168,9 +167,86 @@ function searchRoomId(el) {
 
 function getMessages(roomId) {
 	// roomId가 있으면 messages전부 가져와서 view에 뿌려주는 logic 필요
+	const userId = $('#myId').val();
+	jsParamAjaxCall('GET', '/get-chat-message/' + roomId, {}, function(response) {
+		let messages = response.data;
+		console.log(messages);
+
+
+		let messageHtml = "";
+		let html = "";
+
+		//	let firstTemplate = messages[0].writer == userId ? 
+
+		let templateWriter = "";
+
+		for (let i = 0; i < messages.length; i++) {
+			if (userId == messages[i].writer) {
+				// 내가 쓴 message
+				html += myMessage(messages[i]);
+			} else {
+				html += otherMessage(messages[i]);
+			}
+			
+			
+			if (i != 0 && messages[i - 1].writer == messages[i].writer) {
+				if (templateWriter == userId) {
+					messageHtml += myMessageTemplate(html);
+				} else {
+					messageHtml += otherMessageTemplate(html, messages[i - 1]);
+				}
+				html = "";
+			} else {
+				templateWriter = messages[i].writer;
+			}
+			
+			
+		}
+		
+		$('#chat_msg_template').html(messageHtml);
+
+	});
 }
 
-//$(function() {
+
+function myMessage(message) {
+	let myMessage = "<div class='my_chat_flexable'>";
+	myMessage += "<span class='no_read_cnt'>2</span><span class='write_date'>";
+	myMessage += message.timestamp + "</span>";
+	myMessage += "<div class='my_chat'>" + message.message + "</div></div>";
+
+	return myMessage;
+}
+
+function myMessageTemplate(messages) {
+	let myTemplate = "<div class='my_chat_wrapper'>";
+	myTemplate += messages;
+	myTemplate += "</div>";
+
+	return myTemplate;
+}
+
+function otherMessage(message) {
+	let otherMessage = "<div class='chat_msg_flexable'>";
+	otherMessage += "<div class='chat_msg'>" + message.message + "</div>";
+	otherMessage += "<span class='no_read_cnt'>1</span><span class='write_date'>";
+	otherMessage += message.timestamp + "</span></div>";
+
+	return otherMessage;
+}
+
+function otherMessageTemplate(messages, message) {
+	let otherTemplate = "<div class='chat_person_wrap'>";
+	otherTemplate += "<div class='chat_person_profile'>";
+	otherTemplate += "<img src='img/anonymous_profile.png'></div>";
+	otherTemplate += "<div class='chat_person'><div class='chat_person_name'>";
+	otherTemplate += message.writer + "</div>";
+	otherTemplate += messages;
+	otherTemplate += "</div></div>";
+
+	return otherTemplate;
+}
+
 function enterRoom(el, roomId) {
 	/*	// 기존 채팅방이 있으면 db에서 채팅방을 만들때 id로 만들거니깐 roomId가 있을거고
 		// 없으면 uuid로 생성
@@ -208,10 +284,10 @@ function enterRoom(el, roomId) {
 			$("#chat_msg_wrap").append(obj.message);
 		})
 
-		stomp.subscribe("/sub/chat/user/" + userId, function(chat) {
+	/*	stomp.subscribe("/sub/chat/user/" + userId, function(chat) {
 			let obj = JSON.parse(chat.body);
 			$("#chat_msg_wrap").append(obj.message);
-		})
+		})*/
 
 		// 메세지 보낼때
 		// send(path, header, message)
@@ -238,7 +314,6 @@ function enterRoom(el, roomId) {
 	})
 
 }
-//})
 
 
 

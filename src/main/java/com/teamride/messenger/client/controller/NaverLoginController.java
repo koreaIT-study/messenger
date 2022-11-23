@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.teamride.messenger.client.config.ClientConfig;
+import com.teamride.messenger.client.config.Constants;
 import com.teamride.messenger.client.config.WebClientConfig;
 import com.teamride.messenger.client.dto.UserDTO;
 
@@ -152,16 +153,15 @@ public class NaverLoginController {
             .email(email)
             .name(name)
             .build();
-        webClient.getWebClient()
+        UserDTO userDTO = webClient.getWebClient()
             .post()
             .uri("/social_login")
             .bodyValue(adminDTO)
             .retrieve()
-            .bodyToMono(Void.class)
+            .bodyToMono(UserDTO.class)
             .block();
 
-        httpSession.setAttribute("userEmail", email); // 로그아웃할 때 사용된다
-        httpSession.setAttribute("name", name);
+        httpSession.setAttribute(Constants.LOGIN_SESSION, userDTO.getId());
     }
 
 }

@@ -19,6 +19,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.teamride.messenger.client.config.ClientConfig;
+import com.teamride.messenger.client.config.Constants;
 import com.teamride.messenger.client.config.WebClientConfig;
 import com.teamride.messenger.client.dto.UserDTO;
 
@@ -36,7 +37,7 @@ public class KakaoLoginController {
         .getRedirectUrl();
 
     @Autowired
-    HttpSession session;
+    HttpSession httpSession;
 
     @Autowired
     private WebClientConfig webClient;
@@ -64,7 +65,7 @@ public class KakaoLoginController {
         log.info("kakao authorize code is :: " + code);
         try {
             String accessToken = getKakaoAccessToken(code);
-            session.setAttribute("access_token", accessToken); // 로그아웃할 때 사용된다
+            httpSession.setAttribute("access_token", accessToken); // 로그아웃할 때 사용된다
 
             getKakaoUserInfo(accessToken); // 자신의 정보
             resp.sendRedirect("friend");
@@ -119,20 +120,19 @@ public class KakaoLoginController {
         log.info("email::" + email);
 
         // 서버쪽으로 email, nickname 전송 후 사용자 없으면 insert하고 로그인 처리
-        UserDTO adminDTO = UserDTO.builder()
+        UserDTO tempUserDTO = UserDTO.builder()
             .email(email)
             .name(name)
             .build();
-        webClient.getWebClient()
+        UserDTO userDTO = webClient.getWebClient()
             .post()
             .uri("/social_login")
-            .bodyValue(adminDTO)
+            .bodyValue(tempUserDTO)
             .retrieve()
-            .bodyToMono(Void.class)
+            .bodyToMono(UserDTO.class)
             .block();
 
-        session.setAttribute("userEmail", email); // 로그아웃할 때 사용된다
-        session.setAttribute("name", name);
+        httpSession.setAttribute(Constants.LOGIN_SESSION, userDTO.getId());
 
         return response;
     }
@@ -159,7 +159,7 @@ public class KakaoLoginController {
         JSONObject response = getKakaoApiWebClient().post()
             .uri(uriBuilder -> uriBuilder.path("/v1/user/logout")
                 .build())
-            .header("Authorization", "Bearer " + session.getAttribute("access_token"))
+            .header("Authorization", "Bearer " + httpSession.getAttribute("access_token"))
             .retrieve()
             .bodyToMono(JSONObject.class)
             .block();

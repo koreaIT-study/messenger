@@ -1,11 +1,12 @@
 package com.teamride.messenger.client.dto;
 
-import lombok.Data;
-import org.springframework.web.socket.WebSocketSession;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import org.springframework.web.socket.WebSocketSession;
+
+import lombok.Data;
 
 @Data
 public class ChatRoomDTO {

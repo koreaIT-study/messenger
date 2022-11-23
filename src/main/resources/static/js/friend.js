@@ -52,25 +52,25 @@ function getFriendList() {
 	// getFriends
 	const userId = $('#myId').val();
 	jsParamAjaxCall('GET', '/getFriends', { userId: userId }, function(response) {
-		console.log(response)
-		let friendList = response.data;
-		let friendListHtml = "";
-
-		for (let i = 0; i < friendList.length; i++) {
-			friendListHtml += "<li id='" +friendList[i].friendId+  "' data-rid='"+friendList[i].roomId+ "' data-uid='"+friendList[i].friendId+"' data-group='N' ondblclick='connect(this);'>"
-			friendListHtml += 	"<div class='friend-box'>"
-	   		friendListHtml +=		 "<div class='friend-profil'></div>"
-	   		friendListHtml +=		 "<div class='friend-title'>"+friendList[i].name+"</div>"
-	   		friendListHtml +=		 "<div class='friend-msg'>상메상메상메</div>"
-			friendListHtml +=	"</div>"
-			friendListHtml += "</li>"
-			
-		}
+		const errno = response.errno;
+		if(errno === 0){
+			const friendList = response.data;
+			let friendListHtml = "";
 	
-	$('#friend-list-box').html(friendListHtml);
-
-
-
+			for (let i = 0; i < friendList.length; i++) {
+				friendListHtml += "<li id='" +friendList[i].friendId+  "' data-rid='"+friendList[i].roomId+ "' data-uid='"+friendList[i].friendId+"' data-group='N' ondblclick='connect(this);'>"
+				friendListHtml += 	"<div class='friend-box'>"
+				friendListHtml +=		 "<div class='friend-profil'></div>"
+				friendListHtml +=		 "<div class='friend-title'>"+friendList[i].name+"</div>"
+				friendListHtml +=		 "<div class='friend-msg'>상메상메상메</div>"
+				friendListHtml +=	"</div>"
+				friendListHtml += "</li>"
+				
+			}
+			$('#friend-list-box').html(friendListHtml);
+		} else {
+			_cmmnAlert.getFailed();	
+		}
 	});
 }
 

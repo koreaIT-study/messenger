@@ -5,22 +5,26 @@ import java.util.List;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.teamride.messenger.client.config.Constants;
-import com.teamride.messenger.client.dto.UserDTO;
 import com.teamride.messenger.client.dto.FriendInfoDTO;
+import com.teamride.messenger.client.dto.UserDTO;
 import com.teamride.messenger.client.utils.RestResponse;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import reactor.core.publisher.Mono;
 
 @Slf4j
 @RestController
@@ -67,14 +71,16 @@ public class UserController {
     }
 
     @PostMapping("/loginAction")
-    public RestResponse loginAction(@RequestBody UserDTO adminDTO) {
+    public RestResponse loginAction(@RequestBody UserDTO userDTO) {
         try {
             final UserDTO resp = webClient.post()
                 .uri("/loginAction")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-                .bodyValue(adminDTO)
+                .bodyValue(userDTO)
                 .retrieve()
+                .onStatus(HttpStatus::is4xxClientError, e -> Mono.error(new HttpClientErrorException(e.statusCode())))
+                .onStatus(HttpStatus::is5xxServerError, e -> Mono.error(new HttpServerErrorException(e.statusCode())))
                 .bodyToMono(UserDTO.class)
                 .block();
             if (resp == null) {
@@ -90,6 +96,7 @@ public class UserController {
 
     @GetMapping("/smtpRequest")
     public RestResponse smtpRequest(@RequestParam String email) {
+        // TODO :: 구현 중
         final String resp = webClient.get()
             .uri(t -> t.queryParam("email", email)
                 .build())
@@ -101,27 +108,38 @@ public class UserController {
     }
 
     @PostMapping("/signUp")
-    public RestResponse signUp(@RequestBody UserDTO adminDTO) {
+    public RestResponse signUp(@RequestBody UserDTO userDTO) {
+        // TODO :: 구현 중
         final Integer resp = webClient.post()
             .uri("/signUp")
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON)
-            .bodyValue(adminDTO)
+            .bodyValue(userDTO)
             .retrieve()
+            .onStatus(HttpStatus::is4xxClientError, e -> Mono.error(new HttpClientErrorException(e.statusCode())))
+            .onStatus(HttpStatus::is5xxServerError, e -> Mono.error(new HttpServerErrorException(e.statusCode())))
             .bodyToMono(Integer.class)
             .block();
         return new RestResponse(resp);
     }
 
     @GetMapping("/getFriends")
-    public RestResponse getFriends(int userId) {
-        final List<FriendInfoDTO> resp = webClient.get()
-            .uri("/getFriends?userId=" + userId)
-            .retrieve()
-            .bodyToMono(new ParameterizedTypeReference<List<FriendInfoDTO>>() {
-            })
-            .block();
-        return new RestResponse(resp);
+    public RestResponse getFriends(@RequestParam int userId) {
+        try {
+            final List<FriendInfoDTO> resp = webClient.get()
+                .uri(v -> v.path("/getFriends")
+                    .queryParam(Constants.LOGIN_SESSION, userId)
+                    .build())
+                .retrieve()
+                .onStatus(HttpStatus::is4xxClientError, e -> Mono.error(new HttpClientErrorException(e.statusCode())))
+                .onStatus(HttpStatus::is5xxServerError, e -> Mono.error(new HttpServerErrorException(e.statusCode())))
+                .bodyToMono(new ParameterizedTypeReference<List<FriendInfoDTO>>() {
+                })
+                .block();
+            return new RestResponse(resp);
+        } catch (Exception e) {
+            return new RestResponse(1, e.getLocalizedMessage(), null);
+        }
     }
 
 }

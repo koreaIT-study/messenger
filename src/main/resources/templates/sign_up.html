@@ -26,10 +26,12 @@
                         <img id="profileImg" src="/img/who.png" alt="">
                     </div>
                     <div>
-                        <span>
-                            <label class="file_button" for="profile" onclick="uploadImage()">프로필 사진</label>
-                            <input type="file" id="profile" style="display:none" accept="img/*" />
-                        </span>
+                        <form method="post" action="" enctype="multipart/form-data">
+                            <span>
+                                <label class="file_button" for="profile" onclick="uploadImage()">프로필 사진</label>
+                                <input type="file" id="profile" style="display:none" accept="img/*" />
+                            </span>
+                        </form>
                         <span>
                             <input type="text" id="name" name="name" placeholder="이름" title="이름" value="">
                         </span>

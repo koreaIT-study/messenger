@@ -125,13 +125,20 @@ function searchRoomId(el) {
 	// 친구목록에서 채팅방 만들 땐 db조회 logic 필요
 	//var roomId = $("#roomId").val() ?? 'tester';
 
-	var roomId = $(el).data('rid');
-	var userId = $(el).data('uid');
-
+	let roomId = $(el).data('rid');
+	let uid
 	if (!roomId) { // 친구목록에서 들어오는 경우
 		// 친구의 id(userId)로 roomId(1:1 톡방)을 찾아야한다.
-
 		// server 쪽에서 roomId를 못찾으면 roomId만들고 roomId return
+		let param = {
+			roomName : $(el).data('group'),
+			isGroup : $('#roomName').val(),
+			userId : [],
+		};
+		jsAjaxPostJsonCall('/chat/room', param, (response) =>{
+			$(el).data('rId',response.roomId);
+			roomId = response.roomId;
+		})
 	}
 	
 	return roomId;

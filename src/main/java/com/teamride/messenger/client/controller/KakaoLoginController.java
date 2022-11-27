@@ -131,9 +131,9 @@ public class KakaoLoginController {
             .retrieve()
             .bodyToMono(UserDTO.class)
             .block();
-
+        
         httpSession.setAttribute(Constants.LOGIN_SESSION, userDTO.getId());
-
+        httpSession.setAttribute(Constants.LOGIN_SESSION_NAME, userDTO.getName());
         return response;
     }
 

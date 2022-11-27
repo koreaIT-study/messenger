@@ -273,7 +273,7 @@ function otherMessageTemplate(messages, message) {
 	otherTemplate += "<div class='chat_person_profile'>";
 	otherTemplate += "<img src='img/anonymous_profile.png'></div>";
 	otherTemplate += "<div class='chat_person'><div class='chat_person_name'>";
-	otherTemplate += message.writer + "</div>";
+	otherTemplate += message.writerName + "</div>";
 	otherTemplate += messages;
 	otherTemplate += "</div></div>";
 
@@ -302,7 +302,8 @@ function enterRoom(el, roomId) {
 			// server쪽으로 message들 전부 가져와서 view에 뿌려줘야함
 		}*/
 
-	var userName = $('#myId').val();
+	var userId = $('#myId').val();
+	var userName = $('#myName').val();
 
 	var sockJs = new SockJS("/stomp/chat");
 	var stomp = Stomp.over(sockJs);
@@ -326,8 +327,8 @@ function enterRoom(el, roomId) {
 
 		// 메세지 보낼때
 		// send(path, header, message)
-		let param = JSON.stringify({ roomId: roomId, writer: userName });
-		stomp.send("/pub/chat/enter", {}, param);
+	//	let param = JSON.stringify({ roomId: roomId, writer: userName });
+	//	stomp.send("/pub/chat/enter", {}, param);
 	})
 
 	sessionContainer.push(roomId);
@@ -340,8 +341,9 @@ function enterRoom(el, roomId) {
 		let $textArea = $("#chat_writer");
 		let param = {
 			roomId: roomId,
-			writer: userName,
-			message: $textArea.val()
+			writer: userId,
+			message: $textArea.val(),
+			writerName: userName
 		};
 		$textArea.val('');
 		stomp.send("/pub/chat/message", {}, JSON.stringify(param));

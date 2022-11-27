@@ -162,6 +162,7 @@ public class NaverLoginController {
             .block();
 
         httpSession.setAttribute(Constants.LOGIN_SESSION, userDTO.getId());
+        httpSession.setAttribute(Constants.LOGIN_SESSION_NAME, userDTO.getName());
     }
 
 }

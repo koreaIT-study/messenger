@@ -10,7 +10,7 @@ function getFriendList() {
 			let friendListHtml = "";
 
 			for (let i = 0; i < friendList.length; i++) {
-				friendListHtml += "<li id='" + friendList[i].friendId + "' data-rid='" + friendList[i].roomId + "' data-uid='" + friendList[i].friendId + "' data-group='N' ondblclick='connect(this);'>"
+				friendListHtml += "<li id='" + friendList[i].friendId + "' data-rid='" + (friendList[i].roomId ?? '') + "' data-uid='" + friendList[i].friendId + "' data-group='N' ondblclick='connect(this);'>"
 				friendListHtml += "<div class='friend-box'>"
 				friendListHtml += "<div class='friend-profil'></div>"
 				friendListHtml += "<div class='friend-title'>" + friendList[i].name + "</div>"
@@ -99,21 +99,16 @@ function connect(el) {
 
 
 function searchRoomId(el) {
-	// 기존 채팅방이 있으면 db에서 채팅방을 만들때 id로 만들거니깐 roomId가 있을거고
-	// 없으면 uuid로 생성
-	// 친구목록에서 채팅방 만들 땐 db조회 logic 필요
-	//var roomId = $("#roomId").val() ?? 'tester';
-
 	let roomId = $(el).data('rid');
-	let uid
+	let userId = $(el).data('uid');
 	if (!roomId) { // 친구목록에서 들어오는 경우
 		// 친구의 id(userId)로 roomId(1:1 톡방)을 찾아야한다.
-		roomId = 1; // example
+		// roomId = 1; // example
 		// server 쪽에서 roomId를 못찾으면 roomId만들고 roomId return
 		let param = {
 			roomName : $(el).data('group'),
-			isGroup : $('#roomName').val(),
-			userId : [],
+			isGroup : $(el).data('group'),
+			userId : [userId, $('#myId').val()],
 		};
 		jsAjaxPostJsonCall('/chat/room', param, (response) =>{
 			$(el).data('rId',response.roomId);

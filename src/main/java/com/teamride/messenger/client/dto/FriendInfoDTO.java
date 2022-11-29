@@ -6,13 +6,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
-public class AdminDTO {
-	private int id;
+public class FriendInfoDTO {
+	private int friendId; // friend id
 	private String email;
 	private String name;
-	private String pwd;
 	private String profileImg;
+	private String roomId;
 }

@@ -1,19 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-	<meta charset="UTF-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" href="css/common.css">
-	<link rel="stylesheet" href="css/chat.css">
-	<link rel="stylesheet" href="css/friends.css">
-	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
-	<script src="js/chat.js"></script>
-	<script src="js/friend.js"></script>
-	<script src="/js/cmmn-ajax.js"></script>
-	<title>Document</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="css/common.css">
+<link rel="stylesheet" href="css/chat.css">
+<link rel="stylesheet" href="css/friends.css">
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script
+	src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<script src="js/chat.js"></script>
+<script src="js/friend.js"></script>
+<script src="/js/cmmn-ajax.js"></script>
+<script src="/js/cmmn-alert.js"></script>
+<title>Document</title>
 </head>
 <body>
 	<div id="wrap">
@@ -21,13 +24,15 @@
 		<div id="header">
 			<div class="header_icon">
 				<img src="img/menu_profile.png" alt="" id="friendListBtn"
-					onclick="getFriendList()"> <img src="img/menu_chat.png"
-					alt="" id="chatListBtn" onclick="getChatRoomList()">
+					onclick="getFriendListMenu();"> <img src="img/menu_chat.png"
+					alt="" id="chatListBtn" onclick="getChatRoomListMenu()">
 			</div>
 			<div class="header_icon header_profile">
 				<div id="logout" onclick="location.href='logout'" class='off'>로그아웃</div>
 				<img src="img/my_profile.png" alt="" id="profileBtn">
 			</div>
+			<input type="hidden" th:value="${userId}" id="myId">
+			<input type="hidden" th:value="${userName}" id="myName">
 		</div>
 		<!-- 친구목록  -->
 		<div id="friend_list">
@@ -40,20 +45,6 @@
 			</div>
 			<div id="list-box">
 				<ul id="friend-list-box">
-					<li id="hong" data-rid="" data-uid="2" data-group="N" ondblclick="connect(this);" >
-						<div class="friend-box">
-							<div class="friend-profil"></div>
-							<div class="friend-title">민석홍</div>
-							<div class="friend-msg">상메상메상메</div>
-						</div>
-					</li>
-					<li id="dong" data-rid="2" data-uid="3" data-group="N" ondblclick="connect(this);">
-						<div class="friend-box">
-							<div class="friend-profil"></div>
-							<div class="friend-title">김동진</div>
-							<div class="friend-msg">상메상메상메</div>
-						</div>
-					</li>
 				</ul>
 				<ul id="room-list-box">
 					<li data-rId="uuid2">
@@ -70,7 +61,7 @@
 			</div>
 		</div>
 		<!-- 채팅 창 -->
-		<div id="chat">
+		<div id="chat" style="display: none;">
 			<div id="chat_header">
 				<div>
 					<div id="chat_icon">
@@ -80,13 +71,14 @@
 						<div>정치/사회/경제부</div>
 						<div>멤버 40</div>
 					</div>
+					<div onclick="chatRoomHide();">❌</div>
 				</div>
-				<div></div>
+
 			</div>
 			<div id="chat_msg_wrap">
-				<div>
+				<div id="chat_msg_template">
 					<!-- 채팅 이부분 반복 -->
-					<div class="chat_person_wrap">
+					<!-- <div class="chat_person_wrap">
 						<div class="chat_person_profile">
 							<img src="img/anonymous_profile.png" alt="">
 						</div>
@@ -112,9 +104,9 @@
 
 						</div>
 					</div>
-					<!-- 채팅 반복 끝  -->
+					채팅 반복 끝 
 
-					<!-- 채팅 이부분 반복 -->
+					채팅 이부분 반복
 					<div class="chat_person_wrap">
 						<div class="chat_person_profile">
 							<img src="img/anonymous_profile.png" alt="">
@@ -141,9 +133,9 @@
 
 						</div>
 					</div>
-					<!-- 채팅 반복 끝  -->
+					채팅 반복 끝 
 
-					<!-- 나의 채팅 -->
+					나의 채팅
 					<div class="my_chat_wrapper">
 						<div class="my_chat_flexable">
 							<span class="no_read_cnt">2</span><span class="write_date">오후
@@ -191,7 +183,7 @@
 							</div>
 						</div>
 
-					</div>
+					</div> -->
 					<!-- 나의 채팅 끝 -->
 				</div>
 			</div>
@@ -234,4 +226,6 @@ logoutWrap.addEventListener('click', ()=>{
 		logoutEl.classList='on';
 });
 </script>
+
+
 </html>

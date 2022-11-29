@@ -17,12 +17,29 @@
 
 .search-text {
 	height: 40px;
-	width: 200px;
+	width: 175px;
 	background-color: #EAEDED;
 	border: none;
 	border-radius: 5px;
 	margin-left: 10px;
-	padding-left: 20px;
+	padding-left: 42px;
+}
+
+.search_input{
+    position: fixed;
+    padding-left: 15px;
+}
+
+.search_div{
+    display: inline-flex;
+    align-items: center;
+}
+
+.search_btn{
+    display: inline-flex;
+    position: fixed;
+    padding-top: 7px;
+    padding-left: 15px;
 }
 
 #friend-plus {
@@ -117,6 +134,7 @@ ul {
 .chatRoomLi {
 	color: darkgray;
 	font-size: 14px;
+	margin-left: 5px;
 }
 
 .right {

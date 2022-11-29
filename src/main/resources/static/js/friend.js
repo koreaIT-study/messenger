@@ -26,6 +26,26 @@ function getFriendList() {
 	});
 }
 
+function getRoomList() {
+	// 전체 채팅방 목록 가져오기
+	jsParamAjaxCall('GET', '/chat/getRoomList', {}, function(response) {
+		console.log(response)
+		let roomListHtml = "";
+
+		for (let i = 0; i < response.length; i++) {
+			roomListHtml += `<li data-rId=${response[i].roomId} ondblclick="connect(this)">`;
+			roomListHtml += '<div class="friend-box">';
+			roomListHtml += '<div class="friend-profil"></div>';
+			roomListHtml += '<div class="friend-title">';
+			roomListHtml += response[i].roomName + '<span class="chatRoomLi">' + response[i].cnt + '</span>';
+			roomListHtml += '<span class="chatRoomLi right time">' + response[i].time + '</span></div>';
+			roomListHtml += '<div class="friend-msg">' + response[i].message + '</div></div></li>';
+		}
+
+		$('#room-list-box').html(roomListHtml);
+	});
+}
+
 function getFriendListMenu() {
 
 	$('#friend-list-box').show();
@@ -42,6 +62,7 @@ function chatRoomHide() {
 window.onload = function() {
 	document.getElementById('friendListBtn').click();
 	getFriendList();
+	getRoomList();
 }
 
 function popOpen() {
@@ -174,10 +195,10 @@ function subMessage(message) {
 	}
 
 	if (lastWriter == message.writer) {
-		if (isMyMessage(message)){
+		if (isMyMessage(message)) {
 			lastChildDiv.innerHTML += myMessage(message).trim();
 		}
-		else{
+		else {
 			let chatPerson = lastChildDiv.querySelector('.chat_person');
 			chatPerson.innerHTML += otherMessage(message).trim();
 		}
@@ -275,15 +296,18 @@ function enterRoom(el, roomId) {
 			//$("#chat_msg_template").append(obj.message);
 		})
 
-		/*	stomp.subscribe("/sub/chat/user/" + userId, function(chat) {
-				let obj = JSON.parse(chat.body);
-				$("#chat_msg_wrap").append(obj.message);
-			})*/
+		// 채팅방 목록 관리
+		stomp.subscribe("/sub/chat/roomList/" + roomId, function(chat) {
+			let obj = JSON.parse(chat.body);
+			console.log("objLLL"+chat.body)
+			/*$("#chat_msg_wrap").append(obj.message);*/
+		})
+
 
 		// 메세지 보낼때
 		// send(path, header, message)
-	//	let param = JSON.stringify({ roomId: roomId, writer: userName });
-	//	stomp.send("/pub/chat/enter", {}, param);
+		//	let param = JSON.stringify({ roomId: roomId, writer: userName });
+		//	stomp.send("/pub/chat/enter", {}, param);
 	})
 
 	sessionContainer.push(roomId);

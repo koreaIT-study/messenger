@@ -6,8 +6,6 @@ import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBr
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
-import com.teamride.messenger.client.handler.ChatHandler;
-
 import lombok.RequiredArgsConstructor;
 
 @Configuration
@@ -15,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-    private final ChatHandler chatHandler;
+//    private final ChatHandler chatHandler;
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {

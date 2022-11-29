@@ -15,11 +15,19 @@ public class StompChatService {
     // 특정 Broker로 메세지를 전달
     private final SimpMessagingTemplate template;
 
+    // 특정 채팅방 목적지
     private final String destination = "/sub/chat/room/";
+    
+    // 채팅방 목록 목적지
+    private final String destinationRoomList = "/sub/chat/roomList/";
 
 
     public void sendMessage(ChatMessageDTO message){
         template.convertAndSend(destination + message.getRoomId(), message);
+    }
+    
+    public void sendMessageRoomList(ChatMessageDTO message){
+        template.convertAndSend(destinationRoomList + message.getRoomId(), message);
     }
 
     public void enter(ChatMessageDTO message){

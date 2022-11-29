@@ -137,6 +137,7 @@ public class StompChatController {
         try {
 
             stompChatService.sendMessage(message);
+            stompChatService.sendMessageRoomList(message);
             ack.acknowledge();
         } catch (Exception e) {
             log.error(e.getMessage());

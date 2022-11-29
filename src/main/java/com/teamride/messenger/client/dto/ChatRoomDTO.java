@@ -6,15 +6,21 @@ import java.util.Set;
 
 import org.springframework.web.socket.WebSocketSession;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ChatRoomDTO {
-    private String roomId; //pk
+    private String roomId; // pk
     private String roomName;
+    private String message;
+    private String time;
+    private int cnt;
     private String isGroup;
-    
-    private List<String> userId;
 
-    private Set<WebSocketSession> socketSessions = new HashSet<>();
 }

@@ -134,6 +134,7 @@ ul {
 .chatRoomLi {
 	color: darkgray;
 	font-size: 14px;
+	margin-left: 5px;
 }
 
 .right {

@@ -14,18 +14,18 @@ import com.teamride.messenger.client.interceptor.LoginCheckInterceptor;
 public class WebConfig implements WebMvcConfigurer {
     @Autowired
     HttpSession httpSession;
-    
-	@Override
-	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		registry.addResourceHandler("/**")
-		.addResourceLocations("classpath:/templates/","classpath:/static/")
-		.setCachePeriod(0);
-//		.setCacheControl(CacheControl.maxAge(10, TimeUnit.MINUTES));
-	}
-	
-	 @Override
-	    public void addInterceptors(InterceptorRegistry registry) {
-	        registry.addInterceptor(new LoginCheckInterceptor(httpSession))
-	                .excludePathPatterns("/css/**", "/js/**", "/img/**", "/scripts/**");
-	    }
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/**")
+            .addResourceLocations("classpath:/templates/", "classpath:/static/")
+            .setCachePeriod(0);
+        // .setCacheControl(CacheControl.maxAge(10, TimeUnit.MINUTES));
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new LoginCheckInterceptor(httpSession))
+            .excludePathPatterns("/css/**", "/js/**", "/img/**", "/scripts/**");
+    }
 }

@@ -15,6 +15,7 @@
 <script src="js/chat.js"></script>
 <script src="js/friend.js"></script>
 <script src="/js/cmmn-ajax.js"></script>
+<script src="/js/cmmn-alert.js"></script>
 <title>Document</title>
 </head>
 <body>
@@ -31,6 +32,7 @@
 				<img src="img/my_profile.png" alt="" id="profileBtn">
 			</div>
 			<input type="hidden" th:value="${userId}" id="myId">
+			<input type="hidden" th:value="${userName}" id="myName">
 		</div>
 		<!-- 친구목록  -->
 		<div id="friend_list">
@@ -74,9 +76,9 @@
 
 			</div>
 			<div id="chat_msg_wrap">
-				<div>
+				<div id="chat_msg_template">
 					<!-- 채팅 이부분 반복 -->
-					<div class="chat_person_wrap">
+					<!-- <div class="chat_person_wrap">
 						<div class="chat_person_profile">
 							<img src="img/anonymous_profile.png" alt="">
 						</div>
@@ -102,9 +104,9 @@
 
 						</div>
 					</div>
-					<!-- 채팅 반복 끝  -->
+					채팅 반복 끝 
 
-					<!-- 채팅 이부분 반복 -->
+					채팅 이부분 반복
 					<div class="chat_person_wrap">
 						<div class="chat_person_profile">
 							<img src="img/anonymous_profile.png" alt="">
@@ -131,9 +133,9 @@
 
 						</div>
 					</div>
-					<!-- 채팅 반복 끝  -->
+					채팅 반복 끝 
 
-					<!-- 나의 채팅 -->
+					나의 채팅
 					<div class="my_chat_wrapper">
 						<div class="my_chat_flexable">
 							<span class="no_read_cnt">2</span><span class="write_date">오후
@@ -181,7 +183,7 @@
 							</div>
 						</div>
 
-					</div>
+					</div> -->
 					<!-- 나의 채팅 끝 -->
 				</div>
 			</div>

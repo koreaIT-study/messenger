@@ -121,6 +121,9 @@ function connect(el) {
 
 function searchRoomId(el) {
 	let roomId = $(el).data('rid');
+	if(!roomId){
+		roomId = 1;
+	}
 	let userId = $(el).data('uid');
 	if (!roomId) { // 친구목록에서 들어오는 경우
 		// 친구의 id(userId)로 roomId(1:1 톡방)을 찾아야한다.
@@ -131,10 +134,10 @@ function searchRoomId(el) {
 			isGroup : $(el).data('group'),
 			userId : [userId, $('#myId').val()],
 		};
-		jsAjaxPostJsonCall('/chat/room', param, (response) =>{
-			$(el).data('rId',response.roomId);
-			roomId = response.roomId;
-		})
+		// jsAjaxPostJsonCall('/chat/room', param, (response) =>{
+		// 	$(el).data('rId',response.roomId);
+		// 	roomId = response.roomId;
+		// })
 	}
 
 	return roomId;

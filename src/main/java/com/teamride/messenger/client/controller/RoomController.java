@@ -33,12 +33,12 @@ public class RoomController {
         return chatRoomRepository.findAllRooms(userId);
     }
 
-    @PostMapping(value = "/room")
-    public ChatRoomDTO create(@RequestBody ChatRoomDTO room) {
-        log.info("# Create Chat Room , name: " + room);
-        log.info("chatRoomRepository : {}", chatRoomRepository);
-        return chatRoomRepository.createChatRoomDTO(room);
-    }
+    // @PostMapping(value = "/room")
+    // public ChatRoomDTO create(@RequestBody ChatRoomDTO room) {
+    //     log.info("# Create Chat Room , name: " + room);
+    //     log.info("chatRoomRepository : {}", chatRoomRepository);
+    //     return chatRoomRepository.createChatRoomDTO(room);
+    // }
 
     @GetMapping(value = "/room")
     public ChatRoomDTO getRoom(String roomId) {

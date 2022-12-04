@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 public class ChatRoomDTO {
     private String roomId; // pk
     private String roomName;
-    private String message;
+    private String message; // 마지막 MESSAGE
     private String time;
     private int cnt;
     private String isGroup;

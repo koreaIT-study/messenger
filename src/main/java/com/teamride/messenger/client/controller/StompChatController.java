@@ -2,13 +2,11 @@ package com.teamride.messenger.client.controller;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 import javax.annotation.Resource;
 
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.Acknowledgment;
@@ -26,7 +24,7 @@ import com.teamride.messenger.client.service.StompChatService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import reactor.core.publisher.Mono;
+import reactor.core.publisher.Flux;
 
 @RestController
 @RequiredArgsConstructor
@@ -61,19 +59,18 @@ public class StompChatController {
         // 기존 message select
         // view 뿌려주기
 
-        Mono<List<ChatMessageDTO>> resp = webClient.mutate()
+        Flux<ChatMessageDTO> resp = webClient.mutate()
             .build()
             .get()
             .uri("/get-chat-message?roomId=" + message.getRoomId())
             .retrieve()
-            .bodyToMono(new ParameterizedTypeReference<List<ChatMessageDTO>>() {
-            });
+            .bodyToFlux(ChatMessageDTO.class);
 
-        resp.block()
-            .forEach(c -> {
-                // message 받았으니 view에 뿌려주면 됨
-                log.info(c.toString());
-            });
+//        resp.block()
+//            .forEach(c -> {
+//                // message 받았으니 view에 뿌려주면 됨
+//                log.info(c.toString());
+//            });
 
     }
 

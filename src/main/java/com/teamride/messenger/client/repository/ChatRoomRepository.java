@@ -42,10 +42,14 @@ public class ChatRoomRepository {
             .retrieve()
             .bodyToFlux(ChatRoomDTO.class);
 
-        List<ChatRoomDTO> roomList = resp.collectList()
+        List<ChatRoomDTO> roomList = resp.collectSortedList((o1, o2) -> {
+            return o1.getTime()
+                .compareTo(o2.getTime());
+
+        })
             .block();
-        
-        log.info("roomList::"+roomList);
+
+        log.info("roomList::" + roomList);
         return roomList;
     }
 

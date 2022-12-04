@@ -2,6 +2,7 @@ package com.teamride.messenger.client.controller;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -59,12 +60,12 @@ public class StompChatController {
         // 기존 message select
         // view 뿌려주기
 
-        Flux<ChatMessageDTO> resp = webClient.mutate()
+        List<ChatMessageDTO> resp = webClient.mutate()
             .build()
             .get()
             .uri("/get-chat-message?roomId=" + message.getRoomId())
             .retrieve()
-            .bodyToFlux(ChatMessageDTO.class);
+            .bodyToFlux(ChatMessageDTO.class).collectList().block();
 
 //        resp.block()
 //            .forEach(c -> {

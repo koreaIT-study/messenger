@@ -10,6 +10,7 @@ function handleErrorStatus(jqXHR) {
     } else if (jqXHR.responseText == "") {
         //실시간 데이터가 없을시
     } else {
+		console.log(jqXHR);
         alert("죄송합니다. 시스템 오류가 발생했습니다.\n잠시 후 다시 시도하거나 관리자에게 문의하십시오.");
     }
 }

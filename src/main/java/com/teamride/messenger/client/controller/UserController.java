@@ -28,6 +28,7 @@ import com.teamride.messenger.client.utils.RestResponse;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.servlet.view.RedirectView;
 import reactor.core.publisher.Mono;
 
 @Slf4j
@@ -36,6 +37,11 @@ import reactor.core.publisher.Mono;
 public class UserController {
     private final WebClient webClient;
     private final HttpSession httpSession;
+
+    @GetMapping("/")
+    public RedirectView index(){
+        return new RedirectView("/login");
+    }
 
     @GetMapping("/login")
     public ModelAndView login() {

@@ -1,51 +1,3 @@
-// 나중에 getFriendList 랑 getChatRoomList 합치면 될듯
-/*function getFriendList(){
-	// 요청을 보내 list를 가져옴
-	let list;
-	let html = '';
-	for(let i = 0; i < 10; i++){
-		html += '<li>'
-		html    += '<div class="friend-box">'
-		html        += '<div class="friend-profil"></div>'
-		html        += '<div class="friend-title">' + '친구친구'+ '</div>'
-		html        += '<div class="friend-msg">' + '상메상메상메' + '</div>'
-		html     += '</div>'
-		html += '</li>'
-	}
-
-	let listBox = document.getElementById('list-box');
-	let friendListBox = document.getElementById('friend-list-box');
-	if(friendListBox) friendListBox.remove();
-
-	let ul = document.createElement('ul');
-	ul.setAttribute('id', 'friend-list-box');
-	ul.innerHTML = html;
-	listBox.appendChild(ul);
-}
-
-function getChatRoomList(){
-	// 요청을 보내 list를 가져옴
-	let list;
-	let html = '';
-	for(let i = 0; i < 10; i++){
-		html += '<li>'
-		html    += '<div class="friend-box">'
-		html        += '<div class="friend-profil"></div>'
-		html        += '<div class="friend-title">' + '채팅방'+ '<span class="chatRoomLi">'+3+'</span><span class="chatRoomLi right time">'+'오후 7:30'+'</span></div>'
-		html        += '<div class="friend-msg">' + '마지막 내용 가 나 다 라 마 바 사 아 자 차 카 타 파 하' + '</div>'
-		html     += '</div>'
-		html += '</li>'
-	}
-
-	let listBox = document.getElementById('list-box');
-	let friendListBox = document.getElementById('friend-list-box');
-	if(friendListBox) friendListBox.remove();
-    
-	let ul = document.createElement('ul');
-	ul.setAttribute('id', 'friend-list-box');
-	ul.innerHTML = html;
-	listBox.appendChild(ul);
-}*/
 
 function getFriendList() {
 	// 전체 친구 목록 가져오기
@@ -58,7 +10,7 @@ function getFriendList() {
 			let friendListHtml = "";
 
 			for (let i = 0; i < friendList.length; i++) {
-				friendListHtml += "<li id='" + friendList[i].friendId + "' data-rid='" + friendList[i].roomId + "' data-uid='" + friendList[i].friendId + "' data-group='N' ondblclick='connect(this);'>"
+				friendListHtml += "<li id='" + friendList[i].friendId + "' data-rid='" + (friendList[i].roomId ?? '') + "' data-uid='" + friendList[i].friendId + "' data-group='N' ondblclick='connect(this);'>"
 				friendListHtml += "<div class='friend-box'>"
 				friendListHtml += "<div class='friend-profil'></div>"
 				friendListHtml += "<div class='friend-title'>" + friendList[i].name + "</div>"
@@ -168,18 +120,24 @@ function connect(el) {
 
 
 function searchRoomId(el) {
-	// 기존 채팅방이 있으면 db에서 채팅방을 만들때 id로 만들거니깐 roomId가 있을거고
-	// 없으면 uuid로 생성
-	// 친구목록에서 채팅방 만들 땐 db조회 logic 필요
-	//var roomId = $("#roomId").val() ?? 'tester';
-
-	var roomId = $(el).data('rid');
-	var userId = $(el).data('uid');
-
+	let roomId = $(el).data('rid');
+	if(!roomId){
+		roomId = 1;
+	}
+	let userId = $(el).data('uid');
 	if (!roomId) { // 친구목록에서 들어오는 경우
 		// 친구의 id(userId)로 roomId(1:1 톡방)을 찾아야한다.
-		roomId = 1; // example
+		// roomId = 1; // example
 		// server 쪽에서 roomId를 못찾으면 roomId만들고 roomId return
+		let param = {
+			roomName : $(el).data('group'),
+			isGroup : $(el).data('group'),
+			userId : [userId, $('#myId').val()],
+		};
+		// jsAjaxPostJsonCall('/chat/room', param, (response) =>{
+		// 	$(el).data('rId',response.roomId);
+		// 	roomId = response.roomId;
+		// })
 	}
 
 	return roomId;
@@ -188,7 +146,7 @@ function searchRoomId(el) {
 function getMessages(roomId) {
 	// roomId가 있으면 messages전부 가져와서 view에 뿌려주는 logic 필요
 	jsParamAjaxCall('GET', '/get-chat-message/' + roomId, {}, function(response) {
-		let messages = response.data;
+		let messages = response;
 		console.log(messages);
 
 

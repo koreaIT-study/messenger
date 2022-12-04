@@ -6,6 +6,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,8 +27,8 @@ public class ServerConnectController {
     @Autowired
     private HttpSession httpSession;
 
-    @GetMapping("/get-chat-message/{roomId}")
-    public RestResponse getChatMessage(@PathVariable("roomId") String roomId) {
+    @GetMapping(value="/get-chat-message/{roomId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<ChatMessageDTO> getChatMessage(@PathVariable("roomId") String roomId) {
         // Mono<List<ChatMessageDTO>> resp = webClient.mutate()
         // .build()
         // .get()
@@ -43,9 +44,10 @@ public class ServerConnectController {
             .retrieve()
             .bodyToFlux(ChatMessageDTO.class);
 
-        List<ChatMessageDTO> messageList = resp.collectList()
-            .block();
-        return new RestResponse(messageList);
+//        List<ChatMessageDTO> messageList = resp.collectSortedList((o1, o2) -> o1.getTimestamp()
+//            .compareTo(o2.getTimestamp()));
+//            .block();
+        return resp;
     }
 
 }

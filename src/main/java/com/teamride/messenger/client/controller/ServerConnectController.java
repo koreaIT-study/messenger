@@ -27,7 +27,7 @@ public class ServerConnectController {
     @Autowired
     private HttpSession httpSession;
 
-    @GetMapping(value="/get-chat-message/{roomId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @GetMapping(value="/get-chat-message/{roomId}")
     public Flux<ChatMessageDTO> getChatMessage(@PathVariable("roomId") String roomId) {
         // Mono<List<ChatMessageDTO>> resp = webClient.mutate()
         // .build()
@@ -43,7 +43,8 @@ public class ServerConnectController {
             .uri("/get-chat-message?roomId=" + roomId)
             .retrieve()
             .bodyToFlux(ChatMessageDTO.class);
-
+        
+        log.info("Resp::"+resp);
 //        List<ChatMessageDTO> messageList = resp.collectSortedList((o1, o2) -> o1.getTimestamp()
 //            .compareTo(o2.getTimestamp()));
 //            .block();

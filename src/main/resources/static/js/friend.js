@@ -122,7 +122,7 @@ function connect(el) {
 function searchRoomId(el) {
 	let roomId = $(el).data('rid');
 	let userId = $(el).data('uid');
-	/*if (!roomId) { // 친구목록에서 들어오는 경우
+	if (!roomId) { // 친구목록에서 들어오는 경우
 		// 친구의 id(userId)로 roomId(1:1 톡방)을 찾아야한다.
 		// roomId = 1; // example
 		// server 쪽에서 roomId를 못찾으면 roomId만들고 roomId return
@@ -133,10 +133,12 @@ function searchRoomId(el) {
 		};
 		jsAjaxPostJsonCall('/chat/room', param, (response) => {
 			$(el).data('rid', response.roomId);
+			el.dataset.rid= response.roomId;
 			roomId = response.roomId;
 		})
-	}*/
-	roomId = 1;
+		console.log(roomId)
+	}
+
 	return roomId;
 }
 
@@ -301,6 +303,7 @@ function enterRoom(el, roomId) {
 			let obj = JSON.parse(chat.body);
 			console.log("roomList sub:::")
 			console.log(chat.body)
+			updateChatRoom(chat.body);
 			/*$("#chat_msg_wrap").append(obj.message);*/
 		})
 
@@ -332,6 +335,36 @@ function enterRoom(el, roomId) {
 
 }
 
+function updateChatRoom(message) {
+	let roomList = document.getElementById('room-list-box');
+	let flag = false;
 
+	for (let room of roomList.children) {
+		console.log( room.dataset.rid)
+		if (message.roomId == room.dataset.rid) {
+			flag = true;
+			break;
+		}
+	}
+
+console.log("make room")
+console.log(message)
+	// 채팅방 없으면 만들어주기
+	if (!flag) {
+		
+		let roomHtml="";
+		roomHtml += `<li data-rId=${message.roomId} ondblclick="connect(this)">`;
+		roomHtml += '<div class="friend-box">';
+		roomHtml += '<div class="friend-profil"></div>';
+		roomHtml += '<div class="friend-title">';
+		roomHtml += message.roomName + '<span class="chatRoomLi">' + message.cnt + '</span>';
+		roomHtml += '<span class="chatRoomLi right time">' + message.time + '</span></div>';
+		roomHtml += '<div class="friend-msg">' + message.message + '</div></div></li>';
+		
+		$(roomList).prepend(roomHtml);
+	}
+
+
+}
 
 

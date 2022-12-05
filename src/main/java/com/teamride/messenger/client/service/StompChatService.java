@@ -4,6 +4,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import com.teamride.messenger.client.dto.ChatMessageDTO;
+import com.teamride.messenger.client.dto.ChatRoomDTO;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +27,7 @@ public class StompChatService {
         template.convertAndSend(destination + message.getRoomId(), message);
     }
     
-    public void sendMessageRoomList(ChatMessageDTO message){
+    public void sendMessageRoomList(ChatRoomDTO message){
         template.convertAndSend(destinationRoomList + message.getRoomId(), message);
     }
 

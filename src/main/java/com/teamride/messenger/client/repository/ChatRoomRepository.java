@@ -25,14 +25,6 @@ import reactor.core.publisher.Flux;
 public class ChatRoomRepository {
 
     private final WebClient webClient;
-    // 나중에 DB로 바꾸면 필요 없어짐
-    private Map<String, ChatRoomDTO> chatRoomDTOMap;
-
-    // 생성자가 호출되었을 때 bean을 초기화 시켜주는 어노테이션
-    @PostConstruct
-    private void init() {
-        chatRoomDTOMap = new LinkedHashMap<>();
-    }
 
     public List<ChatRoomDTO> findAllRooms(int userId) {
         Flux<ChatRoomDTO> resp = webClient.mutate()
@@ -55,7 +47,14 @@ public class ChatRoomRepository {
 
     public ChatRoomDTO findRoomById(String roomId) {
         // 이부분도 나중에 server 에 요청 보내서 데이터 가져오기
-        return chatRoomDTOMap.get(roomId);
+        return webClient.post()
+                .uri("/find-room-by-id")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(roomId)
+                .retrieve()
+                .bodyToMono(ChatRoomDTO.class)
+                .block();
     }
 
     public ChatRoomDTO createChatRoomDTO(ChatRoomDTO room) {
@@ -69,4 +68,5 @@ public class ChatRoomRepository {
             .bodyToMono(ChatRoomDTO.class)
             .block();
     }
+    
 }

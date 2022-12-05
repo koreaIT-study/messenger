@@ -122,7 +122,7 @@ function connect(el) {
 function searchRoomId(el) {
 	let roomId = $(el).data('rid');
 	let userId = $(el).data('uid');
-	if (!roomId) { // 친구목록에서 들어오는 경우
+	/*if (!roomId) { // 친구목록에서 들어오는 경우
 		// 친구의 id(userId)로 roomId(1:1 톡방)을 찾아야한다.
 		// roomId = 1; // example
 		// server 쪽에서 roomId를 못찾으면 roomId만들고 roomId return
@@ -135,8 +135,8 @@ function searchRoomId(el) {
 			$(el).data('rid', response.roomId);
 			roomId = response.roomId;
 		})
-	}
-
+	}*/
+	roomId = 1;
 	return roomId;
 }
 
@@ -299,7 +299,8 @@ function enterRoom(el, roomId) {
 		// 채팅방 목록 관리
 		stomp.subscribe("/sub/chat/roomList/" + roomId, function(chat) {
 			let obj = JSON.parse(chat.body);
-			console.log("objLLL" + chat.body)
+			console.log("roomList sub:::")
+			console.log(chat.body)
 			/*$("#chat_msg_wrap").append(obj.message);*/
 		})
 

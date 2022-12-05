@@ -21,11 +21,12 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import com.teamride.messenger.client.config.KafkaConstants;
 import com.teamride.messenger.client.dto.ChatMessageDTO;
+import com.teamride.messenger.client.dto.ChatRoomDTO;
+import com.teamride.messenger.client.repository.ChatRoomRepository;
 import com.teamride.messenger.client.service.StompChatService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import reactor.core.publisher.Flux;
 
 @RestController
 @RequiredArgsConstructor
@@ -38,6 +39,8 @@ public class StompChatController {
 
     @Resource(name = "stompChatService")
     private StompChatService stompChatService;
+    
+    private final ChatRoomRepository chatRoomRepository;
 
     private final KafkaTemplate<String, ChatMessageDTO> kafkaTemplate;
 
@@ -135,7 +138,10 @@ public class StompChatController {
         try {
 
             stompChatService.sendMessage(message);
-            stompChatService.sendMessageRoomList(message);
+            
+            ChatRoomDTO chatRoomDTO = chatRoomRepository.findRoomById(message.getRoomId());
+            
+            stompChatService.sendMessageRoomList(chatRoomDTO);
             ack.acknowledge();
         } catch (Exception e) {
             log.error(e.getMessage());

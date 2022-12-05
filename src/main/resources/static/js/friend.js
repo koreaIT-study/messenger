@@ -127,7 +127,7 @@ function searchRoomId(el) {
 		// roomId = 1; // example
 		// server 쪽에서 roomId를 못찾으면 roomId만들고 roomId return
 		let param = {
-			roomName: $(el).data('group'),
+			roomName: $('#myName').val() + "," + $(`#${el.id} div div.friend-title`).text(),
 			isGroup: $(el).data('group'),
 			userId: [userId, $('#myId').val()],
 		};

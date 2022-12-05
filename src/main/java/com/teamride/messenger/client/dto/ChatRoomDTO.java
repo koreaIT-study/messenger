@@ -22,5 +22,6 @@ public class ChatRoomDTO {
     private String time;
     private int cnt;
     private String isGroup;
+    private List<String> userId;
 
 }

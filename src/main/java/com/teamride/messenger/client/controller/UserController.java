@@ -20,15 +20,16 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 import com.teamride.messenger.client.config.Constants;
+import com.teamride.messenger.client.dto.FriendDTO;
 import com.teamride.messenger.client.dto.FriendInfoDTO;
 import com.teamride.messenger.client.dto.UserDTO;
 import com.teamride.messenger.client.utils.RestResponse;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.servlet.view.RedirectView;
 import reactor.core.publisher.Mono;
 
 @Slf4j
@@ -39,7 +40,7 @@ public class UserController {
     private final HttpSession httpSession;
 
     @GetMapping("/")
-    public RedirectView index(){
+    public RedirectView index() {
         return new RedirectView("/login");
     }
 
@@ -120,13 +121,13 @@ public class UserController {
     }
 
     @PostMapping("/signUp")
-    public RestResponse signUp(@RequestBody UserDTO userDTO) {
+    public RestResponse signUp(@RequestBody UserDTO dto) {
         // TODO :: 구현 중
         final Integer resp = webClient.post()
             .uri("/signUp")
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON)
-            .bodyValue(userDTO)
+            .bodyValue(dto)
             .retrieve()
             .onStatus(HttpStatus::is4xxClientError, e -> Mono.error(new HttpClientErrorException(e.statusCode())))
             .onStatus(HttpStatus::is5xxServerError, e -> Mono.error(new HttpServerErrorException(e.statusCode())))
@@ -172,6 +173,40 @@ public class UserController {
         } catch (Exception e) {
             return new RestResponse(1, e.getLocalizedMessage(), null);
         }
+    }
+
+    @GetMapping("/searchUser")
+    public RestResponse getMethodName(@RequestParam String searchKey) {
+        try {
+            final List<UserDTO> resp = webClient.get()
+                .uri(v -> v.path("/searchUser")
+                    .queryParam("searchKey", searchKey)
+                    .build())
+                .retrieve()
+                .onStatus(HttpStatus::is4xxClientError, e -> Mono.error(new HttpClientErrorException(e.statusCode())))
+                .onStatus(HttpStatus::is5xxServerError, e -> Mono.error(new HttpServerErrorException(e.statusCode())))
+                .bodyToMono(new ParameterizedTypeReference<List<UserDTO>>() {
+                })
+                .block();
+            return new RestResponse(resp);
+        } catch (Exception e) {
+            return new RestResponse(1, e.getLocalizedMessage(), null);
+        }
+    }
+
+    @PostMapping(value = "/addFriend")
+    public RestResponse postMethodName(@RequestBody FriendDTO dto) {
+        final Integer resp = webClient.post()
+            .uri("/addFriend")
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+            .bodyValue(dto)
+            .retrieve()
+            .onStatus(HttpStatus::is4xxClientError, e -> Mono.error(new HttpClientErrorException(e.statusCode())))
+            .onStatus(HttpStatus::is5xxServerError, e -> Mono.error(new HttpServerErrorException(e.statusCode())))
+            .bodyToMono(Integer.class)
+            .block();
+        return new RestResponse(resp);
     }
 
 }

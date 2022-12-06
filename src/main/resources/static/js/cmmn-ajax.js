@@ -1,6 +1,5 @@
 function handleErrorStatus(jqXHR) {
     //if (jqXHR.responseText.indexOf("_LoginPage") != -1) {
-    console.log(jqXHR.responseText);
     if (jqXHR.responseText == undefined) {
         alert("시스템에서 자동 로그아웃 처리되었습니다.");
         top.location.href = "/";
@@ -10,13 +9,11 @@ function handleErrorStatus(jqXHR) {
     } else if (jqXHR.responseText == "") {
         //실시간 데이터가 없을시
     }else {
-		console.log(jqXHR);
         alert("죄송합니다. 시스템 오류가 발생했습니다.\n잠시 후 다시 시도하거나 관리자에게 문의하십시오.");
     }
 }
 
 function jsParamAjaxCall(ajaxType, url, params, callbackFunc, callbackFailFunc) {
-    $('.overlay').attr('style', 'display:block');
 
     $.ajax({
         type: ajaxType,
@@ -49,7 +46,6 @@ function jsParamAjaxCall(ajaxType, url, params, callbackFunc, callbackFailFunc) 
 }
 
 function jsAjaxPostJsonCall(url, params, callbackFunc, callbackFailFunc) {
-    $('.overlay').attr('style', 'display:block');
 
     var ajax_data = (typeof params === 'object') ? JSON.stringify(params) : params;
 

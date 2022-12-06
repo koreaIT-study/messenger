@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 import com.teamride.messenger.client.config.Constants;
 import com.teamride.messenger.client.dto.FriendInfoDTO;
@@ -28,7 +29,6 @@ import com.teamride.messenger.client.utils.RestResponse;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.servlet.view.RedirectView;
 import reactor.core.publisher.Mono;
 
 @Slf4j
@@ -39,7 +39,7 @@ public class UserController {
     private final HttpSession httpSession;
 
     @GetMapping("/")
-    public RedirectView index(){
+    public RedirectView index() {
         return new RedirectView("/login");
     }
 
@@ -174,4 +174,22 @@ public class UserController {
         }
     }
 
+    @GetMapping("/searchUser")
+    public RestResponse getMethodName(@RequestParam String searchKey) {
+        try {
+            final List<UserDTO> resp = webClient.get()
+                .uri(v -> v.path("/searchUser")
+                    .queryParam("searchKey", searchKey)
+                    .build())
+                .retrieve()
+                .onStatus(HttpStatus::is4xxClientError, e -> Mono.error(new HttpClientErrorException(e.statusCode())))
+                .onStatus(HttpStatus::is5xxServerError, e -> Mono.error(new HttpServerErrorException(e.statusCode())))
+                .bodyToMono(new ParameterizedTypeReference<List<UserDTO>>() {
+                })
+                .block();
+            return new RestResponse(resp);
+        } catch (Exception e) {
+            return new RestResponse(1, e.getLocalizedMessage(), null);
+        }
+    }
 }

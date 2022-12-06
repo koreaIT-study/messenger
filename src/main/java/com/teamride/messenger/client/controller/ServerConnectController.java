@@ -48,6 +48,7 @@ public class ServerConnectController {
 //        List<ChatMessageDTO> messageList = resp.collectSortedList((o1, o2) -> o1.getTimestamp()
 //            .compareTo(o2.getTimestamp()));
 //            .block();
+            log.info("resp", resp);
         return resp;
     }
 

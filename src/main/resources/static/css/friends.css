@@ -26,7 +26,7 @@
 }
 
 .search_input{
-    position: fixed;
+    position: absolute;
     padding-left: 15px;
 }
 
@@ -37,7 +37,7 @@
 
 .search_btn{
     display: inline-flex;
-    position: fixed;
+    position: absolute;
     padding-top: 7px;
     padding-left: 15px;
 }
@@ -56,6 +56,18 @@
 }
 
 #list-box::-webkit-scrollbar-thumb {
+	background-color: lightgray;
+	border: none;
+}
+#modal_friend-list-box {
+	height: 789px;
+}
+
+#modal_list-box::-webkit-scrollbar {
+	width: 10px;
+}
+
+#modal_list-box::-webkit-scrollbar-thumb {
 	background-color: lightgray;
 	border: none;
 }

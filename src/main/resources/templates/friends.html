@@ -148,7 +148,7 @@
 						let friendListHtml = "";
 						let i = 0;
 						data.forEach(el => {
-							friendListHtml += "<li id='" + data[i].id + "' email='" + (data[i].email ?? '') + "'ondblclick='addFriend(this);'>"
+							friendListHtml += "<li friendId='" + data[i].id + "' email='" + (data[i].email ?? '') + "'ondblclick='addFriend(this);'>"
 							friendListHtml += "<div class='friend-box'>"
 							friendListHtml += "<div class='friend-profil'></div>"
 							friendListHtml += "<div class='friend-title'>" + data[i].name + "</div>"
@@ -156,7 +156,6 @@
 							friendListHtml += "</div>"
 							friendListHtml += "</li>"
 						});
-
 						document.querySelector('#modal_friend-list-box').innerHTML = friendListHtml;
 					} else {
 						_cmmnAlert.getFailed();
@@ -166,8 +165,24 @@
 		}
 	}
 
-	function addFriend() {
-		alert("구현중");
+	function addFriend(el) {
+		const userId = document.querySelector('#myId').value;
+		const friendId = el.getAttribute('friendId');
+
+		const params = {
+			userId,
+			friendId
+		}
+
+		jsAjaxPostJsonCall('/addFriend', params, function (response) {
+			const errno = response.errno;
+			if (errno === 0) {
+				alert('친구 추가 되었습니다.');
+				getFriendList();
+			} else {
+				_cmmnAlert.postFailed();
+			}
+		})
 	}
 </script>
 

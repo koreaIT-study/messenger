@@ -45,4 +45,5 @@ public class RoomController {
         log.info("# get Chat Room, roomID : " + roomId);
         return chatRoomRepository.findRoomById(roomId);
     }
+    
 }

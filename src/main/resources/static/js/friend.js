@@ -115,6 +115,7 @@ function connect(el) {
 	} else {
 		enterRoom(el, roomId);
 	}
+	searchRoomInfo(roomId);
 	getMessages(roomId);
 }
 
@@ -141,6 +142,20 @@ function searchRoomId(el) {
 
 	return roomId;
 }
+
+
+function searchRoomInfo(roomId){
+	// roomId로 채팅방 정보를 찾아주는 method
+	jsParamAjaxCall('GET', '/chat/room?roomId=' + roomId, {}, function(response) {
+		console.log("search room info")
+		console.log(response)
+		
+		let title = $('.chat_title').children();
+		title[0].innerHTML = response.roomName;
+		title[1].innerHTML = "멤버 "+response.cnt;
+	});
+}
+
 
 function getMessages(roomId) {
 	// roomId가 있으면 messages전부 가져와서 view에 뿌려주는 logic 필요

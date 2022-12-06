@@ -1,7 +1,3 @@
-const sockJs = new SockJS("/stomp/chat");
-const stomp = Stomp.over(sockJs);
-
-
 function getFriendList() {
 	// 전체 친구 목록 가져오기
 	// getFriends
@@ -67,7 +63,8 @@ window.onload = function() {
 	getFriendList();
 	getRoomList();
 
-
+	let sockJs = new SockJS("/stomp/chat");
+	let stomp = Stomp.over(sockJs);
 
 	// message 보내기
 	$("#chat_writer").on("keyup", (e) => {
@@ -85,6 +82,7 @@ window.onload = function() {
 			writerName: $('#myName').val()
 		};
 		$textArea.val('');
+		console.log("메시지 보냄")
 		stomp.send("/pub/chat/message", {}, JSON.stringify(param));
 
 	})
@@ -134,6 +132,8 @@ var sessionContainer = [];
 
 function connect(el) {
 	// roomId 찾는 logic 필요
+	console.log(sessionContainer);
+
 	var roomId = searchRoomId(el);
 	$('#chat').show();
 	if (sessionContainer.includes(roomId)) {
@@ -149,6 +149,10 @@ function connect(el) {
 function searchRoomId(el) {
 	let roomId = $(el).data('rid');
 	let userId = $(el).data('uid');
+
+	let header = document.getElementById('chat_header')
+	header.dataset.rid = roomId;
+
 	if (!roomId) { // 친구목록에서 들어오는 경우
 		// 친구의 id(userId)로 roomId(1:1 톡방)을 찾아야한다.
 		// roomId = 1; // example
@@ -175,8 +179,6 @@ function searchRoomInfo(roomId) {
 		console.log("search room info")
 		console.log(response)
 
-		let header = document.getElementById('chat_header')
-		header.dataset.rid = response.roomId;
 
 		let title = $('.chat_title').children();
 		title[0].innerHTML = response.roomName;
@@ -302,31 +304,8 @@ function otherMessageTemplate(messages, message) {
 }
 
 function enterRoom(el, roomId) {
-	/*	// 기존 채팅방이 있으면 db에서 채팅방을 만들때 id로 만들거니깐 roomId가 있을거고
-		// 없으면 uuid로 생성
-		// 친구목록에서 채팅방 만들 땐 db조회 logic 필요
-		//var roomId = $("#roomId").val() ?? 'tester';
-	
-		var roomId = $(el).data('rid');
-		var userId = $(el).data('uid') ?? '1';
-		var roomName = $("#roomName").val() ?? 'tester_name';
-		var userName = $('#userName').val() ?? 'tester_userNAme';
-	
-		if (!roomId) { // 친구목록에서 들어오는 경우
-			// 친구의 id(userId)로 roomId(1:1 톡방)을 찾아야한다.
-	
-			// server 쪽에서 찾으면 roomId만들고, roomId와 메시지들 db에서 전부 가져와서 뿌려주는 logic
-			// server 쪽에서 roomId를 못찾으면 roomId만들고 roomId return
-	
-		} else {
-			// 채팅방에서 들어가는 경우
-			// server쪽으로 message들 전부 가져와서 view에 뿌려줘야함
-		}*/
-
-	var userId = $('#myId').val();
-	var userName = $('#myName').val();
-
-
+	let sockJs = new SockJS("/stomp/chat");
+	let stomp = Stomp.over(sockJs);
 
 	stomp.connect({}, function() {
 		console.log("STOMP Connection");
@@ -336,16 +315,13 @@ function enterRoom(el, roomId) {
 		stomp.subscribe("/sub/chat/room/" + roomId, function(chat) {
 			let obj = JSON.parse(chat.body);
 			subMessage(obj);
-			console.log("dddd::" + chat.body)
 			//$("#chat_msg_template").append(obj.message);
 		})
 
 		// 채팅방 목록 관리
 		stomp.subscribe("/sub/chat/roomList/" + roomId, function(chat) {
 			let obj = JSON.parse(chat.body);
-			console.log("roomList sub:::")
-			console.log(chat.body)
-			updateChatRoom(chat.body);
+			updateChatRoom(obj);
 			/*$("#chat_msg_wrap").append(obj.message);*/
 		})
 

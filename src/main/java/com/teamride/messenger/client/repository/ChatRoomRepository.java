@@ -35,8 +35,8 @@ public class ChatRoomRepository {
             .bodyToFlux(ChatRoomDTO.class);
 
         List<ChatRoomDTO> roomList = resp.collectSortedList((o1, o2) -> {
-            return o1.getTimeStamp()
-                .compareTo(o2.getTimeStamp());
+            return o1.getTimestamp()
+                .compareTo(o2.getTimestamp());
 
         })
             .block();

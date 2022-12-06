@@ -138,13 +138,13 @@ public class StompChatController {
         try {
 
             stompChatService.sendMessage(message);
-            
+            log.info("message:::"+message);
             ChatRoomDTO chatRoomDTO = chatRoomRepository.findRoomById(message.getRoomId());
-            
+            log.info("chatRoom DTO::"+chatRoomDTO);
             stompChatService.sendMessageRoomList(chatRoomDTO);
             ack.acknowledge();
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("error::{}", e);
         }
 
         // topic : user id

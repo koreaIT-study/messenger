@@ -1,3 +1,6 @@
+const sockJs = new SockJS("/stomp/chat");
+const stomp = Stomp.over(sockJs);
+
 
 function getFriendList() {
 	// 전체 친구 목록 가져오기
@@ -38,7 +41,7 @@ function getRoomList() {
 			roomListHtml += '<div class="friend-profil"></div>';
 			roomListHtml += '<div class="friend-title">';
 			roomListHtml += response[i].roomName + '<span class="chatRoomLi">' + response[i].cnt + '</span>';
-			roomListHtml += '<span class="chatRoomLi right time">' + response[i].time + '</span></div>';
+			roomListHtml += '<span class="chatRoomLi right time">' + response[i].timestamp + '</span></div>';
 			roomListHtml += '<div class="friend-msg">' + response[i].message + '</div></div></li>';
 		}
 
@@ -63,6 +66,29 @@ window.onload = function() {
 	document.getElementById('friendListBtn').click();
 	getFriendList();
 	getRoomList();
+
+
+
+	// message 보내기
+	$("#chat_writer").on("keyup", (e) => {
+		let header = document.getElementById('chat_header');
+
+		e.preventDefault();
+		if (e.keyCode != 13) return;
+		if (e.shiftKey) return;
+
+		let $textArea = $("#chat_writer");
+		let param = {
+			roomId: header.dataset.rid,
+			writer: $('#myId').val(),
+			message: $textArea.val(),
+			writerName: $('#myName').val()
+		};
+		$textArea.val('');
+		stomp.send("/pub/chat/message", {}, JSON.stringify(param));
+
+	})
+
 }
 
 function popOpen() {
@@ -133,8 +159,7 @@ function searchRoomId(el) {
 			userId: [userId, $('#myId').val()],
 		};
 		jsAjaxPostJsonCall('/chat/room', param, (response) => {
-			$(el).data('rid', response.roomId);
-			el.dataset.rid= response.roomId;
+			el.dataset.rid = response.roomId;
 			roomId = response.roomId;
 		})
 		console.log(roomId)
@@ -144,15 +169,18 @@ function searchRoomId(el) {
 }
 
 
-function searchRoomInfo(roomId){
+function searchRoomInfo(roomId) {
 	// roomId로 채팅방 정보를 찾아주는 method
 	jsParamAjaxCall('GET', '/chat/room?roomId=' + roomId, {}, function(response) {
 		console.log("search room info")
 		console.log(response)
-		
+
+		let header = document.getElementById('chat_header')
+		header.dataset.rid = response.roomId;
+
 		let title = $('.chat_title').children();
 		title[0].innerHTML = response.roomName;
-		title[1].innerHTML = "멤버 "+response.cnt;
+		title[1].innerHTML = "멤버 " + response.cnt;
 	});
 }
 
@@ -298,8 +326,7 @@ function enterRoom(el, roomId) {
 	var userId = $('#myId').val();
 	var userName = $('#myName').val();
 
-	var sockJs = new SockJS("/stomp/chat");
-	var stomp = Stomp.over(sockJs);
+
 
 	stomp.connect({}, function() {
 		console.log("STOMP Connection");
@@ -331,22 +358,7 @@ function enterRoom(el, roomId) {
 
 	sessionContainer.push(roomId);
 
-	$("#chat_writer").on("keyup", (e) => {
-		e.preventDefault();
-		if (e.keyCode != 13) return;
-		if (e.shiftKey) return;
 
-		let $textArea = $("#chat_writer");
-		let param = {
-			roomId: roomId,
-			writer: userId,
-			message: $textArea.val(),
-			writerName: userName
-		};
-		$textArea.val('');
-		stomp.send("/pub/chat/message", {}, JSON.stringify(param));
-
-	})
 
 }
 
@@ -355,27 +367,27 @@ function updateChatRoom(message) {
 	let flag = false;
 
 	for (let room of roomList.children) {
-		console.log( room.dataset.rid)
+		console.log(room.dataset.rid)
 		if (message.roomId == room.dataset.rid) {
 			flag = true;
 			break;
 		}
 	}
 
-console.log("make room")
-console.log(message)
+	console.log("make room")
+	console.log(message)
 	// 채팅방 없으면 만들어주기
 	if (!flag) {
-		
-		let roomHtml="";
+
+		let roomHtml = "";
 		roomHtml += `<li data-rId=${message.roomId} ondblclick="connect(this)">`;
 		roomHtml += '<div class="friend-box">';
 		roomHtml += '<div class="friend-profil"></div>';
 		roomHtml += '<div class="friend-title">';
 		roomHtml += message.roomName + '<span class="chatRoomLi">' + message.cnt + '</span>';
-		roomHtml += '<span class="chatRoomLi right time">' + message.time + '</span></div>';
+		roomHtml += '<span class="chatRoomLi right time">' + message.timestamp + '</span></div>';
 		roomHtml += '<div class="friend-msg">' + message.message + '</div></div></li>';
-		
+
 		$(roomList).prepend(roomHtml);
 	}
 

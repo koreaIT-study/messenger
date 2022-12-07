@@ -368,6 +368,17 @@ function updateChatRoom(message) {
 	}
 
 
+	let roomList = $('#room-list-box').children();
+	
+	for(let i = 0; i<roomList.length;i++){
+		if(roomList[i].dataset.rid == message.roomId){
+			$(roomList[i]).find('.chatRoomLi.right.time').html(message.timestamp);
+			$(roomList[0]).find('.friend-msg').html(message.message);
+			break;
+		}
+	}
+	
+
 }
 
 

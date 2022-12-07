@@ -83,10 +83,6 @@ public class StompChatController {
         log.info("::: StompChatController.message in :::" + message);
         // view에서 message 보내기 누르면 들어옴
         // service 호출
-        LocalDateTime now = LocalDateTime.now();
-        String formatedNow = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        message.setTimestamp(formatedNow);
-        
         kafkaTemplate.send(KafkaConstants.CHAT_SERVER, message);
 
     }

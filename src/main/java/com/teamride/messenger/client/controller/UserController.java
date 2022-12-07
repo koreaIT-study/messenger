@@ -196,17 +196,20 @@ public class UserController {
 
     @PostMapping(value = "/addFriend")
     public RestResponse postMethodName(@RequestBody FriendDTO dto) {
-        final Integer resp = webClient.post()
-            .uri("/addFriend")
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON)
-            .bodyValue(dto)
-            .retrieve()
-            .onStatus(HttpStatus::is4xxClientError, e -> Mono.error(new HttpClientErrorException(e.statusCode())))
-            .onStatus(HttpStatus::is5xxServerError, e -> Mono.error(new HttpServerErrorException(e.statusCode())))
-            .bodyToMono(Integer.class)
-            .block();
-        return new RestResponse(resp);
+        try {
+            final Integer resp = webClient.post()
+                .uri("/addFriend")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .bodyValue(dto)
+                .retrieve()
+                .onStatus(HttpStatus::is4xxClientError, e -> Mono.error(new HttpClientErrorException(e.statusCode())))
+                .onStatus(HttpStatus::is5xxServerError, e -> Mono.error(new HttpServerErrorException(e.statusCode())))
+                .bodyToMono(Integer.class)
+                .block();
+            return new RestResponse(resp);
+        } catch (Exception e) {
+            return new RestResponse(1, e.getLocalizedMessage(), null);
+        }
     }
-
 }

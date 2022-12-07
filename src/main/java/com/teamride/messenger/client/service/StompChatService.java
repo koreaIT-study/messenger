@@ -1,5 +1,7 @@
 package com.teamride.messenger.client.service;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -16,22 +18,26 @@ public class StompChatService {
     // 특정 Broker로 메세지를 전달
     private final SimpMessagingTemplate template;
 
+    private final HttpSession httpSession;
+
     // 특정 채팅방 목적지
     private final String destination = "/sub/chat/room/";
-    
+
     // 채팅방 목록 목적지
     private final String destinationRoomList = "/sub/chat/roomList/";
 
-
-    public void sendMessage(ChatMessageDTO message){
+    public void sendMessage(ChatMessageDTO message) {
         template.convertAndSend(destination + message.getRoomId(), message);
     }
-    
-    public void sendMessageRoomList(ChatRoomDTO message){
-        template.convertAndSend(destinationRoomList + message.getRoomId(), message);
+
+    public void sendMessageRoomList(ChatRoomDTO message) {
+        message.getUserId()
+            .forEach(userId -> {
+                template.convertAndSend(destinationRoomList + userId, message);
+            });
     }
 
-    public void enter(ChatMessageDTO message){
+    public void enter(ChatMessageDTO message) {
         log.info("::: StompChatService.enter in :::");
         message.setMessage(message.getWriter() + "님이 채팅빙에 입장하였습니다.");
         sendMessage(message);

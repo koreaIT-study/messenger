@@ -37,7 +37,7 @@ function getRoomList() {
 			roomListHtml += '<div class="friend-profil"></div>';
 			roomListHtml += '<div class="friend-title">';
 			roomListHtml += response[i].roomName + '<span class="chatRoomLi">' + response[i].cnt + '</span>';
-			roomListHtml += '<span class="chatRoomLi right time">' + response[i].timestamp + '</span></div>';
+			roomListHtml += '<span class="chatRoomLi right time">' + response[i].timestamp.split('.')[0] + '</span></div>';
 			roomListHtml += '<div class="friend-msg">' + response[i].message + '</div></div></li>';
 		}
 
@@ -66,6 +66,18 @@ window.onload = function() {
 	let sockJs = new SockJS("/stomp/chat");
 	let stomp = Stomp.over(sockJs);
 
+	const userId = $('#myId').val();
+	// 채팅방 목록 관리
+	
+	setTimeout(()=>{
+		stomp.subscribe("/sub/chat/roomList/" + userId, function(chat) {
+		let obj = JSON.parse(chat.body);
+		updateChatRoom(obj);
+	})
+
+	}, 1000);
+	
+	
 	// message 보내기
 	$("#chat_writer").on("keyup", (e) => {
 		let header = document.getElementById('chat_header');
@@ -150,8 +162,7 @@ function searchRoomId(el) {
 	let roomId = $(el).data('rid');
 	let userId = $(el).data('uid');
 
-	let header = document.getElementById('chat_header')
-	header.dataset.rid = roomId;
+
 
 	if (!roomId) { // 친구목록에서 들어오는 경우
 		// 친구의 id(userId)로 roomId(1:1 톡방)을 찾아야한다.
@@ -169,6 +180,8 @@ function searchRoomId(el) {
 		console.log(roomId)
 	}
 
+	let header = document.getElementById('chat_header')
+	header.dataset.rid = roomId;
 	return roomId;
 }
 
@@ -268,7 +281,7 @@ function isMyMessage(message) {
 function myMessage(message) {
 	let myMessage = "<div class='my_chat_flexable'>";
 	myMessage += "<span class='no_read_cnt'>2</span><span class='write_date'>";
-	myMessage += message.timestamp + "</span>";
+	myMessage += `${message.timestamp.split('.')[0]}</span>`;
 	myMessage += "<div class='my_chat'>" + message.message + "</div></div>";
 
 	return myMessage;
@@ -286,7 +299,7 @@ function otherMessage(message) {
 	let otherMessage = "<div class='chat_msg_flexable'>";
 	otherMessage += "<div class='chat_msg'>" + message.message + "</div>";
 	otherMessage += "<span class='no_read_cnt'>1</span><span class='write_date'>";
-	otherMessage += message.timestamp + "</span></div>";
+	otherMessage += message.timestamp.split('.')[0] + "</span></div>";
 
 	return otherMessage;
 }
@@ -317,14 +330,6 @@ function enterRoom(el, roomId) {
 			subMessage(obj);
 			//$("#chat_msg_template").append(obj.message);
 		})
-
-		// 채팅방 목록 관리
-		stomp.subscribe("/sub/chat/roomList/" + roomId, function(chat) {
-			let obj = JSON.parse(chat.body);
-			updateChatRoom(obj);
-			/*$("#chat_msg_wrap").append(obj.message);*/
-		})
-
 
 		// 메세지 보낼때
 		// send(path, header, message)
@@ -361,23 +366,23 @@ function updateChatRoom(message) {
 		roomHtml += '<div class="friend-profil"></div>';
 		roomHtml += '<div class="friend-title">';
 		roomHtml += message.roomName + '<span class="chatRoomLi">' + message.cnt + '</span>';
-		roomHtml += '<span class="chatRoomLi right time">' + message.timestamp + '</span></div>';
+		roomHtml += '<span class="chatRoomLi right time">' + message.timestamp.split('.')[0] + '</span></div>';
 		roomHtml += '<div class="friend-msg">' + message.message + '</div></div></li>';
 
 		$(roomList).prepend(roomHtml);
 	}
 
+	let roomListChild = $('#room-list-box').children();
 
-	let roomList = $('#room-list-box').children();
-	
-	for(let i = 0; i<roomList.length;i++){
-		if(roomList[i].dataset.rid == message.roomId){
-			$(roomList[i]).find('.chatRoomLi.right.time').html(message.timestamp);
-			$(roomList[0]).find('.friend-msg').html(message.message);
+	for (let i = 0; i < roomListChild.length; i++) {
+		if (roomListChild[i].dataset.rid == message.roomId) {
+			$(roomListChild[i]).find('.chatRoomLi.right.time').html(message.timestamp.split('.')[0]);
+			$(roomListChild[i]).find('.friend-msg').html(message.message);
+			roomList.prepend($(roomListChild)[i]);
 			break;
 		}
 	}
-	
+
 
 }
 

@@ -1,3 +1,6 @@
+const sockJs = new SockJS("/stomp/chat");
+const stomp = Stomp.over(sockJs);
+const roomIdSessionCtx = [];
 function getFriendList() {
 	// 전체 친구 목록 가져오기
 	// getFriends
@@ -68,15 +71,13 @@ window.onload = function() {
 
 	const userId = $('#myId').val();
 	// 채팅방 목록 관리
-	
-	setTimeout(()=>{
-		stomp.subscribe("/sub/chat/roomList/" + userId, function(chat) {
-		let obj = JSON.parse(chat.body);
-		updateChatRoom(obj);
+	stomp.connect({}, function() {
+		stomp.subscribe("/sub/chat/roomList/" + userId, function (chat) {
+			let obj = JSON.parse(chat.body);
+			updateChatRoom(obj);
+		})
 	})
 
-	}, 1000);
-	
 	
 	// message 보내기
 	$("#chat_writer").on("keyup", (e) => {
@@ -148,11 +149,7 @@ function connect(el) {
 
 	var roomId = searchRoomId(el);
 	$('#chat').show();
-	if (sessionContainer.includes(roomId)) {
-		// 이미 session 연결 됬으므로 view만 보여준다.
-	} else {
-		enterRoom(el, roomId);
-	}
+	if(!enterRoom(el, roomId)) return;
 	searchRoomInfo(roomId);
 	getMessages(roomId);
 }
@@ -161,8 +158,6 @@ function connect(el) {
 function searchRoomId(el) {
 	let roomId = $(el).data('rid');
 	let userId = $(el).data('uid');
-
-
 
 	if (!roomId) { // 친구목록에서 들어오는 경우
 		// 친구의 id(userId)로 roomId(1:1 톡방)을 찾아야한다.
@@ -174,14 +169,11 @@ function searchRoomId(el) {
 			userId: [userId, $('#myId').val()],
 		};
 		jsAjaxPostJsonCall('/chat/room', param, (response) => {
-			el.dataset.rid = response.roomId;
 			roomId = response.roomId;
 		})
 		console.log(roomId)
 	}
 
-	let header = document.getElementById('chat_header')
-	header.dataset.rid = roomId;
 	return roomId;
 }
 
@@ -253,6 +245,7 @@ function subMessage(message) {
 		lastWriter = wrap.lastChild.dataset.uid;
 		//lastWriter = lastChildDiv.querySelector('.chat_person_name').textContent;
 	}
+	console.log("메세지 받았음!!");
 
 	if (lastWriter == message.writer) {
 		if (isMyMessage(message)) {
@@ -317,30 +310,27 @@ function otherMessageTemplate(messages, message) {
 }
 
 function enterRoom(el, roomId) {
-	let sockJs = new SockJS("/stomp/chat");
-	let stomp = Stomp.over(sockJs);
+	let header = document.getElementById('chat_header');
+	let curRoomId = header.dataset.rid;
+	if(curRoomId == roomId) return false;
 
-	stomp.connect({}, function() {
-		console.log("STOMP Connection");
+	header.dataset.rid = roomId;
+	// 메세지를 받을 때
+	// subscribe(path, callback)
+	// let stomp2 = Stomp.over(sockJs);
+	if(roomIdSessionCtx.includes(roomId)) return true;
+	
+	let messageSockJs = new SockJS("/stomp/chat");
+	let messageStomp = Stomp.over(messageSockJs);
 
-		// 메세지를 받을 때
-		// subscribe(path, callback)
-		stomp.subscribe("/sub/chat/room/" + roomId, function(chat) {
+	messageStomp.connect({}, function(){
+		messageStomp.subscribe("/sub/chat/room/" + roomId, function(chat) {
 			let obj = JSON.parse(chat.body);
 			subMessage(obj);
-			//$("#chat_msg_template").append(obj.message);
 		})
-
-		// 메세지 보낼때
-		// send(path, header, message)
-		//	let param = JSON.stringify({ roomId: roomId, writer: userName });
-		//	stomp.send("/pub/chat/enter", {}, param);
 	})
-
-	sessionContainer.push(roomId);
-
-
-
+	roomIdSessionCtx.push(roomid);
+	return true;
 }
 
 function updateChatRoom(message) {

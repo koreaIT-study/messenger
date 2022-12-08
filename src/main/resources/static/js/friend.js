@@ -1,6 +1,7 @@
 const sockJs = new SockJS("/stomp/chat");
 const stomp = Stomp.over(sockJs);
-const roomIdSessionCtx = [];
+let msgSubscription = "";
+
 function getFriendList() {
 	// 전체 친구 목록 가져오기
 	// getFriends
@@ -66,19 +67,19 @@ window.onload = function() {
 	getFriendList();
 	getRoomList();
 
-	let sockJs = new SockJS("/stomp/chat");
-	let stomp = Stomp.over(sockJs);
+	//	let sockJs = new SockJS("/stomp/chat");
+	//	let stomp = Stomp.over(sockJs);
 
 	const userId = $('#myId').val();
 	// 채팅방 목록 관리
 	stomp.connect({}, function() {
-		stomp.subscribe("/sub/chat/roomList/" + userId, function (chat) {
+		stomp.subscribe("/sub/chat/roomList/" + userId, function(chat) {
 			let obj = JSON.parse(chat.body);
 			updateChatRoom(obj);
 		})
 	})
 
-	
+
 	// message 보내기
 	$("#chat_writer").on("keyup", (e) => {
 		let header = document.getElementById('chat_header');
@@ -119,45 +120,22 @@ function popClose() {
 
 }
 
-function openRoom(el) {
-
-	let rId = $(el).data('rid');
-	let isGroup = $(el).data('group');
-	let roomName = $('#roomName').val();
-
-	// rId 없으면 채팅창 만들기
-	/*if(!rId){
-		jsAjaxPostJsonCall('/chat/room', {roomName : roomName,isGroup : isGroup}, function (response) {
-			console.log(response)
-			$(this).data('rId',response.roomId);
-			rId = response.roomId;
-		})
-	}*/
-
-	console.log(rId + ":" + isGroup + ":" + roomName);
-
-	// 채팅창 열기
-	let param = JSON.stringify({ roomId: rId, writer: $('#userName').val() });
-	stomp.send("/pub/chat/enter", {}, param);
-}
 
 var sessionContainer = [];
 
 function connect(el) {
-	// roomId 찾는 logic 필요
-	console.log(sessionContainer);
-
-	var roomId = searchRoomId(el);
+	let room = searchRoom(el);
+	let roomId = room.roomId;
 	$('#chat').show();
-	if(!enterRoom(el, roomId)) return;
-	searchRoomInfo(roomId);
+	if (!enterRoom(el, roomId)) return;
 	getMessages(roomId);
 }
 
-
-function searchRoomId(el) {
+let test;
+function searchRoom(el) {
 	let roomId = $(el).data('rid');
 	let userId = $(el).data('uid');
+	let room = "";
 
 	if (!roomId) { // 친구목록에서 들어오는 경우
 		// 친구의 id(userId)로 roomId(1:1 톡방)을 찾아야한다.
@@ -169,27 +147,17 @@ function searchRoomId(el) {
 			userId: [userId, $('#myId').val()],
 		};
 		jsAjaxPostJsonCall('/chat/room', param, (response) => {
-			roomId = response.roomId;
+			room = response;
 		})
-		console.log(roomId)
+	} else {	
+		jsParamAjaxCall('GET', '/chat/room?roomId=' + roomId, {}, function(response) {
+			room = response;
+		})
 	}
-
-	return roomId;
+	
+	return room;
 }
 
-
-function searchRoomInfo(roomId) {
-	// roomId로 채팅방 정보를 찾아주는 method
-	jsParamAjaxCall('GET', '/chat/room?roomId=' + roomId, {}, function(response) {
-		console.log("search room info")
-		console.log(response)
-
-
-		let title = $('.chat_title').children();
-		title[0].innerHTML = response.roomName;
-		title[1].innerHTML = "멤버 " + response.cnt;
-	});
-}
 
 
 function getMessages(roomId) {
@@ -312,24 +280,22 @@ function otherMessageTemplate(messages, message) {
 function enterRoom(el, roomId) {
 	let header = document.getElementById('chat_header');
 	let curRoomId = header.dataset.rid;
-	if(curRoomId == roomId) return false;
+	if (curRoomId == roomId) return false;
 
 	header.dataset.rid = roomId;
-	// 메세지를 받을 때
-	// subscribe(path, callback)
-	// let stomp2 = Stomp.over(sockJs);
-	if(roomIdSessionCtx.includes(roomId)) return true;
-	
-	let messageSockJs = new SockJS("/stomp/chat");
-	let messageStomp = Stomp.over(messageSockJs);
 
-	messageStomp.connect({}, function(){
-		messageStomp.subscribe("/sub/chat/room/" + roomId, function(chat) {
-			let obj = JSON.parse(chat.body);
-			subMessage(obj);
-		})
+	if (msgSubscription != '') {
+		msgSubscription.unsubscribe();
+	}
+
+	msgSubscription = stomp.subscribe("/sub/chat/room/" + roomId, function(chat) {
+		let obj = JSON.parse(chat.body);
+		subMessage(obj);
 	})
-	roomIdSessionCtx.push(roomid);
+
+	console.log("msgSubscription:::")
+	console.log(msgSubscription);
+	//roomIdSessionCtx.push(roomid);
 	return true;
 }
 

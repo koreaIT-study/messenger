@@ -43,7 +43,9 @@ public class RoomController {
     @GetMapping(value = "/room")
     public ChatRoomDTO getRoom(String roomId) {
         log.info("# get Chat Room, roomID : " + roomId);
-        return chatRoomRepository.findRoomById(roomId);
+        ChatRoomDTO chatRoomDTO = chatRoomRepository.getRoom(roomId);
+        log.info("chatRoom dto::"+chatRoomDTO);
+        return chatRoomDTO;
     }
     
 }

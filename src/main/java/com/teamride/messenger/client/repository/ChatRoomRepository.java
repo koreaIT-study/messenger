@@ -56,6 +56,18 @@ public class ChatRoomRepository {
                 .bodyToMono(ChatRoomDTO.class)
                 .block();
     }
+    
+    public ChatRoomDTO getRoom(String roomId) {
+        // 이부분도 나중에 server 에 요청 보내서 데이터 가져오기
+        return webClient.post()
+                .uri("/get-room")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(roomId)
+                .retrieve()
+                .bodyToMono(ChatRoomDTO.class)
+                .block();
+    }
 
     public ChatRoomDTO createChatRoomDTO(ChatRoomDTO room) {
         // server 에 요청을 보내 생성된 채팅방 정보 저장

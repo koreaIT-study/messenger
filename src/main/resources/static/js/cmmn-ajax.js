@@ -17,7 +17,7 @@ function jsParamAjaxCall(ajaxType, url, params, callbackFunc, callbackFailFunc) 
 
     $.ajax({
         type: ajaxType,
-        async: true,
+        async: false,
         url: url,
         data: params,
         dataType: "json",

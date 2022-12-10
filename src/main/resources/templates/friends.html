@@ -173,16 +173,27 @@
 			userId,
 			friendId
 		}
+		let check = true;
 
-		jsAjaxPostJsonCall('/addFriend', params, function (response) {
-			const errno = response.errno;
-			if (errno === 0) {
-				alert('친구 추가 되었습니다.');
-				getFriendList();
-			} else {
-				_cmmnAlert.postFailed();
+		document.querySelectorAll('#friend-list-box > li').forEach(el => {
+			const id = el.getAttribute('data-uid');
+			if (friendId === id) {
+				alert('이미 등록된 친구입니다.');
+				check = false;
 			}
-		})
+		});
+
+		if (check) {
+			jsAjaxPostJsonCall('/addFriend', params, function (response) {
+				const errno = response.errno;
+				if (errno === 0) {
+					alert('친구 추가 되었습니다.');
+					getFriendList();
+				} else {
+					_cmmnAlert.postFailed();
+				}
+			})
+		}
 	}
 </script>
 

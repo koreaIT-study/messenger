@@ -14,9 +14,11 @@ stop_server() {
 
 start_server() {
   echo "container start~~"
+  docker stop messenger-client
+  docker rm messenger-client
   # docker run -it --name messenger-client -d -p 8081:8081 -v /home/mshmsh0814/storage/logs:/tmp/logs --network server-net shmin7777/messenger-client
-  # docker run -it --name messenger-client -d -p 8081:8081 -v /home/mshmsh0814/storage/logs:/tmp/logs shmin7777/messenger-client
-  docker start messenger-client
+   docker run -it --name messenger-client -d -p 8081:8081 -v /home/mshmsh0814/storage/logs:/tmp/logs shmin7777/messenger-client
+
 }
 
 # input argument check & execute

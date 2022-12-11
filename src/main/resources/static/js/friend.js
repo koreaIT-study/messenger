@@ -128,10 +128,10 @@ function connect(el) {
 	let roomId = room.roomId;
 	$('#chat').show();
 	if (!enterRoom(el, roomId)) return;
+	searchRoomInfo(roomId);
 	getMessages(roomId);
 }
 
-let test;
 function searchRoom(el) {
 	let roomId = $(el).data('rid');
 	let userId = $(el).data('uid');
@@ -149,15 +149,25 @@ function searchRoom(el) {
 		jsAjaxPostJsonCall('/chat/room', param, (response) => {
 			room = response;
 		})
-	} else {	
+	} else {
 		jsParamAjaxCall('GET', '/chat/room?roomId=' + roomId, {}, function(response) {
 			room = response;
 		})
 	}
-	
+
 	return room;
 }
 
+function searchRoomInfo(roomId) {
+	// roomId로 채팅방 정보를 찾아주는 method
+	jsParamAjaxCall('GET', '/chat/room?roomId=' + roomId, {}, function(response) {
+		console.log("search room info")
+		console.log(response)
+		let title = $('.chat_title').children();
+		title[0].innerHTML = response.roomName;
+		title[1].innerHTML = "멤버 " + response.cnt;
+	});
+}
 
 
 function getMessages(roomId) {
@@ -202,12 +212,20 @@ function getMessages(roomId) {
 		$('#chat_msg_template').html(messageHtml);
 
 	});
+	
+	// 채팅 맨밑으로 내림
+	let wrap = document.getElementById('chat_msg_template');
+	let lastChildDiv = wrap.lastChild;
+	lastChildDiv.lastChild.scrollIntoView();
 }
 
 // message를 subscribe해서 view에 뿌려주는 method
 function subMessage(message) {
+
+
 	let wrap = document.getElementById('chat_msg_template');
 	let lastChildDiv = wrap.lastChild;
+
 	let lastWriter = "";
 	if (lastChildDiv != null) {
 		lastWriter = wrap.lastChild.dataset.uid;
@@ -229,6 +247,9 @@ function subMessage(message) {
 		else
 			wrap.innerHTML += otherMessageTemplate(otherMessage(message).trim(), message);
 	}
+
+	lastChildDiv.lastChild.scrollIntoView();
+
 }
 
 function isMyMessage(message) {
@@ -284,9 +305,12 @@ function enterRoom(el, roomId) {
 
 	header.dataset.rid = roomId;
 
+
 	if (msgSubscription != '') {
 		msgSubscription.unsubscribe();
 	}
+
+	
 
 	msgSubscription = stomp.subscribe("/sub/chat/room/" + roomId, function(chat) {
 		let obj = JSON.parse(chat.body);

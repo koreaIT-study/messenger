@@ -60,7 +60,7 @@
 	border: none;
 }
 #modal_friend-list-box {
-	height: 789px;
+	/* height: 789px; */
 }
 
 #modal_list-box::-webkit-scrollbar {

@@ -13,7 +13,7 @@ function getFriendList() {
 			let friendListHtml = "";
 
 			for (let i = 0; i < friendList.length; i++) {
-				friendListHtml += "<li id='" + friendList[i].friendId + "' data-rid='" + (friendList[i].roomId ?? '') + "' data-uid='" + friendList[i].friendId + "' data-group='N' ondblclick='connect(this);'>"
+				friendListHtml += "<li id='" + friendList[i].friendId + "' data-rid='" + (friendList[i].roomId ?? '') + "' data-uid='" + friendList[i].friendId + "' data-group='N' >"
 				friendListHtml += "<div class='friend-box'>"
 				friendListHtml += "<div class='friend-profil'></div>"
 				friendListHtml += "<div class='friend-title'>" + friendList[i].name + "</div>"
@@ -63,9 +63,12 @@ function chatRoomHide() {
 }
 
 window.onload = function() {
+
+
 	document.getElementById('friendListBtn').click();
 	getFriendList();
 	getRoomList();
+
 
 	//	let sockJs = new SockJS("/stomp/chat");
 	//	let stomp = Stomp.over(sockJs);
@@ -79,7 +82,12 @@ window.onload = function() {
 		})
 	})
 
-
+	// friend list에 connect event
+	let friendList = $('#friend_list').find('#friend-list-box').find('li');
+	for (let i = 0; i < friendList.length; i++) {
+		friendList[i].addEventListener('dblclick', () => connect(friendList[i]));
+	}
+	//	ondblclick='connect(this);'
 	// message 보내기
 	$("#chat_writer").on("keyup", (e) => {
 		let header = document.getElementById('chat_header');
@@ -102,24 +110,6 @@ window.onload = function() {
 	})
 
 }
-
-function popOpen() {
-	var modalPop = $('.modal-wrap');
-	var modalBg = $('.modal-bg');
-
-	$(modalPop[0]).show();
-	$(modalBg[0]).show();
-}
-
-function popClose() {
-	var modalPop = $('.modal-wrap');
-	var modalBg = $('.modal-bg');
-
-	$(modalPop[0]).hide();
-	$(modalBg[0]).hide();
-
-}
-
 
 var sessionContainer = [];
 
@@ -212,11 +202,12 @@ function getMessages(roomId) {
 		$('#chat_msg_template').html(messageHtml);
 
 	});
-	
+
 	// 채팅 맨밑으로 내림
 	let wrap = document.getElementById('chat_msg_template');
 	let lastChildDiv = wrap.lastChild;
-	lastChildDiv.lastChild.scrollIntoView();
+	if (lastChildDiv != null)
+		lastChildDiv.lastChild.scrollIntoView();
 }
 
 // message를 subscribe해서 view에 뿌려주는 method
@@ -310,7 +301,7 @@ function enterRoom(el, roomId) {
 		msgSubscription.unsubscribe();
 	}
 
-	
+
 
 	msgSubscription = stomp.subscribe("/sub/chat/room/" + roomId, function(chat) {
 		let obj = JSON.parse(chat.body);

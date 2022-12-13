@@ -88,6 +88,10 @@ function addChatRoom() {
 
 	$('#modal-chatroom-list-box').html(checkHtml);
 
+	for (let i = 0; i < friendList.length; i++) {
+		$($('#modal-chatroom-list-box').find('li')[i]).show();
+	}
+
 }
 
 function modalAddChatRoomClose() {

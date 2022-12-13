@@ -115,6 +115,12 @@ window.onload = function() {
 
 	})
 
+
+	let searchInput = document.getElementById('searchText');
+	searchInput.addEventListener('change', (e) => {
+		search(e);
+	});
+
 }
 
 function makeChatRoom() {
@@ -130,7 +136,7 @@ function makeChatRoom() {
 		if (friendModalList[i].checked) {
 			chatRoomUser.push($('#modal-chatroom-list-box').find('li')[i].id);
 			roomName += "," + $($('#modal-chatroom-list-box').find('li')[i]).find('.friend-title').text();
-
+			
 			checkCnt++;
 		}
 	}
@@ -152,7 +158,7 @@ function makeChatRoom() {
 		if (!enterRoom(response.roomId)) return;
 		searchRoomInfo(response.roomId);
 		getMessages(response.roomId);
-		
+
 		modalAddChatRoomClose();
 	})
 
@@ -401,6 +407,28 @@ function updateChatRoom(message) {
 		}
 	}
 
+
+}
+
+function search(event) {
+	let friendListBox = $('#friend-list-box');
+	let eventVal = event.target.value;
+	console.log(eventVal)
+	if (friendListBox[0].style.display == 'none') {
+		// 채팅방 목록 보임
+
+	} else {
+		// 친구 목록 보임
+		console.log('친구목록')
+		let friendNames = $('#friend-list-box').find('.friend-title');
+		for (let i = 0; i < friendNames.length; i++) {
+			if (friendNames[i].textContent.match(eventVal)) {
+				$($('#friend_list').find('#friend-list-box').find('li')[i]).show();
+			} else {
+				$($('#friend_list').find('#friend-list-box').find('li')[i]).hide();
+			}
+		}
+	}
 
 }
 

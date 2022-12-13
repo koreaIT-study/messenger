@@ -191,6 +191,7 @@ function searchRoom(el) {
 		};
 		jsAjaxPostJsonCall('/chat/room', param, (response) => {
 			room = response;
+			el.dataset.rid = room.roomId;
 		})
 	} else {
 		jsParamAjaxCall('GET', '/chat/room?roomId=' + roomId, {}, function(response) {
@@ -308,7 +309,7 @@ function myMessage(message) {
 	let myMessage = "<div class='my_chat_flexable'>";
 	myMessage += "<span class='no_read_cnt'>2</span><span class='write_date'>";
 	myMessage += `${message.timestamp.split('.')[0]}</span>`;
-	myMessage += "<div class='my_chat'>" + message.message + "</div></div>";
+	myMessage += "<div class='my_chat'>" + message.message.replaceAll("\n", `<br>`) + "</div></div>";
 
 	return myMessage;
 }
@@ -323,7 +324,7 @@ function myMessageTemplate(messages, message) {
 
 function otherMessage(message) {
 	let otherMessage = "<div class='chat_msg_flexable'>";
-	otherMessage += "<div class='chat_msg'>" + message.message + "</div>";
+	otherMessage += "<div class='chat_msg'>" + message.message.replaceAll(`\n`, `<br>`) + "</div>";
 	otherMessage += "<span class='no_read_cnt'>1</span><span class='write_date'>";
 	otherMessage += message.timestamp.split('.')[0] + "</span></div>";
 
@@ -391,7 +392,7 @@ function updateChatRoom(message) {
 		roomHtml += '<div class="friend-title">';
 		roomHtml += message.roomName + '<span class="chatRoomLi">' + message.cnt + '</span>';
 		roomHtml += '<span class="chatRoomLi right time">' + message.timestamp.split('.')[0] + '</span></div>';
-		roomHtml += '<div class="friend-msg">' + message.message + '</div></div></li>';
+		roomHtml += '<div class="friend-msg">' + message.message.replaceAll(`\n`, `<br>`) + '</div></div></li>';
 
 		$(roomList).prepend(roomHtml);
 	}
@@ -401,7 +402,7 @@ function updateChatRoom(message) {
 	for (let i = 0; i < roomListChild.length; i++) {
 		if (roomListChild[i].dataset.rid == message.roomId) {
 			$(roomListChild[i]).find('.chatRoomLi.right.time').html(message.timestamp.split('.')[0]);
-			$(roomListChild[i]).find('.friend-msg').html(message.message);
+			$(roomListChild[i]).find('.friend-msg').html(message.message.replaceAll(`\n`, `<br>`));
 			roomList.prepend($(roomListChild)[i]);
 			break;
 		}

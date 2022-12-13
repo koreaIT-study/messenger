@@ -95,19 +95,13 @@
 	width: 230px;
 	vertical-align: top;
 	font-weight: bold;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
 }
 
 .friend-msg {
 	font-size: 14px;
-	display: inline-block;
-	width: 230px;
-	vertical-align: sub;
-	color: gray;
-}
-
-.friend-msg {
-	font-size: 14px;
-	display: inline-block;
 	width: 200px;
 	max-width: 200px;
 	vertical-align: sub;
@@ -115,6 +109,9 @@
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
+	display: -webkit-box;
+	-webkit-line-clamp: 1;
+	-webkit-box-orient: vertical;
 }
 
 ul {

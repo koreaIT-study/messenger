@@ -2,20 +2,23 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-	<meta charset="UTF-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" href="css/common.css">
-	<link rel="stylesheet" href="css/chat.css">
-	<link rel="stylesheet" href="css/friends.css">
-	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
-	<script src="js/chat.js"></script>
-	<script src="js/friend.js"></script>
-	<script src="/js/cmmn-ajax.js"></script>
-	<script src="/js/cmmn-alert.js"></script>
-	<title>대화창</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="css/common.css">
+<link rel="stylesheet" href="css/chat.css">
+<link rel="stylesheet" href="css/friends.css">
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script
+	src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<script src="js/chat.js"></script>
+<script src="js/friend.js"></script>
+<script src="js/modal.js"></script>
+<script src="/js/cmmn-ajax.js"></script>
+<script src="/js/cmmn-alert.js"></script>
+<title>대화창</title>
 </head>
 
 <body>
@@ -23,28 +26,30 @@
 		<!-- header -->
 		<div id="header">
 			<div class="header_icon">
-				<img src="img/menu_profile.png" alt="" id="friendListBtn" onclick="getFriendListMenu();">
-				<img src="img/menu_chat.png" alt="" id="chatListBtn" onclick="getChatRoomListMenu()">
+				<img src="img/menu_profile.png" alt="" id="friendListBtn"
+					onclick="getFriendListMenu();"> <img src="img/menu_chat.png"
+					alt="" id="chatListBtn" onclick="getChatRoomListMenu()">
 			</div>
 			<div class="header_icon header_profile">
 				<div id="logout" onclick="location.href='logout'" class='off'>로그아웃</div>
 				<img src="img/my_profile.png" alt="" id="profileBtn">
 			</div>
-			<input type="hidden" th:value="${userId}" id="myId">
-			<input type="hidden" th:value="${userName}" id="myName">
+			<input type="hidden" th:value="${userId}" id="myId"> <input
+				type="hidden" th:value="${userName}" id="myName">
 		</div>
 		<!-- 친구목록  -->
 		<div id="friend_list">
 			<div id="search_box">
 				<div class="search_div">
-					<input type="text" id="searchText" class="search-text">
-					<label for="searchText" class="search_input">
-						<img src="img/search.png" class="btn_img">
+					<input type="text" id="searchText" class="search-text"> <label
+						for="searchText" class="search_input"> <img
+						src="img/search.png" class="btn_img">
 					</label>
 				</div>
 				<div class="search_btn">
-					<img src="img/chat_plus.png" class="btn_img" id="chatPlusBtn" onclick="addChatRoom()">
-					<img src="img/friend-plus.png" class="btn_img" id="friend-plus" onclick="popOpen()">
+					<img src="img/chat_plus.png" class="btn_img" id="chatPlusBtn"
+						onclick="addChatRoom()"> <img src="img/friend-plus.png"
+						class="btn_img" id="friend-plus" onclick="popOpen()">
 				</div>
 			</div>
 			<div id="list-box">
@@ -78,8 +83,10 @@
 			<div id="chat_writer_wrap">
 				<form action="" method="post" enctype="multipart/form-data">
 					<div id="chat_writer_header">
-						<label for="send_file"> <img src="img/send_file.png" alt="">
-						</label> <input type="file" name="" id="send_file" multiple onchange="sendFile()">
+						<label for="send_file"> <img src="img/send_file.png"
+							alt="">
+						</label> <input type="file" name="" id="send_file" multiple
+							onchange="sendFile()">
 						<div id="send_file_name"></div>
 					</div>
 					<div>
@@ -104,13 +111,31 @@
 				<div class="search_result">
 					<div id="modal_list-box">
 						<ul id="modal_friend-list-box">
-							<!-- <li>
-								<div class='friend-box'>
-									<div class='friend-profil'></div>
-									<div class='friend-title'> 민석홍 </div>
-									<div class='friend-msg'>상메상메상메</div>
-								</div>
-							</li> -->
+							<!-- friend list -->
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal-addChatRoom-bg" onclick="modalAddChatRoomClose()"></div>
+	<div id="modal-addChatRoom">
+		<div class="modal-search-wrap">
+			<div class="search_wrap">
+				<button type="button" value="만들기" class="btnMakeChatRoom"
+					onclick="makeChatRoom();">만들기</button>
+				<input type="text" id="modalSearchText" class="search-text"
+					style="width: 85px" onkeydown="searchUser(event)"> <label
+					for="modalSearchText" class="search_input"> <img
+					src="img/search.png" class="btn_img">
+				</label>
+			</div>
+			<div class="search_result_wrap">
+				<div class="search_result">
+					<div id="chatroom_list-box">
+						<ul id="modal-chatroom-list-box">
+							<!-- friend list -->
 						</ul>
 					</div>
 				</div>

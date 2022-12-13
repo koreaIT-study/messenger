@@ -24,9 +24,6 @@ public class ServerConnectController {
     @Autowired
     private WebClient webClient;
 
-    @Autowired
-    private HttpSession httpSession;
-
     /**
      * 모든 메시지 가져오는 method
      * 
@@ -35,27 +32,13 @@ public class ServerConnectController {
      */
     @GetMapping(value="/get-chat-message/{roomId}")
     public List<ChatMessageDTO> getChatMessage(@PathVariable("roomId") String roomId) {
-        // Mono<List<ChatMessageDTO>> resp = webClient.mutate()
-        // .build()
-        // .get()
-        // .uri("/get-chat-message?roomId=" + roomId)
-        // .retrieve()
-        // .bodyToMono(new ParameterizedTypeReference<List<ChatMessageDTO>>() {
-        // });
-
-        List<ChatMessageDTO> resp = webClient.mutate()
+        return webClient.mutate()
             .build()
             .get()
             .uri("/get-chat-message?roomId=" + roomId)
             .retrieve()
             .bodyToFlux(ChatMessageDTO.class)
             .collectList().block();
-        
-        log.info("Resp::"+resp);
-//        List<ChatMessageDTO> messageList = resp.collectSortedList((o1, o2) -> o1.getTimestamp()
-//            .compareTo(o2.getTimestamp()));
-//            .block();
-        return resp;
     }
 
 }

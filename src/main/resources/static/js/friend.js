@@ -13,7 +13,7 @@ function getFriendList() {
 			let friendListHtml = "";
 
 			for (let i = 0; i < friendList.length; i++) {
-				friendListHtml += "<li id='" + friendList[i].friendId + "' data-rid='" + (friendList[i].roomId ?? '') + "' data-uid='" + friendList[i].friendId + "' data-group='N' ondblclick='connect(this);'>"
+				friendListHtml += "<li id='" + friendList[i].friendId + "' data-rid='" + (friendList[i].roomId ?? '') + "' data-uid='" + friendList[i].friendId + "' data-group='N' >"
 				friendListHtml += "<div class='friend-box'>"
 				friendListHtml += "<div class='friend-profil'></div>"
 				friendListHtml += "<div class='friend-title'>" + friendList[i].name + "</div>"
@@ -63,9 +63,12 @@ function chatRoomHide() {
 }
 
 window.onload = function() {
+
+
 	document.getElementById('friendListBtn').click();
 	getFriendList();
 	getRoomList();
+
 
 	//	let sockJs = new SockJS("/stomp/chat");
 	//	let stomp = Stomp.over(sockJs);
@@ -79,7 +82,12 @@ window.onload = function() {
 		})
 	})
 
-
+	// friend list에 connect event
+	let friendList = $('#friend_list').find('#friend-list-box').find('li');
+	for (let i = 0; i < friendList.length; i++) {
+		friendList[i].addEventListener('dblclick', () => connect(friendList[i]));
+	}
+	//	ondblclick='connect(this);'
 	// message 보내기
 	$("#chat_writer").on("keyup", (e) => {
 		let header = document.getElementById('chat_header');
@@ -87,8 +95,14 @@ window.onload = function() {
 		e.preventDefault();
 		if (e.keyCode != 13) return;
 		if (e.shiftKey) return;
+		if ($("#chat_writer").val().trim() == '' || $("#chat_writer").val() == '\n') {
+			$("#chat_writer").val('');
+			$("#chat_writer").focus();
+			return;
+		}
 
 		let $textArea = $("#chat_writer");
+
 		let param = {
 			roomId: header.dataset.rid,
 			writer: $('#myId').val(),
@@ -103,23 +117,46 @@ window.onload = function() {
 
 }
 
-function popOpen() {
-	var modalPop = $('.modal-wrap');
-	var modalBg = $('.modal-bg');
+function makeChatRoom() {
+	let friendModalList = $('[name=friend-modal]');
+	const userId = $('#myId').val();
+	let chatRoomUser = [];
+	chatRoomUser.push(userId);
 
-	$(modalPop[0]).show();
-	$(modalBg[0]).show();
+	let checkCnt = 0;
+	let roomName = $('#myName').val();
+
+	for (let i = 0; i < friendModalList.length; i++) {
+		if (friendModalList[i].checked) {
+			chatRoomUser.push($('#modal-chatroom-list-box').find('li')[i].id);
+			roomName += "," + $($('#modal-chatroom-list-box').find('li')[i]).find('.friend-title').text();
+
+			checkCnt++;
+		}
+	}
+
+	if (checkCnt == 0) {
+		alert('1명 이상 check 해주세요.');
+		return;
+	}
+
+	let param = {
+		roomName: roomName,
+		isGroup: 'Y',
+		userId: chatRoomUser
+	};
+	console.log("param::::", param)
+
+	jsAjaxPostJsonCall('/chat/room', param, (response) => {
+		$('#chat').show();
+		if (!enterRoom(response.roomId)) return;
+		searchRoomInfo(response.roomId);
+		getMessages(response.roomId);
+		
+		modalAddChatRoomClose();
+	})
+
 }
-
-function popClose() {
-	var modalPop = $('.modal-wrap');
-	var modalBg = $('.modal-bg');
-
-	$(modalPop[0]).hide();
-	$(modalBg[0]).hide();
-
-}
-
 
 var sessionContainer = [];
 
@@ -127,11 +164,11 @@ function connect(el) {
 	let room = searchRoom(el);
 	let roomId = room.roomId;
 	$('#chat').show();
-	if (!enterRoom(el, roomId)) return;
+	if (!enterRoom(roomId)) return;
+	searchRoomInfo(roomId);
 	getMessages(roomId);
 }
 
-let test;
 function searchRoom(el) {
 	let roomId = $(el).data('rid');
 	let userId = $(el).data('uid');
@@ -149,15 +186,25 @@ function searchRoom(el) {
 		jsAjaxPostJsonCall('/chat/room', param, (response) => {
 			room = response;
 		})
-	} else {	
+	} else {
 		jsParamAjaxCall('GET', '/chat/room?roomId=' + roomId, {}, function(response) {
 			room = response;
 		})
 	}
-	
+
 	return room;
 }
 
+function searchRoomInfo(roomId) {
+	// roomId로 채팅방 정보를 찾아주는 method
+	jsParamAjaxCall('GET', '/chat/room?roomId=' + roomId, {}, function(response) {
+		console.log("search room info")
+		console.log(response)
+		let title = $('.chat_title').children();
+		title[0].innerHTML = response.roomName;
+		title[1].innerHTML = "멤버 " + response.cnt;
+	});
+}
 
 
 function getMessages(roomId) {
@@ -202,12 +249,21 @@ function getMessages(roomId) {
 		$('#chat_msg_template').html(messageHtml);
 
 	});
+
+	// 채팅 맨밑으로 내림
+	let wrap = document.getElementById('chat_msg_template');
+	let lastChildDiv = wrap.lastChild;
+	if (lastChildDiv != null)
+		lastChildDiv.lastChild.scrollIntoView();
 }
 
 // message를 subscribe해서 view에 뿌려주는 method
 function subMessage(message) {
+
+
 	let wrap = document.getElementById('chat_msg_template');
 	let lastChildDiv = wrap.lastChild;
+
 	let lastWriter = "";
 	if (lastChildDiv != null) {
 		lastWriter = wrap.lastChild.dataset.uid;
@@ -229,6 +285,9 @@ function subMessage(message) {
 		else
 			wrap.innerHTML += otherMessageTemplate(otherMessage(message).trim(), message);
 	}
+
+	lastChildDiv.lastChild.scrollIntoView();
+
 }
 
 function isMyMessage(message) {
@@ -277,16 +336,19 @@ function otherMessageTemplate(messages, message) {
 	return otherTemplate;
 }
 
-function enterRoom(el, roomId) {
+function enterRoom(roomId) {
 	let header = document.getElementById('chat_header');
 	let curRoomId = header.dataset.rid;
 	if (curRoomId == roomId) return false;
 
 	header.dataset.rid = roomId;
 
+
 	if (msgSubscription != '') {
 		msgSubscription.unsubscribe();
 	}
+
+
 
 	msgSubscription = stomp.subscribe("/sub/chat/room/" + roomId, function(chat) {
 		let obj = JSON.parse(chat.body);

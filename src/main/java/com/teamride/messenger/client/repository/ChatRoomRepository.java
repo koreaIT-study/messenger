@@ -1,20 +1,10 @@
 package com.teamride.messenger.client.repository;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-
-import javax.annotation.PostConstruct;
-
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.reactive.function.client.WebClient;
-
-import com.teamride.messenger.client.dto.ChatMessageDTO;
 import com.teamride.messenger.client.dto.ChatRoomDTO;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;

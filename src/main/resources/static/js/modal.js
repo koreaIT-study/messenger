@@ -1,92 +1,106 @@
 function popOpen() {
-	var modalPop = $('.modal-wrap');
-	var modalBg = $('.modal-bg');
+	const modalPop = $(".modal-wrap");
+	const modalBg = $(".modal-bg");
 
 	$(modalPop[0]).show();
 	$(modalBg[0]).show();
 }
 
 function popClose() {
-	var modalPop = $('.modal-wrap');
-	var modalBg = $('.modal-bg');
+	const modalPop = $(".modal-wrap");
+	const modalBg = $(".modal-bg");
 
 	$(modalPop[0]).hide();
 	$(modalBg[0]).hide();
-
 }
 
 // 친구 찾기
 function searchUser(e) {
-	const searchInput = document.querySelector('#modalSearchText').value;
-	if (e.key === 'Enter') {
+	const searchInput = document.querySelector("#modalSearchText").value;
+	const userId = document.querySelector('#myId').value;
+	if (e.key === "Enter" || e === 'Click') {
 		const param = {
-			searchKey: searchInput
-		}
+			searchKey: searchInput,
+			userId: userId
+		};
+
 		if (searchInput) {
-			jsParamAjaxCall('GET', '/searchUser', param, function(response) {
+			jsParamAjaxCall("GET", "/searchUser", param, function(response) {
 				const errno = response.errno;
 				if (errno === 0) {
 					const data = response.data;
 
 					let friendListHtml = "";
 					let i = 0;
-					data.forEach(el => {
-						friendListHtml += "<li friendId='" + data[i].id + "' email='" + (data[i].email ?? '') + "'ondblclick='addFriend(this);'>"
-						friendListHtml += "<div class='friend-box'>"
-						friendListHtml += "<div class='friend-profil'></div>"
-						friendListHtml += "<div class='friend-title'>" + data[i].name + "</div>"
-						friendListHtml += "<div class='friend-msg'>상메상메상메</div>"
-						friendListHtml += "</div>"
-						friendListHtml += "</li>"
+					data.forEach((el) => {
+						friendListHtml += "<li friendId='" + data[i].id + "' email='" + (data[i].email ?? "") + "'ondblclick='addFriend(this);'>";
+						friendListHtml += "<div class='friend-box'>";
+						friendListHtml += "<div class='friend-profil'></div>";
+						friendListHtml += "<div class='friend-title'>" + data[i].name + "</div>";
+						friendListHtml += "<div class='friend-msg'>상메상메상메</div>";
+						friendListHtml += "</div>";
+						friendListHtml += "</li>";
 					});
-					document.querySelector('#modal_friend-list-box').innerHTML = friendListHtml;
+					document.querySelector("#modal_friend-list-box").innerHTML =
+						friendListHtml;
 				} else {
 					_cmmnAlert.getFailed();
 				}
-			})
+			});
 		}
 	}
 }
 
 function addFriend(el) {
-	const userId = document.querySelector('#myId').value;
-	const friendId = el.getAttribute('friendId');
+	const userId = document.querySelector("#myId").value;
+	const friendId = el.getAttribute("friendId");
 
 	const params = {
 		userId,
-		friendId
-	}
+		friendId,
+	};
+	let check = true;
 
-	jsAjaxPostJsonCall('/addFriend', params, function(response) {
-		const errno = response.errno;
-		if (errno === 0) {
-			alert('친구 추가 되었습니다.');
-			getFriendList();
-		} else {
-			_cmmnAlert.postFailed();
+	document.querySelectorAll("#friend-list-box > li").forEach((el) => {
+		const id = el.getAttribute("data-uid");
+		if (friendId === id) {
+			alert("이미 등록된 친구입니다.");
+			check = false;
 		}
-	})
+	});
+
+	if (check) {
+		jsAjaxPostJsonCall("/addFriend", params, function(response) {
+			const errno = response.errno;
+			if (errno === 0) {
+				alert("친구 추가 되었습니다.");
+				getFriendList();
+			} else {
+				_cmmnAlert.postFailed();
+			}
+		});
+	}
 }
 
 // modal 채팅방
 function addChatRoom() {
-	let modalPop = $('#modal-addChatRoom');
-	let modalBg = $('.modal-addChatRoom-bg');
+	const modalPop = $("#modal-addChatRoom");
+	const modalBg = $(".modal-addChatRoom-bg");
 
 	$(modalPop[0]).show();
 	$(modalBg[0]).show();
 
-	let friendList = $('#friend_list').find('#friend-list-box').find('li');
+	const friendList = $("#friend_list").find("#friend-list-box").find("li");
 	let checkHtml = "";
 	for (let i = 0; i < friendList.length; i++) {
 		checkHtml += `<input type="checkbox" name="friend-modal" id="friend-modal-${friendList[i].id}">
 			<label for="friend-modal-${friendList[i].id}">
 			${friendList[i].outerHTML}
 			</label>
-			`
+			`;
 	}
 
-	$('#modal-chatroom-list-box').html(checkHtml);
+	$("#modal-chatroom-list-box").html(checkHtml);
 
 	for (let i = 0; i < friendList.length; i++) {
 		$($('#modal-chatroom-list-box').find('li')[i]).show();
@@ -95,11 +109,9 @@ function addChatRoom() {
 }
 
 function modalAddChatRoomClose() {
-	let modalPop = $('#modal-addChatRoom');
-	let modalBg = $('.modal-addChatRoom-bg');
+	const modalPop = $("#modal-addChatRoom");
+	const modalBg = $(".modal-addChatRoom-bg");
 
 	$(modalPop[0]).hide();
 	$(modalBg[0]).hide();
 }
-
-

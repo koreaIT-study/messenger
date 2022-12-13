@@ -38,8 +38,10 @@
                         <span>
                             <input type="text" id="email" name="email" placeholder="이메일" title="이메일" value=""
                                 style="width: 56%;">
-                            <button type="button" class="btn_sign_up" id="checkEmail" onclick="checkEmail()">이메일
-                                확인</button>
+                            <button type="button" class="btn_sign_up" id="checkEmail">이메일
+                                 확인</button>
+                            <!-- <button type="button" class="btn_sign_up" id="checkEmail" onclick="checkEmail()">이메일
+                                 확인</button> -->
                         </span>
                         <span class="checkInput" style="display: none;">
                             <input type="text" id="authNumInput" placeholder="인증번호 6자리를 입력해주세요." style="width: 56%;">
@@ -137,29 +139,24 @@
                 return;
             }
 
-            const param = {
-                name,
-                email,
-                password
-            }
+            const body = JSON.stringify({
+                name : name,
+                email : email,
+                pwd: password
+            })
 
-            $.ajax({
-                type: 'get',
-                url: '/signUp',
-                data: param,
-                success: function (response) {
-                    console.log("🚀 ~ file: sign_up.html ~ line 81 ~ checkEmail ~ response", response)
-                    const errno = response.errno;
+            const file = document.querySelector('#profile').files[0];
 
-                    if (errno === 0) {
-                        checkInput.style.display = "block";
-                        SignUp.authNumber = response.data;
-                        alert('인증번호가 전송되었습니다.')
-                    } else {
-                        alert('처리를 실패했습니다.');
-                    }
-                }
-            });
+            const formData = new FormData();
+            formData.append('body', body);
+            formData.append('file', file)
+
+            fetch('http://localhost:8081/signUp', {
+                method: 'POST',
+                body: formData
+            }).then((response) =>
+                console.log(response)
+            )
         }
     </script>
 

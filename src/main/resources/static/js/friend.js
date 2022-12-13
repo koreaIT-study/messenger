@@ -118,6 +118,38 @@ window.onload = function() {
 }
 
 function makeChatRoom() {
+	let friendModalList = $('[name=friend-modal]');
+	const userId = $('#myId').val();
+	let chatRoomUser = [];
+	chatRoomUser.push(userId);
+
+	let checkCnt = 0;
+	let roomName = $('#myName').val();
+
+	for (let i = 0; i < friendModalList.length; i++) {
+		if (friendModalList[i].checked) {
+			chatRoomUser.push($('#modal-chatroom-list-box').find('li')[i].id);
+			roomName += "," + $($('#modal-chatroom-list-box').find('li')[i]).find('.friend-title').text();
+
+			checkCnt++;
+		}
+	}
+
+	if (checkCnt == 0) {
+		alert('1명 이상 check 해주세요.');
+		return;
+	}
+
+	let param = {
+		roomName: roomName,
+		isGroup: 'Y',
+		userId: chatRoomUser
+	};
+	console.log("param::::", param)
+
+	jsAjaxPostJsonCall('/chat/room', param, (response) => {
+		updateChatRoom(response);
+	})
 
 }
 

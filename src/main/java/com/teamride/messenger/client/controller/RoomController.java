@@ -23,29 +23,31 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 public class RoomController {
 
-    private final ChatRoomRepository chatRoomRepository;
-    private final HttpSession httpSession;
-    
-    @GetMapping(value = "/getRoomList")
-    public List<ChatRoomDTO> rooms() {
-        log.info("# All Chat Rooms");
-        int userId =  (int) httpSession.getAttribute(Constants.LOGIN_SESSION);
-        return chatRoomRepository.findAllRooms(userId);
-    }
+	private final ChatRoomRepository chatRoomRepository;
+	private final HttpSession httpSession;
 
-     @PostMapping(value = "/room")
-     public ChatRoomDTO create(@RequestBody ChatRoomDTO room) {
-         log.info("# Create Chat Room , name: " + room);
-         log.info("chatRoomRepository : {}", chatRoomRepository);
-         return chatRoomRepository.createChatRoomDTO(room);
-     }
+	@GetMapping(value = "/getRoomList")
+	public List<ChatRoomDTO> rooms() {
+		log.info("# All Chat Rooms");
+		int userId = (int) httpSession.getAttribute(Constants.LOGIN_SESSION);
+		return chatRoomRepository.findAllRooms(userId);
+	}
 
-    @GetMapping(value = "/room")
-    public ChatRoomDTO getRoom(String roomId) {
-        log.info("# get Chat Room, roomID : " + roomId);
-        ChatRoomDTO chatRoomDTO = chatRoomRepository.getRoom(roomId);
-        log.info("chatRoom dto::"+chatRoomDTO);
-        return chatRoomDTO;
-    }
-    
+	@PostMapping(value = "/room")
+	public ChatRoomDTO create(@RequestBody ChatRoomDTO room) {
+		ChatRoomDTO chatRoomDTO = chatRoomRepository.createChatRoomDTO(room);
+		log.info("# Create Chat Room :: " + chatRoomDTO);
+		chatRoomDTO.setTimestamp("2022-12-13 04:52:40.265001");
+		chatRoomDTO.setCnt(room.getRoomName().split(",").length);
+		return chatRoomDTO;
+	}
+
+	@GetMapping(value = "/room")
+	public ChatRoomDTO getRoom(String roomId) {
+		log.info("# get Chat Room, roomID : " + roomId);
+		ChatRoomDTO chatRoomDTO = chatRoomRepository.getRoom(roomId);
+		log.info("chatRoom dto::" + chatRoomDTO);
+		return chatRoomDTO;
+	}
+
 }

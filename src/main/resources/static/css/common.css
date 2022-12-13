@@ -125,4 +125,5 @@ html {
 	height: 38px;
 	background: RGB(198, 189, 244);
 	border: none;
+	cursor: pointer;
 }

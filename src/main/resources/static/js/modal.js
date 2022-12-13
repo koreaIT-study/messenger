@@ -79,7 +79,7 @@ function addChatRoom(){
 		let friendList = $('#friend_list').find('#friend-list-box').find('li');
 		let checkHtml = "";
 		for(let i =0;i<friendList.length;i++){
-			checkHtml += `<input type="checkbox" id="friend-modal-${friendList[i].id}">
+			checkHtml += `<input type="checkbox" name="friend-modal" id="friend-modal-${friendList[i].id}">
 			<label for="friend-modal-${friendList[i].id}">
 			${friendList[i].outerHTML}
 			</label>

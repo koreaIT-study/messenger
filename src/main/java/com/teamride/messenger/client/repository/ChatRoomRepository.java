@@ -16,23 +16,16 @@ public class ChatRoomRepository {
 
     private final WebClient webClient;
 
-    public List<ChatRoomDTO> findAllRooms(int userId) {
+    public Flux<ChatRoomDTO> findAllRooms(int userId) {
         Flux<ChatRoomDTO> resp = webClient.mutate()
             .build()
             .get()
             .uri("/get-room-list?userId=" + userId)
             .retrieve()
             .bodyToFlux(ChatRoomDTO.class);
-
-        List<ChatRoomDTO> roomList = resp.collectSortedList((o1, o2) -> {
-            return o1.getTimestamp()
-                .compareTo(o2.getTimestamp());
-
-        })
-            .block();
-
-        log.info("roomList::" + roomList);
-        return roomList;
+        
+        log.info("roomList::" + resp);
+        return resp;
     }
 
     public ChatRoomDTO findRoomById(String roomId) {

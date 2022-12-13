@@ -27,6 +27,12 @@ function getFriendList() {
 			_cmmnAlert.getFailed();
 		}
 	});
+	
+	// friend list에 connect event
+	let friendList = $('#friend_list').find('#friend-list-box').find('li');
+	for (let i = 0; i < friendList.length; i++) {
+		friendList[i].addEventListener('dblclick', () => connect(friendList[i]));
+	}
 }
 
 function getRoomList() {
@@ -82,11 +88,7 @@ window.onload = function() {
 		})
 	})
 
-	// friend list에 connect event
-	let friendList = $('#friend_list').find('#friend-list-box').find('li');
-	for (let i = 0; i < friendList.length; i++) {
-		friendList[i].addEventListener('dblclick', () => connect(friendList[i]));
-	}
+	
 	//	ondblclick='connect(this);'
 	// message 보내기
 	$("#chat_writer").on("keyup", (e) => {

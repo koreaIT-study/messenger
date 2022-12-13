@@ -1,7 +1,5 @@
 package com.teamride.messenger.client.controller;
 
-import java.util.List;
-
 import javax.servlet.http.HttpSession;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +14,7 @@ import com.teamride.messenger.client.repository.ChatRoomRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import reactor.core.publisher.Flux;
 
 @RequiredArgsConstructor
 @RequestMapping(value = "/chat")
@@ -27,7 +26,7 @@ public class RoomController {
 	private final HttpSession httpSession;
 
 	@GetMapping(value = "/getRoomList")
-	public List<ChatRoomDTO> rooms() {
+	public Flux<ChatRoomDTO> rooms() {
 		log.info("# All Chat Rooms");
 		int userId = (int) httpSession.getAttribute(Constants.LOGIN_SESSION);
 		return chatRoomRepository.findAllRooms(userId);

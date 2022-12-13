@@ -95,8 +95,14 @@ window.onload = function() {
 		e.preventDefault();
 		if (e.keyCode != 13) return;
 		if (e.shiftKey) return;
+		if ($("#chat_writer").val().trim() == '' || $("#chat_writer").val() == '\n') {
+			$("#chat_writer").val('');
+			$("#chat_writer").focus();
+			return;
+		}
 
 		let $textArea = $("#chat_writer");
+
 		let param = {
 			roomId: header.dataset.rid,
 			writer: $('#myId').val(),
@@ -108,6 +114,10 @@ window.onload = function() {
 		stomp.send("/pub/chat/message", {}, JSON.stringify(param));
 
 	})
+
+}
+
+function makeChatRoom() {
 
 }
 

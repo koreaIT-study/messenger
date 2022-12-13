@@ -1,7 +1,5 @@
 package com.teamride.messenger.client.service;
 
-import javax.servlet.http.HttpSession;
-
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -17,14 +15,11 @@ import lombok.extern.slf4j.Slf4j;
 public class StompChatService {
     // 특정 Broker로 메세지를 전달
     private final SimpMessagingTemplate template;
-
-    private final HttpSession httpSession;
-
     // 특정 채팅방 목적지
-    private final String destination = "/sub/chat/room/";
+    private final static String destination = "/sub/chat/room/";
 
     // 채팅방 목록 목적지
-    private final String destinationRoomList = "/sub/chat/roomList/";
+    private final static String destinationRoomList = "/sub/chat/roomList/";
 
     public void sendMessage(ChatMessageDTO message) {
         template.convertAndSend(destination + message.getRoomId(), message);

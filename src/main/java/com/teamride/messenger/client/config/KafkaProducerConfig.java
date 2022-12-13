@@ -17,8 +17,6 @@ import com.teamride.messenger.client.dto.ChatMessageDTO;
 @EnableKafka
 @Configuration
 public class KafkaProducerConfig {
-//    @Value("${spring.kafka.producer.bootstrap-servers}")
-//    private List<String> bootstrapServer;
     
     @Bean
     public ProducerFactory<String, ChatMessageDTO> producerFactory() {

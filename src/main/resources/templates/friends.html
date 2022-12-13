@@ -97,7 +97,7 @@
 			<div class="search_div">
 				<input type="text" id="modalSearchText" class="search-text" onkeydown="searchUser(event)">
 				<label for="modalSearchText" class="search_input">
-					<img src="img/search.png" class="btn_img">
+					<img src="img/search.png" class="btn_img" onclick="searchUser('click')">
 				</label>
 			</div>
 			<div class="search_result_wrap">
@@ -120,6 +120,10 @@
 
 </body>
 <script type="text/javascript">
+	const _FriendVO = {
+		kind: true,
+	}
+
 	const logoutWrap = document.querySelector('.header_profile');
 	const logoutEl = document.getElementById('logout');
 
@@ -131,14 +135,15 @@
 	});
 </script>
 
-<!-- 친구 찾기 -->
+<!-- 친구 등록 -->
 <script>
 	function searchUser(e) {
 		const searchInput = document.querySelector('#modalSearchText').value;
-		if (e.key === 'Enter') {
+		if (e.key === 'Enter' || e === 'click') {
 			const param = {
 				searchKey: searchInput
 			}
+
 			if (searchInput) {
 				jsParamAjaxCall('GET', '/searchUser', param, function (response) {
 					const errno = response.errno;
@@ -148,7 +153,11 @@
 						let friendListHtml = "";
 						let i = 0;
 						data.forEach(el => {
-							friendListHtml += "<li friendId='" + data[i].id + "' email='" + (data[i].email ?? '') + "'ondblclick='addFriend(this);'>"
+							if (_FriendVO.kind) {
+								friendListHtml += "<li friendId='" + data[i].id + "' email='" + (data[i].email ?? '') + "'ondblclick='addFriend(this);'>"
+							} else {
+								friendListHtml += "<li friendId='" + data[i].id + "' email='" + (data[i].email ?? '') + "'ondblclick='addChatRoom(this);'>"
+							}
 							friendListHtml += "<div class='friend-box'>"
 							friendListHtml += "<div class='friend-profil'></div>"
 							friendListHtml += "<div class='friend-title'>" + data[i].name + "</div>"
@@ -194,6 +203,24 @@
 				}
 			})
 		}
+	}
+</script>
+
+<!-- 채팅방 만들기 -->
+<script>
+	function addChatRoom() {
+		_FriendVO.kind = false;
+		searchUser('click');
+
+		const params = {
+			
+		}
+		document.querySelectorAll('#friend-list-box > li').forEach(el => {
+			const friendId = el.getAttribute('data-uid');
+			
+		});
+		let html = "";
+
 	}
 </script>
 

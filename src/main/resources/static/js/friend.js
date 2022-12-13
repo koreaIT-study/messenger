@@ -109,15 +109,15 @@ window.onload = function() {
 			message: $textArea.val(),
 			writerName: $('#myName').val()
 		};
+		console.log("메시지 보냄", $textArea.val())
 		$textArea.val('');
-		console.log("메시지 보냄")
 		stomp.send("/pub/chat/message", {}, JSON.stringify(param));
 
 	})
 
 
 	let searchInput = document.getElementById('searchText');
-	searchInput.addEventListener('change', (e) => {
+	searchInput.addEventListener('keyup', (e) => {
 		search(e);
 	});
 
@@ -136,7 +136,7 @@ function makeChatRoom() {
 		if (friendModalList[i].checked) {
 			chatRoomUser.push($('#modal-chatroom-list-box').find('li')[i].id);
 			roomName += "," + $($('#modal-chatroom-list-box').find('li')[i]).find('.friend-title').text();
-			
+
 			checkCnt++;
 		}
 	}
@@ -276,7 +276,7 @@ function subMessage(message) {
 		lastWriter = wrap.lastChild.dataset.uid;
 		//lastWriter = lastChildDiv.querySelector('.chat_person_name').textContent;
 	}
-	console.log("메세지 받았음!!");
+	console.log("메세지 받았음!!", message.message.replaceAll('\n','<br>'));
 
 	if (lastWriter == message.writer) {
 		if (isMyMessage(message)) {
@@ -293,7 +293,8 @@ function subMessage(message) {
 			wrap.innerHTML += otherMessageTemplate(otherMessage(message).trim(), message);
 	}
 
-	lastChildDiv.lastChild.scrollIntoView();
+	if (lastChildDiv != null)
+		lastChildDiv.lastChild.scrollIntoView();
 
 }
 
@@ -414,13 +415,19 @@ function updateChatRoom(message) {
 function search(event) {
 	let friendListBox = $('#friend-list-box');
 	let eventVal = event.target.value;
-	console.log(eventVal)
 	if (friendListBox[0].style.display == 'none') {
 		// 채팅방 목록 보임
+		let friendNames = $('#room-list-box').find('.friend-title');
+		for (let i = 0; i < friendNames.length; i++) {
+			if (friendNames[i].textContent.match(eventVal)) {
+				$($('#friend_list').find('#room-list-box').find('li')[i]).show();
+			} else {
+				$($('#friend_list').find('#room-list-box').find('li')[i]).hide();
+			}
+		}
 
 	} else {
 		// 친구 목록 보임
-		console.log('친구목록')
 		let friendNames = $('#friend-list-box').find('.friend-title');
 		for (let i = 0; i < friendNames.length; i++) {
 			if (friendNames[i].textContent.match(eventVal)) {

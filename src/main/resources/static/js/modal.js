@@ -115,3 +115,20 @@ function modalAddChatRoomClose() {
 	$(modalPop[0]).hide();
 	$(modalBg[0]).hide();
 }
+
+function search_modal(event) {
+	let eventVal = event.target.value;
+	// 친구 목록 보임
+	let friendList = $('#modal-addChatRoom').find('li');
+	let friendNames = $('#modal-addChatRoom').find('.friend-title');
+	
+	for (let i = 0; i < friendList.length; i++) {
+		if (friendNames[i].textContent.match(eventVal)) {
+			$(friendList[i]).show();
+			$($('[name=friend-modal]')[i]).show();
+		} else {
+			$(friendList[i]).hide();
+			$($('[name=friend-modal]')[i]).hide();
+		}
+	}
+}

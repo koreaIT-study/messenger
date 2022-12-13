@@ -37,8 +37,6 @@ public class RoomController {
 	public ChatRoomDTO create(@RequestBody ChatRoomDTO room) {
 		ChatRoomDTO chatRoomDTO = chatRoomRepository.createChatRoomDTO(room);
 		log.info("# Create Chat Room :: " + chatRoomDTO);
-		chatRoomDTO.setTimestamp("2022-12-13 04:52:40.265001");
-		chatRoomDTO.setCnt(room.getRoomName().split(",").length);
 		return chatRoomDTO;
 	}
 

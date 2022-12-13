@@ -148,7 +148,12 @@ function makeChatRoom() {
 	console.log("param::::", param)
 
 	jsAjaxPostJsonCall('/chat/room', param, (response) => {
-		updateChatRoom(response);
+		$('#chat').show();
+		if (!enterRoom(response.roomId)) return;
+		searchRoomInfo(response.roomId);
+		getMessages(response.roomId);
+		
+		modalAddChatRoomClose();
 	})
 
 }
@@ -159,7 +164,7 @@ function connect(el) {
 	let room = searchRoom(el);
 	let roomId = room.roomId;
 	$('#chat').show();
-	if (!enterRoom(el, roomId)) return;
+	if (!enterRoom(roomId)) return;
 	searchRoomInfo(roomId);
 	getMessages(roomId);
 }
@@ -331,7 +336,7 @@ function otherMessageTemplate(messages, message) {
 	return otherTemplate;
 }
 
-function enterRoom(el, roomId) {
+function enterRoom(roomId) {
 	let header = document.getElementById('chat_header');
 	let curRoomId = header.dataset.rid;
 	if (curRoomId == roomId) return false;

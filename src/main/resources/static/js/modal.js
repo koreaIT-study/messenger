@@ -69,33 +69,33 @@ function addFriend(el) {
 }
 
 // modal 채팅방
-function addChatRoom(){
-		let modalPop = $('#modal-addChatRoom');
-		let modalBg = $('.modal-addChatRoom-bg');
+function addChatRoom() {
+	let modalPop = $('#modal-addChatRoom');
+	let modalBg = $('.modal-addChatRoom-bg');
 
-		$(modalPop[0]).show();
-		$(modalBg[0]).show();
-		
-		let friendList = $('#friend_list').find('#friend-list-box').find('li');
-		let checkHtml = "";
-		for(let i =0;i<friendList.length;i++){
-			checkHtml += `<input type="checkbox" name="friend-modal" id="friend-modal-${friendList[i].id}">
+	$(modalPop[0]).show();
+	$(modalBg[0]).show();
+
+	let friendList = $('#friend_list').find('#friend-list-box').find('li');
+	let checkHtml = "";
+	for (let i = 0; i < friendList.length; i++) {
+		checkHtml += `<input type="checkbox" name="friend-modal" id="friend-modal-${friendList[i].id}">
 			<label for="friend-modal-${friendList[i].id}">
 			${friendList[i].outerHTML}
 			</label>
 			`
-		}
-		
-		$('#modal-chatroom-list-box').html(checkHtml);
-		
 	}
-	
-	function modalAddChatRoomClose() {
-		let modalPop = $('#modal-addChatRoom');
-		let modalBg = $('.modal-addChatRoom-bg');
 
-		$(modalPop[0]).hide();
-		$(modalBg[0]).hide();
-	}
+	$('#modal-chatroom-list-box').html(checkHtml);
+
+}
+
+function modalAddChatRoomClose() {
+	let modalPop = $('#modal-addChatRoom');
+	let modalBg = $('.modal-addChatRoom-bg');
+
+	$(modalPop[0]).hide();
+	$(modalBg[0]).hide();
+}
 
 

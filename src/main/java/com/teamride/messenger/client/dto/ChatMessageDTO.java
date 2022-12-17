@@ -1,5 +1,7 @@
 package com.teamride.messenger.client.dto;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,7 +12,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ChatMessageDTO {
-//	private String messageId; // pk
     private String roomId; // fk
     private String writer; // writer id
     private String message;

@@ -36,8 +36,8 @@ public class KafkaAdminClientConfig {
 
             // topic 생성
             // topicName, numPartitions, replicationFactor
-            final NewTopic chatClient = new NewTopic(KafkaConstants.CHAT_CLIENT, 3, (short) 1);
-            final NewTopic chatServer = new NewTopic(KafkaConstants.CHAT_SERVER, 3, (short) 1);
+            final NewTopic chatClient = new NewTopic(KafkaConstants.CHAT_CLIENT, 100, (short) 1);
+            final NewTopic chatServer = new NewTopic(KafkaConstants.CHAT_SERVER, 100, (short) 1);
             CreateTopicsResult createTopicsResult = adminClient.createTopics(Arrays.asList(chatClient, chatServer));
 
             for (Entry<String, KafkaFuture<Void>> entry : createTopicsResult.values()

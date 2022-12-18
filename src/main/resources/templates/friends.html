@@ -66,7 +66,14 @@
 						<div>정치/사회/경제부</div>
 						<div>멤버 40</div>
 					</div>
-					<div onclick="chatRoomHide();">❌</div>
+					<div class="chat_set_wrap">
+						<img src="img/setting.png" class="set-img" onclick="showSetSelect(event)">
+						<div class="div_select_wrap hidden">
+							<div class="div_select" onclick="chatRoomHide();">채팅방 닫기</div>
+							<div class="div_select">방제목 바꾸기</div>
+							<div class="div_select" onclick="chatRoomOut()">채팅방 나가기</div>
+						</div>
+					</div>
 				</div>
 
 			</div>

@@ -131,7 +131,7 @@ ul {
 	display: block;
 }
 
-.off {
+.off {messenger
 	display: none;
 }
 
@@ -158,4 +158,30 @@ ul {
 .modal-search-wrap{
 	width: 100%;
 	height: 40px;
+}
+
+.set-img{
+    width: 50px;
+    filter: contrast(0.5);
+    cursor: pointer;
+}
+
+.div_select{
+    border-bottom: solid 0.5px #a7a4a4;
+    text-align: left;
+    padding: 5px;
+    cursor: pointer;
+}
+
+.div_select_wrap{
+    background: white;
+    border: solid 0.5px #a7a4a4;
+    border-bottom: none;
+    border-radius: 3px;
+    width: 125px;
+    position: relative;
+    left: 120px;
+}
+.hidden{
+    display: none;
 }

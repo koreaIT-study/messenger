@@ -3,6 +3,7 @@ package com.teamride.messenger.client.config;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.kafka.clients.admin.KafkaAdminClient;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

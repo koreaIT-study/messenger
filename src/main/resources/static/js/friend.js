@@ -68,6 +68,9 @@ function chatRoomHide() {
 	$('#chat').hide();
 }
 
+function showSetSelect(e){
+	e.target.parentElement.children[1].classList.remove('hidden')
+}
 window.onload = function() {
 
 
@@ -123,6 +126,12 @@ window.onload = function() {
 		search(e);
 	});
 
+	document.addEventListener("click", function (e){
+		if(e.target.className.match('div_select')) return;
+		if(e.target.className.match('set-img')) return;
+
+		document.getElementsByClassName('div_select')[0].parentElement.classList.add('hidden')
+	})
 }
 
 function makeChatRoom() {
@@ -443,3 +452,6 @@ function search(event) {
 }
 
 
+function chatRoomOut(){
+
+}

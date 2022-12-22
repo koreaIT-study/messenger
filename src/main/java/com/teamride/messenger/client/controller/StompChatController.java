@@ -7,7 +7,6 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,6 +19,7 @@ import com.teamride.messenger.client.service.StompChatService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import reactor.core.publisher.Mono;
 
 @EnableAsync
 @RestController
@@ -63,9 +63,12 @@ public class StompChatController {
         try {
             stompChatService.sendMessage(message);
             log.info("message:::" + message);
-            ChatRoomDTO chatRoomDTO = chatRoomRepository.findRoomById(message.getRoomId());
-            log.info("chatRoom DTO::" + chatRoomDTO);
-            stompChatService.sendMessageRoomList(chatRoomDTO);
+           
+            Mono<ChatRoomDTO> monoChatRoomDTO = chatRoomRepository.findRoomById(message.getRoomId());
+            monoChatRoomDTO.subscribe(room->{
+                log.info("chatRoom DTO::" + room);
+                stompChatService.sendMessageRoomList(room);
+            });
             ack.acknowledge();
         } catch (Exception e) {
             log.error("error::{}", e);

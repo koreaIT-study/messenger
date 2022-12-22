@@ -31,14 +31,12 @@ public class ServerConnectController {
      * @return
      */
     @GetMapping(value="/get-chat-message/{roomId}")
-    public List<ChatMessageDTO> getChatMessage(@PathVariable("roomId") String roomId) {
-        return webClient.mutate()
-            .build()
+    public Flux<ChatMessageDTO> getChatMessage(@PathVariable("roomId") String roomId) {
+        return webClient
             .get()
             .uri("/get-chat-message?roomId=" + roomId)
             .retrieve()
-            .bodyToFlux(ChatMessageDTO.class)
-            .collectList().block();
+            .bodyToFlux(ChatMessageDTO.class);
     }
 
 }

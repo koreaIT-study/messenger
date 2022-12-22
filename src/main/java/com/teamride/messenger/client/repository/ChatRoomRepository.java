@@ -1,13 +1,15 @@
 package com.teamride.messenger.client.repository;
 
-import java.util.List;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.reactive.function.client.WebClient;
+
 import com.teamride.messenger.client.dto.ChatRoomDTO;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Slf4j
 @Repository
@@ -28,7 +30,7 @@ public class ChatRoomRepository {
         return resp;
     }
 
-    public ChatRoomDTO findRoomById(String roomId) {
+    public Mono<ChatRoomDTO> findRoomById(String roomId) {
         // 이부분도 나중에 server 에 요청 보내서 데이터 가져오기
         return webClient.post()
                 .uri("/find-room-by-id")
@@ -36,8 +38,7 @@ public class ChatRoomRepository {
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(roomId)
                 .retrieve()
-                .bodyToMono(ChatRoomDTO.class)
-                .block();
+                .bodyToMono(ChatRoomDTO.class);
     }
     
     public ChatRoomDTO getRoom(String roomId) {

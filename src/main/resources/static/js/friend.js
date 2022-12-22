@@ -228,7 +228,7 @@ function searchRoomInfo(roomId) {
 function getMessages(roomId) {
 	// roomId가 있으면 messages전부 가져와서 view에 뿌려주는 logic 필요
 	jsParamAjaxCall('GET', '/get-chat-message/' + roomId, {}, function(response) {
-		let messages = response;
+		let messages = response.sort((a,b) => a.timestamp > b.timestamp ? 1 : -1);
 		console.log(messages);
 
 

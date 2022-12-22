@@ -40,7 +40,6 @@ public class StompChatController {
         // view에서 message 보내기 누르면 들어옴
         // service 호출
 
-        for(int i=0;i<100;i++) {
         String partitionKey = message.getRoomId().substring(0, 2);
         ListenableFuture<SendResult<String, ChatMessageDTO>> future = kafkaTemplate.send(KafkaConstants.CHAT_SERVER,
                 partitionKey, message);
@@ -52,7 +51,6 @@ public class StompChatController {
         }, (ex) -> {
             log.error("message 전송 실패, message :: {}, error is :: {}", message, ex);
         });
-        }
     }
 
     @KafkaListener(topics = KafkaConstants.CHAT_CLIENT, groupId = KafkaConstants.GROUP_ID)

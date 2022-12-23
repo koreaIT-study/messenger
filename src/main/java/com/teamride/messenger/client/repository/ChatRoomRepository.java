@@ -41,7 +41,7 @@ public class ChatRoomRepository {
                 .bodyToMono(ChatRoomDTO.class);
     }
     
-    public ChatRoomDTO getRoom(String roomId) {
+    public Mono<ChatRoomDTO> getRoom(String roomId) {
         // 이부분도 나중에 server 에 요청 보내서 데이터 가져오기
         return webClient.post()
                 .uri("/get-room")
@@ -49,11 +49,10 @@ public class ChatRoomRepository {
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(roomId)
                 .retrieve()
-                .bodyToMono(ChatRoomDTO.class)
-                .block();
+                .bodyToMono(ChatRoomDTO.class);
     }
 
-    public ChatRoomDTO createChatRoomDTO(ChatRoomDTO room) {
+    public Mono<ChatRoomDTO> createChatRoomDTO(ChatRoomDTO room) {
         // server 에 요청을 보내 생성된 채팅방 정보 저장
         return webClient.post()
             .uri("/room")
@@ -61,8 +60,7 @@ public class ChatRoomRepository {
             .accept(MediaType.APPLICATION_JSON)
             .bodyValue(room)
             .retrieve()
-            .bodyToMono(ChatRoomDTO.class)
-            .block();
+            .bodyToMono(ChatRoomDTO.class);
     }
     
 }

@@ -26,6 +26,7 @@ public class StompChatService {
     }
 
     public void sendMessageRoomList(ChatRoomDTO message) {
+        log.info("message~~~~~~~~~~"+message);
         message.getUserId()
             .forEach(userId -> {
                 template.convertAndSend(destinationRoomList + userId, message);

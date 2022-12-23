@@ -15,6 +15,7 @@ import com.teamride.messenger.client.repository.ChatRoomRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @RequiredArgsConstructor
 @RequestMapping(value = "/chat")
@@ -22,29 +23,26 @@ import reactor.core.publisher.Flux;
 @RestController
 public class RoomController {
 
-	private final ChatRoomRepository chatRoomRepository;
-	private final HttpSession httpSession;
+    private final ChatRoomRepository chatRoomRepository;
+    private final HttpSession httpSession;
 
-	@GetMapping(value = "/getRoomList")
-	public Flux<ChatRoomDTO> rooms() {
-		log.info("# All Chat Rooms");
-		int userId = (int) httpSession.getAttribute(Constants.LOGIN_SESSION);
-		return chatRoomRepository.findAllRooms(userId);
-	}
+    @GetMapping(value = "/getRoomList")
+    public Flux<ChatRoomDTO> rooms() {
+        log.info("# All Chat Rooms");
+        int userId = (int) httpSession.getAttribute(Constants.LOGIN_SESSION);
+        return chatRoomRepository.findAllRooms(userId);
+    }
 
-	@PostMapping(value = "/room")
-	public ChatRoomDTO create(@RequestBody ChatRoomDTO room) {
-		ChatRoomDTO chatRoomDTO = chatRoomRepository.createChatRoomDTO(room);
-		log.info("# Create Chat Room :: " + chatRoomDTO);
-		return chatRoomDTO;
-	}
+    @PostMapping(value = "/room")
+    public Mono<ChatRoomDTO> create(@RequestBody ChatRoomDTO room) {
+        return chatRoomRepository.createChatRoomDTO(room)
+            .doOnSuccess(r -> log.info("# Create Chat Room :: {}", r));
+    }
 
-	@GetMapping(value = "/room")
-	public ChatRoomDTO getRoom(String roomId) {
-		log.info("# get Chat Room, roomID : " + roomId);
-		ChatRoomDTO chatRoomDTO = chatRoomRepository.getRoom(roomId);
-		log.info("chatRoom dto::" + chatRoomDTO);
-		return chatRoomDTO;
-	}
+    @GetMapping(value = "/room")
+    public Mono<ChatRoomDTO> getRoom(String roomId) {
+        return chatRoomRepository.getRoom(roomId)
+            .doOnSuccess(r -> log.info("get Chat Room dto:: {}", r));
+    }
 
 }

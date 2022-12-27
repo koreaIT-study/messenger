@@ -1,5 +1,6 @@
 package com.teamride.messenger.client.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -9,6 +10,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -30,11 +32,11 @@ public class ServerConnectController {
      * @param roomId
      * @return
      */
-    @GetMapping(value="/get-chat-message/{roomId}")
-    public Flux<ChatMessageDTO> getChatMessage(@PathVariable("roomId") String roomId) {
-        return webClient
-            .get()
-            .uri("/get-chat-message?roomId=" + roomId)
+    @GetMapping(value = "/get-chat-message/{roomId}")
+    public Flux<ChatMessageDTO> getChatMessage(@PathVariable("roomId") String roomId,
+            @RequestParam(required = false, defaultValue = "") String time) {
+        return webClient.get()
+            .uri("/get-chat-message?roomId=" + roomId + "&time=" + time)
             .retrieve()
             .bodyToFlux(ChatMessageDTO.class);
     }

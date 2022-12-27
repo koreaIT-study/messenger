@@ -1,5 +1,6 @@
 const sockJs = new SockJS("/stomp/chat");
 const stomp = Stomp.over(sockJs);
+
 let msgSubscription = "";
 
 function getFriendList() {
@@ -27,7 +28,7 @@ function getFriendList() {
 			_cmmnAlert.getFailed();
 		}
 	});
-	
+
 	// friend list에 connect event
 	let friendList = $('#friend_list').find('#friend-list-box').find('li');
 	for (let i = 0; i < friendList.length; i++) {
@@ -68,7 +69,7 @@ function chatRoomHide() {
 	$('#chat').hide();
 }
 
-function showSetSelect(e){
+function showSetSelect(e) {
 	e.target.parentElement.children[1].classList.remove('hidden')
 }
 window.onload = function() {
@@ -91,7 +92,7 @@ window.onload = function() {
 		})
 	})
 
-	
+
 	//	ondblclick='connect(this);'
 	// message 보내기
 	$("#chat_writer").on("keyup", (e) => {
@@ -126,9 +127,9 @@ window.onload = function() {
 		search(e);
 	});
 
-	document.addEventListener("click", function (e){
-		if(e.target.className.match('div_select')) return;
-		if(e.target.className.match('set-img')) return;
+	document.addEventListener("click", function(e) {
+		if (e.target.className.match('div_select')) return;
+		if (e.target.className.match('set-img')) return;
 
 		document.getElementsByClassName('div_select')[0].parentElement.classList.add('hidden')
 	})
@@ -170,6 +171,12 @@ function makeChatRoom() {
 		searchRoomInfo(response.roomId);
 		getMessages(response.roomId);
 
+		// 채팅 맨밑으로 내림
+		let wrap = document.getElementById('chat_msg_template');
+		let lastChildDiv = wrap.lastChild;
+		if (lastChildDiv != null)
+			lastChildDiv.lastChild.scrollIntoView();
+
 		modalAddChatRoomClose();
 	})
 
@@ -184,6 +191,13 @@ function connect(el) {
 	if (!enterRoom(roomId)) return;
 	searchRoomInfo(roomId);
 	getMessages(roomId);
+	// 채팅 맨밑으로 내림
+	let wrap = document.getElementById('chat_msg_template');
+	let lastChildDiv = wrap.lastChild;
+	if (lastChildDiv != null)
+		lastChildDiv.lastChild.scrollIntoView();
+
+	modalAddChatRoomClose();
 }
 
 function searchRoom(el) {
@@ -225,17 +239,31 @@ function searchRoomInfo(roomId) {
 }
 
 
-function getMessages(roomId) {
+function getMessages(roomId, time) {
 	// roomId가 있으면 messages전부 가져와서 view에 뿌려주는 logic 필요
-	jsParamAjaxCall('GET', '/get-chat-message/' + roomId, {}, function(response) {
-		let messages = response.sort((a,b) => a.timestamp > b.timestamp ? 1 : -1);
+	let url =`/get-chat-message/${roomId}`;
+	let isScroll = false;
+	if(time){
+		url = `/get-chat-message/${roomId}?time=${time}`;
+		isScroll = true;
+	}
+	
+	jsParamAjaxCall('GET', url , {}, function(response) {
+		let messages = "";
+		if(time){
+			messages = response.sort((a, b) => a.timestamp > b.timestamp ? -1 : 1)
+		}else{
+			messages = response.sort((a, b) => a.timestamp > b.timestamp ? 1 : -1)
+		}
 		console.log(messages);
 
 
 		let messageHtml = "";
+		if(isScroll ){
+			messageHtml = $('#chat_msg_template').html();
+		}
 		let html = "";
-
-		test = messages;
+		
 		for (let i = 0; i < messages.length; i++) {
 			if (i != 0 && messages[i - 1].writer != messages[i].writer) {
 				if (isMyMessage(messages[i - 1])) {
@@ -267,12 +295,6 @@ function getMessages(roomId) {
 		$('#chat_msg_template').html(messageHtml);
 
 	});
-
-	// 채팅 맨밑으로 내림
-	let wrap = document.getElementById('chat_msg_template');
-	let lastChildDiv = wrap.lastChild;
-	if (lastChildDiv != null)
-		lastChildDiv.lastChild.scrollIntoView();
 }
 
 // message를 subscribe해서 view에 뿌려주는 method
@@ -287,7 +309,7 @@ function subMessage(message) {
 		lastWriter = wrap.lastChild.dataset.uid;
 		//lastWriter = lastChildDiv.querySelector('.chat_person_name').textContent;
 	}
-	console.log("메세지 받았음!!", message.message.replaceAll('\n','<br>'));
+	console.log("메세지 받았음!!", message.message.replaceAll('\n', '<br>'));
 
 	if (lastWriter == message.writer) {
 		if (isMyMessage(message)) {
@@ -319,7 +341,7 @@ function isMyMessage(message) {
 
 function myMessage(message) {
 	let myMessage = "<div class='my_chat_flexable'>";
-	myMessage += "<span class='no_read_cnt'>2</span><span class='write_date'>";
+	myMessage += `<span class='no_read_cnt'>2</span><span class='write_date' data-wdate='${message.timestamp}'>`;
 	myMessage += `${message.timestamp.split('.')[0]}</span>`;
 	myMessage += "<div class='my_chat'>" + message.message.replaceAll("\n", `<br>`) + "</div></div>";
 
@@ -337,7 +359,7 @@ function myMessageTemplate(messages, message) {
 function otherMessage(message) {
 	let otherMessage = "<div class='chat_msg_flexable'>";
 	otherMessage += "<div class='chat_msg'>" + message.message.replaceAll(`\n`, `<br>`) + "</div>";
-	otherMessage += "<span class='no_read_cnt'>1</span><span class='write_date'>";
+	otherMessage += `<span class='no_read_cnt'>1</span><span class='write_date' data-wdate='${message.timestamp}'>`;
 	otherMessage += message.timestamp.split('.')[0] + "</span></div>";
 
 	return otherMessage;
@@ -452,6 +474,17 @@ function search(event) {
 }
 
 
-function chatRoomOut(){
+function chatRoomOut() {
 
+}
+
+/* scroll 맨위로 올릴 때 메시지 100개씩 뿌려주기 */
+function getLastMessage() {
+	let nowScrollPosition = document.getElementById('chat_msg_template').scrollTop;
+	if (nowScrollPosition == 0) {
+		let wrap  = document.getElementById('chat_msg_template');
+		let time = wrap.firstChild.querySelector('.write_date').dataset.wdate;
+		let curRoomId = document.getElementById('chat_header').dataset.rid;
+		getMessages(curRoomId, time);
+	}
 }

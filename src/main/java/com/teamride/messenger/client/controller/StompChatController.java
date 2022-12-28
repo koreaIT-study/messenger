@@ -42,7 +42,7 @@ public class StompChatController {
         for(int i=0;i<100;i++) {
             message.setMessage(i+"");
             try {
-                Thread.sleep(10);
+                Thread.sleep(100);
             } catch (InterruptedException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();

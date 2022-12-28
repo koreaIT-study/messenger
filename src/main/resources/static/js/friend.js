@@ -241,29 +241,20 @@ function searchRoomInfo(roomId) {
 
 function getMessages(roomId, time) {
 	// roomId가 있으면 messages전부 가져와서 view에 뿌려주는 logic 필요
-	let url =`/get-chat-message/${roomId}`;
+	let url = `/get-chat-message/${roomId}`;
 	let isScroll = false;
-	if(time){
+	if (time) {
 		url = `/get-chat-message/${roomId}?time=${time}`;
 		isScroll = true;
 	}
-	
-	jsParamAjaxCall('GET', url , {}, function(response) {
-		let messages = "";
-		if(time){
-			messages = response.sort((a, b) => a.timestamp > b.timestamp ? -1 : 1)
-		}else{
-			messages = response.sort((a, b) => a.timestamp > b.timestamp ? 1 : -1)
-		}
-		console.log(messages);
 
+	jsParamAjaxCall('GET', url, {}, function(response) {
+		let messages = response.sort((a, b) => a.timestamp > b.timestamp ? 1 : -1)
 
 		let messageHtml = "";
-		if(isScroll ){
-			messageHtml = $('#chat_msg_template').html();
-		}
+
 		let html = "";
-		
+
 		for (let i = 0; i < messages.length; i++) {
 			if (i != 0 && messages[i - 1].writer != messages[i].writer) {
 				if (isMyMessage(messages[i - 1])) {
@@ -292,9 +283,16 @@ function getMessages(roomId, time) {
 			}
 		}
 
-		$('#chat_msg_template').html(messageHtml);
+		if (isScroll) {
+			let tempMessageHtml = $('#chat_msg_template').html();
+			$('#chat_msg_template').html(messageHtml + tempMessageHtml);
+		} else {
+			$('#chat_msg_template').html(messageHtml);
+		}
 
 	});
+
+
 }
 
 // message를 subscribe해서 view에 뿌려주는 method
@@ -481,10 +479,19 @@ function chatRoomOut() {
 /* scroll 맨위로 올릴 때 메시지 100개씩 뿌려주기 */
 function getLastMessage() {
 	let nowScrollPosition = document.getElementById('chat_msg_template').scrollTop;
-	if (nowScrollPosition == 0) {
-		let wrap  = document.getElementById('chat_msg_template');
+	let wrap = document.getElementById('chat_msg_template');
+	if (nowScrollPosition == 0 && wrap.firstChild != null) {
 		let time = wrap.firstChild.querySelector('.write_date').dataset.wdate;
 		let curRoomId = document.getElementById('chat_header').dataset.rid;
 		getMessages(curRoomId, time);
+
+		let mwrap = document.querySelectorAll('.write_date')
+
+		for (let i = 0; i < mwrap.length; i++) {
+			if (mwrap[i].dataset.wdate == time) {
+				mwrap[i].scrollIntoView();
+				break;
+			}
+		}
 	}
 }

@@ -26,6 +26,16 @@ spring:
   servlet:
     multiPart:
       max-file-size: 10MB
+  mail:
+    host: smtp.naver.com
+    port: 465
+    username: koreaittest1@naver.com
+    password: teamride1!
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.ssl.enable: true
+      mail.smtp.ssl.trust: smtp.naver.com
+     
 #  thymeleaf:
 #    prefix: classpath:/templates
 

@@ -2,191 +2,66 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/common.css">
-    <link rel="stylesheet" href="/css/sign.css">
-    <!-- <link rel="stylesheet" href="css/sub.css"> -->
-    <title>Sign Up</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/common.css">
+<link rel="stylesheet" href="/css/sign.css">
+<script type="text/javascript" src="/js/user.js"></script>
+<!-- <link rel="stylesheet" href="css/sub.css"> -->
+<title>Sign Up</title>
 </head>
 
 <body>
-    <div class="sign_up_wrap">
-        <div class="sign_up">
-            <div class="sign_up_tit">
-                <h1 class="tit_sign_up">
-                    <span>회원가입</span>
-                </h1>
-            </div>
-            <!-- 로그인  -->
-            <div class="sign_up_body">
-                <div class="sign_up_input" style="margin-top:10px;">
-                    <div class="profile_img">
-                        <img id="profileImg" src="/img/who.png" alt="">
-                    </div>
-                    <div>
-                        <form method="post" action="" enctype="multipart/form-data">
-                            <span>
-                                <label class="file_button" for="profile" onclick="uploadImage()">프로필 사진</label>
-                                <input type="file" id="profile" style="display:none" accept="img/*" />
-                            </span>
-                        </form>
-                        <span>
-                            <input type="text" id="name" name="name" placeholder="이름" title="이름" value="">
-                        </span>
-                        <span>
-                            <input type="text" id="email" name="email" placeholder="이메일" title="이메일" value=""
-                                style="width: 56%;">
-                            <button type="button" class="btn_sign_up" id="checkEmail">이메일
-                                 확인</button>
-                            <!-- <button type="button" class="btn_sign_up" id="checkEmail" onclick="checkEmail()">이메일
-                                 확인</button> -->
-                        </span>
-                        <span class="checkInput" style="display: none;">
-                            <input type="text" id="authNumInput" placeholder="인증번호 6자리를 입력해주세요." style="width: 56%;">
-                            <button type="button" class="btn_sign_up" id="checkAuthNumber"
-                                onclick="checkAuthNumber()">인증번호 확인</button>
-                        </span>
-                        <span>
-                            <input type="password" name="password" id="password" placeholder="비밀번호">
-                        </span>
-                        <span>
-                            <input type="password" name="passwordCheck" id="passwordCheck" placeholder="비밀번호확인">
-                        </span>
-                    </div>
-                    <div>
-                        <button type="button" class="btn_sign_up" onclick="signUp()">가입</button>
-                    </div>
-                </div>
-            </div>
+	<div class="sign_up_wrap">
+		<div class="sign_up">
+			<div class="sign_up_tit">
+				<h1 class="tit_sign_up">
+					<span>회원가입</span>
+				</h1>
+			</div>
+			<!-- 로그인  -->
+			<div class="sign_up_body">
+				<div class="sign_up_input" style="margin-top: 10px;">
+					<div class="profile_img">
+						<img id="profileImg" src="/img/who.png" alt="">
+					</div>
+					<div>
+						<form method="post" action="" enctype="multipart/form-data">
+							<span> <label class="file_button" for="profile"
+								onclick="uploadImage()">프로필 사진</label> <input type="file"
+								id="profile" style="display: none" accept="img/*" />
+							</span>
+						</form>
+						<span> <input type="text" id="name" name="name"
+							placeholder="이름" title="이름" value="">
+						</span> <span> <input type="text" id="email" name="email"
+							placeholder="이메일" title="이메일" value="" style="width: 56%;">
+							<button type="button" class="btn_sign_up" id="checkEmail"
+								onclick="checkEmail()">이메일 확인</button>
+						</span> <span class="checkInput" style="display: none;"> <input
+							type="text" id="authNumInput" placeholder="인증번호 6자리를 입력해주세요."
+							style="width: 56%;">
+							<button type="button" class="btn_sign_up" id="checkAuthNumber"
+								onclick="checkAuthNumber()">인증번호 확인</button>
+						</span> <span> <input type="password" name="password"
+							id="password" placeholder="비밀번호">
+						</span> <span> <input type="password" name="passwordCheck"
+							id="passwordCheck" placeholder="비밀번호확인">
+						</span>
+					</div>
+					<div>
+						<button type="button" class="btn_sign_up" onclick="signUp()">가입</button>
+					</div>
+				</div>
+			</div>
 
-            <!-- OAUTH2  -->
-            <div class="social_sign_up">
-
-            </div>
-        </div>
-    </div>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-
-    <!-- 전역변수 -->
-    <script>
-        const SignUp = {
-            authNumber: undefined,
-            vaildate: false
-        }
-    </script>
-
-    <!-- 이메일 인증 -->
-    <script>
-        function checkEmail() {
-            const emailRegExp = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
-            const space = /\s/g;
-
-            const email = document.querySelector('#email').value;
-            const checkInput = document.querySelector('.checkInput');
-
-            if (!emailRegExp.test(email) || !space.test(email)) {
-                alert("이메일형식이 올바르지 않습니다.");
-                return;
-            }
-
-            const param = {
-                email
-            }
-
-            $.ajax({
-                type: 'get',
-                url: '/smtpRequest',
-                data: param,
-                success: function (response) {
-                    console.log("🚀 ~ file: sign_up.html ~ line 81 ~ checkEmail ~ response", response)
-                    const errno = response.errno;
-
-                    if (errno === 0) {
-                        checkInput.style.display = "block";
-                        SignUp.authNumber = response.data;
-                        alert('인증번호가 전송되었습니다.')
-                    } else {
-                        alert('처리를 실패했습니다.');
-                    }
-                }
-            });
-        }
-
-        function checkAuthNumber() {
-            const inputNumber = document.querySelector('#authNumInput').value;
-
-            if (inputNumber === SignUp.authNumber) {
-                alert('인증번호가 일치합니다.');
-                SignUp.vaildate = true;
-            } else {
-                alert('인증번호가 일치하지 않습니다.');
-                SignUp.vaildate = false;
-            }
-        }
-    </script>
-
-    <!-- 회원 가입 -->
-    <script>
-        function signUp() {
-            const name = document.querySelector('#name').value;
-            const email = document.querySelector('#email').value;
-            const password = document.querySelector('#password').value;
-            const passwordCheck = document.querySelector('#passwordCheck').value;
-            if (password !== passwordCheck) {
-                alert("비밀번호가 일치하지 않습니다.");
-                return;
-            }
-
-            const body = JSON.stringify({
-                name : name,
-                email : email,
-                pwd: password
-            })
-
-            const file = document.querySelector('#profile').files[0];
-
-            const formData = new FormData();
-            formData.append('body', body);
-            formData.append('file', file)
-
-            fetch('http://localhost:8081/signUp', {
-                method: 'POST',
-                body: formData
-            }).then((response) =>
-                console.log(response)
-            )
-        }
-    </script>
-
-    <!-- 프로필 사진 -->
-    <script>
-        function uploadImage() {
-            const imgBtn = document.querySelector('.file_button');
-            const imgInput = document.querySelector('#profile');
-            const imgTag = document.querySelector('#profileImg');
-
-            const file = () => {
-                const selectedFile = imgInput.files[0];
-                console.log("🚀 ~ file: sign_up.html ~ line 173 ~ file ~ selectedFile", selectedFile)
-                const fileReader = new FileReader();
-                fileReader.readAsDataURL(selectedFile);
-                console.log("🚀 ~ file: sign_up.html ~ line 176 ~ file ~ fileReader", fileReader)
-
-                if (!selectedFile.type.match("image/.*")) {
-                    alert('이미지 확장자만 업로드 가능합니다.');
-                    return;
-                }
-
-                fileReader.onload = function () {
-                    imgTag.src = fileReader.result;
-                }
-            };
-
-            imgInput.addEventListener('change', file);
-        }
-    </script>
+			<!-- OAUTH2  -->
+			<div class="social_sign_up"></div>
+		</div>
+	</div>
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 </body>
 
 </html>

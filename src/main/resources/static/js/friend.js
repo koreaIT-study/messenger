@@ -2,6 +2,7 @@ const sockJs = new SockJS("/stomp/chat");
 const stomp = Stomp.over(sockJs);
 
 let msgSubscription = "";
+let inputSubscription = "";
 
 function getFriendList() {
 	// 전체 친구 목록 가져오기
@@ -39,7 +40,6 @@ function getFriendList() {
 function getRoomList() {
 	// 전체 채팅방 목록 가져오기
 	jsParamAjaxCall('GET', '/chat/getRoomList', {}, function(response) {
-		console.log(response)
 		let roomListHtml = "";
 
 		for (let i = 0; i < response.length; i++) {
@@ -99,7 +99,18 @@ window.onload = function() {
 		let header = document.getElementById('chat_header');
 
 		e.preventDefault();
-		if (e.keyCode != 13) return;
+		if (e.keyCode != 13) {
+			// [이름]님이 입력중입니다. 표시
+			let param = {
+				roomId: header.dataset.rid,
+				writer: $('#myId').val(),
+				message: "",
+				writerName: $('#myName').val()
+			};
+			stomp.send("/pub/chat/input", {}, JSON.stringify(param));
+
+			return;
+		};
 		if (e.shiftKey) return;
 		if ($("#chat_writer").val().trim() == '' || $("#chat_writer").val() == '\n') {
 			$("#chat_writer").val('');
@@ -163,7 +174,6 @@ function makeChatRoom() {
 		isGroup: 'Y',
 		userId: chatRoomUser
 	};
-	console.log("param::::", param)
 
 	jsAjaxPostJsonCall('/chat/room', param, (response) => {
 		$('#chat').show();
@@ -223,16 +233,15 @@ function searchRoom(el) {
 			room = response;
 		})
 	}
-
+	console.log("room", room)
 	return room;
 }
 
 function searchRoomInfo(roomId) {
 	// roomId로 채팅방 정보를 찾아주는 method
 	jsParamAjaxCall('GET', '/chat/room?roomId=' + roomId, {}, function(response) {
-		console.log("search room info")
-		console.log(response)
 		let title = $('.chat_title').children();
+		console.log(response)
 		title[0].innerHTML = response.roomName;
 		title[1].innerHTML = "멤버 " + response.cnt;
 	});
@@ -340,7 +349,7 @@ function isMyMessage(message) {
 function myMessage(message) {
 	let myMessage = "<div class='my_chat_flexable'>";
 	myMessage += `<span class='no_read_cnt'>2</span><span class='write_date' data-wdate='${message.timestamp}'>`;
-	myMessage += `${message.timestamp.split('.')[0]}</span>`;
+	myMessage += `${message.timestamp.split('.')[0].split(' ')[1]}</span>`;
 	myMessage += "<div class='my_chat'>" + message.message.replaceAll("\n", `<br>`) + "</div></div>";
 
 	return myMessage;
@@ -358,7 +367,7 @@ function otherMessage(message) {
 	let otherMessage = "<div class='chat_msg_flexable'>";
 	otherMessage += "<div class='chat_msg'>" + message.message.replaceAll(`\n`, `<br>`) + "</div>";
 	otherMessage += `<span class='no_read_cnt'>1</span><span class='write_date' data-wdate='${message.timestamp}'>`;
-	otherMessage += message.timestamp.split('.')[0] + "</span></div>";
+	otherMessage += message.timestamp.split('.')[0].split(' ')[1] + "</span></div>";
 
 	return otherMessage;
 }
@@ -375,6 +384,12 @@ function otherMessageTemplate(messages, message) {
 	return otherTemplate;
 }
 
+var clearText = () => {
+	setTimeout(() => {
+		$('#chat-input').text('');
+	}, 1000);
+}
+
 function enterRoom(roomId) {
 	let header = document.getElementById('chat_header');
 	let curRoomId = header.dataset.rid;
@@ -386,16 +401,34 @@ function enterRoom(roomId) {
 	if (msgSubscription != '') {
 		msgSubscription.unsubscribe();
 	}
+	if (inputSubscription != '') {
+		inputSubscription.unsubscribe();
+	}
 
 
 
 	msgSubscription = stomp.subscribe("/sub/chat/room/" + roomId, function(chat) {
 		let obj = JSON.parse(chat.body);
 		subMessage(obj);
-	})
+	});
 
-	console.log("msgSubscription:::")
-	console.log(msgSubscription);
+
+	inputSubscription = stomp.subscribe("/sub/chat/chatInput/" + roomId, function(chat) {
+		let obj = JSON.parse(chat.body);
+		console.log("chat-input", obj)
+		const userId = $('#myId').val();
+
+		if (userId != obj.writer) {
+			if ($('#chat-input').text() == '') {
+				$('#chat-input').text(obj.message);
+			}
+			clearInterval(clearText);
+			clearText = setTimeout(() => {
+				$('#chat-input').text('');
+			}, 1000);
+		}
+	});
+
 	//roomIdSessionCtx.push(roomid);
 	return true;
 }
@@ -405,15 +438,12 @@ function updateChatRoom(message) {
 	let flag = false;
 
 	for (let room of roomList.children) {
-		console.log(room.dataset.rid)
 		if (message.roomId == room.dataset.rid) {
 			flag = true;
 			break;
 		}
 	}
 
-	console.log("make room")
-	console.log(message)
 	// 채팅방 없으면 만들어주기
 	if (!flag) {
 

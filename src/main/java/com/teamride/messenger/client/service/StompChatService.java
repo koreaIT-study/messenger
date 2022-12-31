@@ -21,6 +21,9 @@ public class StompChatService {
     // 채팅방 목록 목적지
     private final static String destinationRoomList = "/sub/chat/roomList/";
 
+    // 채팅방 입력중 목적지
+    private final static String destinationInput = "/sub/chat/chatInput/";
+
     public void sendMessage(ChatMessageDTO message) {
         template.convertAndSend(destination + message.getRoomId(), message);
     }
@@ -33,6 +36,12 @@ public class StompChatService {
             });
     }
 
+    public void sendChatInput(ChatMessageDTO message) {
+        message.setMessage("상대방이 입력중 입니다.");
+        template.convertAndSend(destinationInput + message.getRoomId(), message);
+    }
+    
+    
     public void enter(ChatMessageDTO message) {
         log.info("::: StompChatService.enter in :::");
         message.setMessage(message.getWriter() + "님이 채팅빙에 입장하였습니다.");

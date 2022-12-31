@@ -1,7 +1,9 @@
 package com.teamride.messenger.client.controller;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
 
+import org.apache.tomcat.util.bcel.Const;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.Acknowledgment;
@@ -11,6 +13,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.teamride.messenger.client.config.Constants;
 import com.teamride.messenger.client.config.KafkaConstants;
 import com.teamride.messenger.client.dto.ChatMessageDTO;
 import com.teamride.messenger.client.dto.ChatRoomDTO;
@@ -34,20 +37,32 @@ public class StompChatController {
 
     private final KafkaTemplate<String, ChatMessageDTO> kafkaTemplate;
 
+    private final HttpSession httpSession;
+
+    @MessageMapping("/chat/input")
+    public void chatInput(ChatMessageDTO messageDTO) {
+        kafkaTemplate.send(KafkaConstants.CHAT_INPUT, messageDTO); // 순서 보장 필요없을 듯, partition 100개로 RR(Round Robin)
+    }
+
+    @KafkaListener(topics = KafkaConstants.CHAT_INPUT, groupId = KafkaConstants.GROUP_ID)
+    public void listenInput(ChatMessageDTO chatMessageDTO, Acknowledgment ack) {
+        log.info("Received Msg chat-input {}", chatMessageDTO);
+
+        try {
+            stompChatService.sendChatInput(chatMessageDTO);
+            ack.acknowledge();
+        } catch (Exception e) {
+            log.error("error::{}", e);
+        }
+    }
+
     @MessageMapping(value = "/chat/message")
     public void message(ChatMessageDTO message) {
         log.info("::: StompChatController.message in :::" + message);
         // view에서 message 보내기 누르면 들어옴
         // service 호출
-        for(int i=0;i<100;i++) {
-            message.setMessage(i+"");
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        String partitionKey = message.getRoomId().substring(0, 2);
+        String partitionKey = message.getRoomId()
+            .substring(0, 2);
         ListenableFuture<SendResult<String, ChatMessageDTO>> future = kafkaTemplate.send(KafkaConstants.CHAT_SERVER,
                 partitionKey, message);
 
@@ -58,7 +73,6 @@ public class StompChatController {
         }, (ex) -> {
             log.error("message 전송 실패, message :: {}, error is :: {}", message, ex);
         });
-        }
     }
 
     @KafkaListener(topics = KafkaConstants.CHAT_CLIENT, groupId = KafkaConstants.GROUP_ID)
@@ -71,9 +85,9 @@ public class StompChatController {
         try {
             stompChatService.sendMessage(message);
             log.info("message:::" + message);
-           
+
             Mono<ChatRoomDTO> monoChatRoomDTO = chatRoomRepository.findRoomById(message.getRoomId());
-            monoChatRoomDTO.subscribe(room->{
+            monoChatRoomDTO.subscribe(room -> {
                 log.info("chatRoom DTO::" + room);
                 stompChatService.sendMessageRoomList(room);
             });

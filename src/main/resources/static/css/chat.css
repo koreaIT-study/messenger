@@ -86,6 +86,7 @@
 	border-radius: 12px;
 	margin: 5px 0;
 	margin-right: 5px;
+	word-break: break-all;
 }
 
 .my_chat_wrapper {

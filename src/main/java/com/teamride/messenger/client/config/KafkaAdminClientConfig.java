@@ -38,7 +38,8 @@ public class KafkaAdminClientConfig {
             // topicName, numPartitions, replicationFactor
             final NewTopic chatClient = new NewTopic(KafkaConstants.CHAT_CLIENT, 100, (short) 1);
             final NewTopic chatServer = new NewTopic(KafkaConstants.CHAT_SERVER, 100, (short) 1);
-            CreateTopicsResult createTopicsResult = adminClient.createTopics(Arrays.asList(chatClient, chatServer));
+            final NewTopic chatInput = new NewTopic(KafkaConstants.CHAT_INPUT, 100, (short) 1);
+            CreateTopicsResult createTopicsResult = adminClient.createTopics(Arrays.asList(chatClient, chatServer, chatInput));
 
             for (Entry<String, KafkaFuture<Void>> entry : createTopicsResult.values()
                 .entrySet()) {
@@ -46,7 +47,7 @@ public class KafkaAdminClientConfig {
             }
 
             DescribeTopicsResult describeTopicsResult = adminClient
-                .describeTopics(Arrays.asList(KafkaConstants.CHAT_CLIENT, KafkaConstants.CHAT_SERVER));
+                .describeTopics(Arrays.asList(KafkaConstants.CHAT_CLIENT, KafkaConstants.CHAT_SERVER, KafkaConstants.CHAT_INPUT));
 
             for (Entry<String, KafkaFuture<TopicDescription>> entry : describeTopicsResult.topicNameValues()
                 .entrySet()) {

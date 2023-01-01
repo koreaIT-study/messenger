@@ -3,7 +3,7 @@ package com.teamride.messenger.client.controller;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
-import org.apache.tomcat.util.bcel.Const;
+import org.springframework.http.MediaType;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.Acknowledgment;
@@ -11,9 +11,10 @@ import org.springframework.kafka.support.SendResult;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.util.concurrent.ListenableFuture;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.teamride.messenger.client.config.Constants;
 import com.teamride.messenger.client.config.KafkaConstants;
 import com.teamride.messenger.client.dto.ChatMessageDTO;
 import com.teamride.messenger.client.dto.ChatRoomDTO;
@@ -22,7 +23,10 @@ import com.teamride.messenger.client.service.StompChatService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 @EnableAsync
 @RestController
@@ -94,6 +98,13 @@ public class StompChatController {
             ack.acknowledge();
         } catch (Exception e) {
             log.error("error::{}", e);
+        }
+    }
+
+    @PostMapping(value = "/file", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public void fileUpload(@RequestParam(value = "files", required = false) MultipartFile[] files){
+        for (MultipartFile file: files) {
+            log.info("file name :::: {}",file.getOriginalFilename());
         }
     }
 }

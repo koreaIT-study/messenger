@@ -30,7 +30,7 @@
 
 #chat_msg_wrap {
 	background-color: #EBEAEA;
-	height: 650px;
+	height: 700px;
 }
 
 #chat_msg_wrap>div::-webkit-scrollbar {
@@ -46,12 +46,13 @@
 	padding-top: 10px;
 	max-height: 88px;
 	padding-left: 5px;
-	min-width: 542px;
+	/*min-width: 542px;*/
+	min-width: 480px;
 }
 
 #chat_msg_wrap>div {
 	padding: 20px;
-	height: 610px;
+	height: 660px;
 	overflow-x: hidden;
 }
 

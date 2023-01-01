@@ -27,7 +27,7 @@ function checkEmail() {
 			console.log("🚀 ~ file: sign_up.html ~ line 81 ~ checkEmail ~ response", response)
 			checkInput.style.display = "inline-block";
 			SignUp.authNumber = response;
-			alert('인증번호가 전송되었습니다.'+response)
+			alert('인증번호가 전송되었습니다.' + response)
 		}
 	});
 }
@@ -46,33 +46,47 @@ function checkAuthNumber() {
 
 
 function signUp() {
+/*	if (!SignUp.vaildate) {
+		alert('인증 번호를 확인해 주세요.');
+		return;
+	}*/
+
 	const name = document.querySelector('#name').value;
 	const email = document.querySelector('#email').value;
 	const password = document.querySelector('#password').value;
 	const passwordCheck = document.querySelector('#passwordCheck').value;
+
+
+
 	if (password !== passwordCheck) {
 		alert("비밀번호가 일치하지 않습니다.");
 		return;
 	}
 
-	const body = JSON.stringify({
-		name: name,
-		email: email,
-		pwd: password
-	})
-
 	const file = document.querySelector('#profile').files[0];
 
 	const formData = new FormData();
-	formData.append('body', body);
+	formData.append('name', name);
+	formData.append('email', email);
+	formData.append('pwd', password);
 	formData.append('file', file)
-
-	fetch('http://localhost:8081/signUp', {
-		method: 'POST',
-		body: formData
-	}).then((response) =>
-		console.log(response)
-	)
+	
+	 $.ajax({
+        url : "/signUp",
+        type : `POST`,
+        processData : false,
+        contentType : false,
+        data : formData,
+        success : (response) => {
+            alert('회원가입이 완료되었습니다.');
+            location.href='/';
+        },
+        error : (err) => {
+            console.log(err.responseText);
+        }
+    })
+	
+	
 }
 
 function uploadImage() {

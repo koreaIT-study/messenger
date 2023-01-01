@@ -1,6 +1,7 @@
 package com.teamride.messenger.client.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpSession;
@@ -10,9 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.MultipartBodyBuilder;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.servlet.ModelAndView;
@@ -121,28 +120,37 @@ public class UserController {
         try {
             return ResponseEntity.ok(mailService.joinEmail(email));
         } catch (MessagingException e) {
-            return ResponseEntity.badRequest().body("please check email");
+            return ResponseEntity.badRequest()
+                .body("please check email");
         }
     }
 
-    @PostMapping("/signUp")
-    public RestResponse signUp(MultipartHttpServletRequest req) {
-        try {
-            final UserDTO dto = userService.signUp(req);
-            final Integer resp = webClient.post()
-                .uri("/signUp")
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(dto)
-                .retrieve()
-                .onStatus(HttpStatus::is4xxClientError, e -> Mono.error(new HttpClientErrorException(e.statusCode())))
-                .onStatus(HttpStatus::is5xxServerError, e -> Mono.error(new HttpServerErrorException(e.statusCode())))
-                .bodyToMono(Integer.class)
-                .block();
-            return new RestResponse(resp);
-        } catch (Exception e) {
-            log.error("sing up error", e);
-            return new RestResponse(1, e.getLocalizedMessage(), null);
+    @PostMapping(value = "/signUp")
+    public ResponseEntity<?> signUp(@RequestPart(required = false, value = "file") MultipartFile multipartFile, UserDTO saveUserDTO) {
+
+        MultipartBodyBuilder builder = new MultipartBodyBuilder();
+        if (multipartFile != null) {
+            builder.part("file", multipartFile.getResource());
         }
+        builder.part("email", saveUserDTO.getEmail());
+        builder.part("name", saveUserDTO.getName());
+        builder.part("pwd", saveUserDTO.getPwd());
+
+        Integer saveCnt = WebClient.builder()
+            .baseUrl(Constants.SERVER_URL)
+            .build()
+            .post()
+            .uri("/signUp")
+            .contentType(MediaType.MULTIPART_FORM_DATA)
+            .accept(MediaType.APPLICATION_JSON)
+            .body(BodyInserters.fromMultipartData(builder.build()))
+            .retrieve()
+            .onStatus(HttpStatus::is4xxClientError, e -> Mono.error(new HttpClientErrorException(e.statusCode())))
+            .onStatus(HttpStatus::is5xxServerError, e -> Mono.error(new HttpServerErrorException(e.statusCode())))
+            .bodyToMono(Integer.class)
+            .block();
+
+        return ResponseEntity.ok(saveCnt);
     }
 
     @PostMapping

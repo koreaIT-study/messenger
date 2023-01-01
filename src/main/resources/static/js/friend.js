@@ -17,7 +17,13 @@ function getFriendList() {
 			for (let i = 0; i < friendList.length; i++) {
 				friendListHtml += "<li id='" + friendList[i].friendId + "' data-rid='" + (friendList[i].roomId ?? '') + "' data-uid='" + friendList[i].friendId + "' data-group='N' >"
 				friendListHtml += "<div class='friend-box'>"
-				friendListHtml += "<div class='friend-profil'></div>"
+				if (!friendList[i].profileImg) {
+					friendListHtml += `<div class='friend-profil'></div>`;
+				} else {
+					friendListHtml += `<div class='friend-profil' 
+					style = 'background: url(/data_files/profile/${friendList[i].profileImg}); 
+					background-size: cover;'></div >`;
+				}
 				friendListHtml += "<div class='friend-title'>" + friendList[i].name + "</div>"
 				friendListHtml += "<div class='friend-msg'>상메상메상메</div>"
 				friendListHtml += "</div>"
@@ -117,7 +123,11 @@ window.onload = function() {
 			$("#chat_writer").focus();
 			return;
 		}
+		sendMessage();
+	})
 
+	const sendMessage = () => {
+		let header = document.getElementById('chat_header');
 		let $textArea = $("#chat_writer");
 
 		let param = {
@@ -129,8 +139,7 @@ window.onload = function() {
 		console.log("메시지 보냄", $textArea.val())
 		$textArea.val('');
 		stomp.send("/pub/chat/message", {}, JSON.stringify(param));
-
-	})
+	}
 
 
 	let searchInput = document.getElementById('searchText');

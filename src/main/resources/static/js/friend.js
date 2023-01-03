@@ -1,5 +1,6 @@
 const sockJs = new SockJS("/stomp/chat");
 const stomp = Stomp.over(sockJs);
+const profilePath = "http://35.216.1.250:12000/upload";
 
 let msgSubscription = "";
 let inputSubscription = "";
@@ -13,7 +14,6 @@ function getFriendList() {
 		if (errno === 0) {
 			const friendList = response.data;
 			let friendListHtml = "";
-
 			for (let i = 0; i < friendList.length; i++) {
 				friendListHtml += "<li id='" + friendList[i].friendId + "' data-rid='" + (friendList[i].roomId ?? '') + "' data-uid='" + friendList[i].friendId + "' data-group='N' >"
 				friendListHtml += "<div class='friend-box'>"
@@ -21,11 +21,11 @@ function getFriendList() {
 					friendListHtml += `<div class='friend-profil'></div>`;
 				} else {
 					friendListHtml += `<div class='friend-profil' 
-					style = 'background: url(/data_files/profile/${friendList[i].profileImg}); 
+					style = 'background: url(${profilePath}/${friendList[i].profileImg}); 
 					background-size: cover;'></div >`;
 				}
 				friendListHtml += "<div class='friend-title'>" + friendList[i].name + "</div>"
-				friendListHtml += "<div class='friend-msg'>상메상메상메</div>"
+				friendListHtml += `<div class='friend-msg'>${friendList[i].email}</div>`
 				friendListHtml += "</div>"
 				friendListHtml += "</li>"
 
@@ -47,11 +47,17 @@ function getRoomList() {
 	// 전체 채팅방 목록 가져오기
 	jsParamAjaxCall('GET', '/chat/getRoomList', {}, function(response) {
 		let roomListHtml = "";
-
 		for (let i = 0; i < response.length; i++) {
+
 			roomListHtml += `<li data-rId=${response[i].roomId} ondblclick="connect(this)">`;
 			roomListHtml += '<div class="friend-box">';
-			roomListHtml += '<div class="friend-profil"></div>';
+			if (!response[i].roomImagePath) {
+				roomListHtml += `<div class='friend-profil'></div>`;
+			} else {
+				roomListHtml += `<div class='friend-profil' 
+					style = 'background: url(${profilePath}/${response[i].roomImagePath}); 
+					background-size: cover;'></div >`;
+			}
 			roomListHtml += '<div class="friend-title">';
 			roomListHtml += response[i].roomName + '<span class="chatRoomLi">' + response[i].cnt + '</span>';
 			roomListHtml += '<span class="chatRoomLi right time">' + response[i].timestamp.split('.')[0] + '</span></div>';
@@ -325,7 +331,6 @@ function subMessage(message) {
 		lastWriter = wrap.lastChild.dataset.uid;
 		//lastWriter = lastChildDiv.querySelector('.chat_person_name').textContent;
 	}
-	console.log("메세지 받았음!!", message.message.replaceAll('\n', '<br>'));
 
 	if (lastWriter == message.writer) {
 		if (isMyMessage(message)) {
@@ -357,7 +362,7 @@ function isMyMessage(message) {
 
 function myMessage(message) {
 	let myMessage = "<div class='my_chat_flexable'>";
-	myMessage += `<span class='no_read_cnt'>2</span><span class='write_date' data-wdate='${message.timestamp}'>`;
+	myMessage += `<span class='write_date' data-wdate='${message.timestamp}'>`;
 	myMessage += `${message.timestamp.split('.')[0].split(' ')[1]}</span>`;
 	myMessage += "<div class='my_chat'>" + message.message.replaceAll("\n", `<br>`) + "</div></div>";
 
@@ -375,7 +380,7 @@ function myMessageTemplate(messages, message) {
 function otherMessage(message) {
 	let otherMessage = "<div class='chat_msg_flexable'>";
 	otherMessage += "<div class='chat_msg'>" + message.message.replaceAll(`\n`, `<br>`) + "</div>";
-	otherMessage += `<span class='no_read_cnt'>1</span><span class='write_date' data-wdate='${message.timestamp}'>`;
+	otherMessage += `<span class='write_date' data-wdate='${message.timestamp}'>`;
 	otherMessage += message.timestamp.split('.')[0].split(' ')[1] + "</span></div>";
 
 	return otherMessage;
@@ -533,4 +538,34 @@ function getLastMessage() {
 			}
 		}
 	}
+}
+
+// 채팅방 이미지 변경
+function changeChatRoomProfile() {
+	url = "/chat/change-room-img";
+
+	const file = document.querySelector('#changeChatRoomProfile').files[0];
+
+	let header = document.getElementById('chat_header');
+	let roomId = header.dataset.rid;
+
+	const formData = new FormData();
+	formData.append('roomId', roomId);
+	formData.append('file', file)
+
+	$.ajax({
+		url: url,
+		type: `POST`,
+		processData: false,
+		contentType: false,
+		data: formData,
+		success: (response) => {
+			console.log("response", response);
+			getRoomList();
+
+		},
+		error: (err) => {
+			console.log("change room img err:: " + err);
+		}
+	})
 }

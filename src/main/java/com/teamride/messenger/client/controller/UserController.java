@@ -51,6 +51,12 @@ public class UserController {
     public RedirectView index() {
         return new RedirectView("/login");
     }
+    
+    @GetMapping("/test")
+    public ModelAndView test() {
+        ModelAndView mv = new ModelAndView("test");
+        return mv;
+    }
 
     @GetMapping("/login")
     public ModelAndView login() {
@@ -137,7 +143,7 @@ public class UserController {
         builder.part("pwd", saveUserDTO.getPwd());
 
         Integer saveCnt = WebClient.builder()
-            .baseUrl(Constants.SERVER_URL)
+            .baseUrl(Constants.FILE_SERVER_URL)
             .build()
             .post()
             .uri("/signUp")

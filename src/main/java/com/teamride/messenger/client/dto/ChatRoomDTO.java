@@ -22,6 +22,7 @@ public class ChatRoomDTO {
     private String timestamp;
     private int cnt;
     private String isGroup;
+    private String roomImagePath;
     private List<String> userId;
 
 }

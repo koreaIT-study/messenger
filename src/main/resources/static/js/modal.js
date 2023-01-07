@@ -37,7 +37,7 @@ function searchUser(e) {
 						friendListHtml += "<div class='friend-box'>";
 						friendListHtml += "<div class='friend-profil'></div>";
 						friendListHtml += "<div class='friend-title'>" + data[i].name + "</div>";
-						friendListHtml += "<div class='friend-msg'>상메상메상메</div>";
+						friendListHtml += `<div class='friend-msg'>${data[i].email}</div>`;
 						friendListHtml += "</div>";
 						friendListHtml += "</li>";
 					});

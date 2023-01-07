@@ -394,12 +394,12 @@ function myMessageTemplate(messages, message) {
 	return myTemplate;
 }
 
-function otherMessage(message) {
+function otherMessage(msg) {
     let htmlMsgTag = getHtmlMsgTag(msg);
 	let otherMessage = "<div class='chat_msg_flexable'>";
 	otherMessage += `<div class='chat_msg'>${htmlMsgTag}</div>`;
-	otherMessage += `<span class='write_date' data-wdate='${message.timestamp}'>`;
-	otherMessage += message.timestamp.split('.')[0].split(' ')[1] + "</span></div>";
+	otherMessage += `<span class='write_date' data-wdate='${msg.timestamp}'>`;
+	otherMessage += msg.timestamp.split('.')[0].split(' ')[1] + "</span></div>";
 
 	return otherMessage;
 }

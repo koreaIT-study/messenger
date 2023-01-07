@@ -3,16 +3,23 @@ package com.teamride.messenger.client.controller;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
+import com.teamride.messenger.client.config.Constants;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.teamride.messenger.client.config.KafkaConstants;
@@ -23,7 +30,11 @@ import com.teamride.messenger.client.service.StompChatService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -102,9 +113,27 @@ public class StompChatController {
     }
 
     @PostMapping(value = "/file", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public void fileUpload(@RequestParam(value = "files", required = false) MultipartFile[] files){
-        for (MultipartFile file: files) {
-            log.info("file name :::: {}",file.getOriginalFilename());
-        }
+    public ResponseEntity<?> fileUpload(@RequestPart(value = "files", required = false) List<MultipartFile> files, ChatMessageDTO msg){
+        log.info("client server file receive ::::");
+        MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
+        map.add("roomId", msg.getRoomId());
+        map.add("writer",msg.getWriter());
+        files.forEach(file -> map.add("files", file.getResource()));
+
+        Integer successCnt = WebClient.builder()
+                .baseUrl(Constants.FILE_SERVER_URL)
+                .build()
+                .post()
+                .uri("/messege-file")
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .accept(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromMultipartData(map))
+                .retrieve()
+                .onStatus(HttpStatus::is4xxClientError, e -> Mono.error(new HttpClientErrorException(e.statusCode())))
+                .onStatus(HttpStatus::is5xxServerError, e -> Mono.error(new HttpServerErrorException(e.statusCode())))
+                .bodyToMono(Integer.class)
+                .block();
+
+        return ResponseEntity.ok(successCnt);
     }
 }

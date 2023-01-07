@@ -1,6 +1,7 @@
 const sockJs = new SockJS("/stomp/chat");
 const stomp = Stomp.over(sockJs);
 const profilePath = "http://35.216.1.250:12000/upload";
+const msgFilePath = "http://35.216.1.250:12000/msgFile";
 
 let msgSubscription = "";
 let inputSubscription = "";
@@ -359,12 +360,28 @@ function isMyMessage(message) {
 	return false;
 }
 
+function downFile(){
 
-function myMessage(message) {
+}
+
+function getHtmlMsgTag(msg){
+    let htmlTag;
+    if(['img', 'jpg', 'png', 'jpeg','gif'].includes(msg.extenson)){
+        htmlTag = `<img src="${msgFilePath + "/" +msg.roomId + "/" + msg.message}" onclick="downFile();" class="img_file">`
+    }else if (msg.extenson){
+        htmlTag = `<div class="txt_file" onclick="downFile();"><img src="img/txtFile.png"><span>${msg.message.substr(msg.message.lastIndexOf('||'))}</span></div>`
+    }else{
+        htmlTag = msg.message.replaceAll("\n", `<br>`)
+    }
+    return htmlTag;
+}
+
+function myMessage(msg) {
+    let htmlMsgTag = getHtmlMsgTag(msg);
 	let myMessage = "<div class='my_chat_flexable'>";
-	myMessage += `<span class='write_date' data-wdate='${message.timestamp}'>`;
-	myMessage += `${message.timestamp.split('.')[0].split(' ')[1]}</span>`;
-	myMessage += "<div class='my_chat'>" + message.message.replaceAll("\n", `<br>`) + "</div></div>";
+	myMessage += `<span class='write_date' data-wdate='${msg.timestamp}'>`;
+	myMessage += `${msg.timestamp.split('.')[0].split(' ')[1]}</span>`;
+	myMessage += `<div class='my_chat'>${htmlMsgTag}</div></div>`;
 
 	return myMessage;
 }
@@ -378,8 +395,9 @@ function myMessageTemplate(messages, message) {
 }
 
 function otherMessage(message) {
+    let htmlMsgTag = getHtmlMsgTag(msg);
 	let otherMessage = "<div class='chat_msg_flexable'>";
-	otherMessage += "<div class='chat_msg'>" + message.message.replaceAll(`\n`, `<br>`) + "</div>";
+	otherMessage += `<div class='chat_msg'>${htmlMsgTag}</div>`;
 	otherMessage += `<span class='write_date' data-wdate='${message.timestamp}'>`;
 	otherMessage += message.timestamp.split('.')[0].split(' ')[1] + "</span></div>";
 
@@ -447,28 +465,30 @@ function enterRoom(roomId) {
 	return true;
 }
 
-function updateChatRoom(message) {
+function updateChatRoom(msg) {
 	let roomList = document.getElementById('room-list-box');
 	let flag = false;
 
 	for (let room of roomList.children) {
-		if (message.roomId == room.dataset.rid) {
+		if (msg.roomId == room.dataset.rid) {
 			flag = true;
 			break;
 		}
 	}
 
+	let lastMsg = msg.extension ? msg.message.substr(msg.message.lastIndexOf('||')) : msg.message.replaceAll(`\n`, `<br>`);
+
+
 	// 채팅방 없으면 만들어주기
 	if (!flag) {
-
 		let roomHtml = "";
-		roomHtml += `<li data-rId=${message.roomId} ondblclick="connect(this)">`;
+		roomHtml += `<li data-rId=${msg.roomId} ondblclick="connect(this)">`;
 		roomHtml += '<div class="friend-box">';
 		roomHtml += '<div class="friend-profil"></div>';
 		roomHtml += '<div class="friend-title">';
-		roomHtml += message.roomName + '<span class="chatRoomLi">' + message.cnt + '</span>';
-		roomHtml += '<span class="chatRoomLi right time">' + message.timestamp.split('.')[0] + '</span></div>';
-		roomHtml += '<div class="friend-msg">' + message.message.replaceAll(`\n`, `<br>`) + '</div></div></li>';
+		roomHtml += msg.roomName + '<span class="chatRoomLi">' + msg.cnt + '</span>';
+		roomHtml += '<span class="chatRoomLi right time">' + msg.timestamp.split('.')[0] + '</span></div>';
+		roomHtml += '<div class="friend-msg">' + lastMsg + '</div></div></li>';
 
 		$(roomList).prepend(roomHtml);
 	}
@@ -476,9 +496,9 @@ function updateChatRoom(message) {
 	let roomListChild = $('#room-list-box').children();
 
 	for (let i = 0; i < roomListChild.length; i++) {
-		if (roomListChild[i].dataset.rid == message.roomId) {
-			$(roomListChild[i]).find('.chatRoomLi.right.time').html(message.timestamp.split('.')[0]);
-			$(roomListChild[i]).find('.friend-msg').html(message.message.replaceAll(`\n`, `<br>`));
+		if (roomListChild[i].dataset.rid == msg.roomId) {
+			$(roomListChild[i]).find('.chatRoomLi.right.time').html(msg.timestamp.split('.')[0]);
+			$(roomListChild[i]).find('.friend-msg').html(lastMsg);
 			roomList.prepend($(roomListChild)[i]);
 			break;
 		}

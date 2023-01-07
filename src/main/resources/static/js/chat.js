@@ -1,6 +1,6 @@
 
 window.load(() => {
-    let fileInput = document.getElementById(send_file);
+    let fileInput = document.getElementById('send_file');
     fileInput.addEventListener('onChange',sendFile);
 })
 
@@ -11,12 +11,13 @@ function sendFile(){
     for(let file of fileInput.files){
         form.append('files', file);
     }
+    form.append('writer', document.getElementById('myId').value);
+    form.append('roomId', document.getElementById('chat_header').dataset.rid);
 
     $.ajax({
         url : "/file",
         type : `POST`,
         processData : false,
-        // contentType : 'multipart/form-data',
         contentType : false,
         data : form,
         success : (response) => {
@@ -27,7 +28,6 @@ function sendFile(){
         }
     })
     fileInput.value = '';
-    // fileInput.files = new FileList();
 }
 
 $(function(){

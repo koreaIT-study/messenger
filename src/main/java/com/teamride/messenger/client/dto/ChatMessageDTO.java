@@ -17,6 +17,6 @@ public class ChatMessageDTO {
     private String message;
     private String timestamp; //  보낸 시간
     private String writerName;
-    
     // timestamp + roomId = pk
+    private String extension;
 }

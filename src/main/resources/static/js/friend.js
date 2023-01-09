@@ -85,6 +85,20 @@ function chatRoomHide() {
 function showSetSelect(e) {
 	e.target.parentElement.children[1].classList.remove('hidden')
 }
+const sendMessage = () => {
+	let header = document.getElementById('chat_header');
+	let $textArea = $("#chat_writer");
+
+	let param = {
+		roomId: header.dataset.rid,
+		writer: $('#myId').val(),
+		message: $textArea.val(),
+		writerName: $('#myName').val()
+	};
+	console.log("메시지 보냄", $textArea.val())
+	$textArea.val('');
+	stomp.send("/pub/chat/message", {}, JSON.stringify(param));
+}
 window.onload = function() {
 
 
@@ -132,21 +146,6 @@ window.onload = function() {
 		}
 		sendMessage();
 	})
-
-	const sendMessage = () => {
-		let header = document.getElementById('chat_header');
-		let $textArea = $("#chat_writer");
-
-		let param = {
-			roomId: header.dataset.rid,
-			writer: $('#myId').val(),
-			message: $textArea.val(),
-			writerName: $('#myName').val()
-		};
-		console.log("메시지 보냄", $textArea.val())
-		$textArea.val('');
-		stomp.send("/pub/chat/message", {}, JSON.stringify(param));
-	}
 
 
 	let searchInput = document.getElementById('searchText');
@@ -365,10 +364,11 @@ function downFile(){
 }
 
 function getHtmlMsgTag(msg){
-    let htmlTag;
-    if(['img', 'jpg', 'png', 'jpeg','gif'].includes(msg.extenson)){
+	let ext = msg.extension;
+    let htmlTag = ``;
+    if(['.img', '.jpg', '.png', '.jpeg','.gif'].includes(ext)){
         htmlTag = `<img src="${msgFilePath + "/" +msg.roomId + "/" + msg.message}" onclick="downFile();" class="img_file">`
-    }else if (msg.extenson){
+    }else if (ext){
         htmlTag = `<div class="txt_file" onclick="downFile();"><img src="img/txtFile.png"><span>${msg.message.substr(msg.message.lastIndexOf('||'))}</span></div>`
     }else{
         htmlTag = msg.message.replaceAll("\n", `<br>`)

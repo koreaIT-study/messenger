@@ -116,10 +116,9 @@ public class StompChatController {
     public ResponseEntity<?> fileUpload(@RequestPart(value = "files", required = false) List<MultipartFile> files, ChatMessageDTO msg){
         log.info("client server file receive ::::");
         MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
-        map.add("roomId", msg.getRoomId());
-        map.add("writer",msg.getWriter());
+        map.add("msg",msg);
         files.forEach(file -> map.add("files", file.getResource()));
-
+        log.info("가나요~~~");
         Integer successCnt = WebClient.builder()
                 .baseUrl(Constants.FILE_SERVER_URL)
                 .build()
@@ -133,7 +132,7 @@ public class StompChatController {
                 .onStatus(HttpStatus::is5xxServerError, e -> Mono.error(new HttpServerErrorException(e.statusCode())))
                 .bodyToMono(Integer.class)
                 .block();
-
+        log.info("왔나요~~~");
         return ResponseEntity.ok(successCnt);
     }
 }

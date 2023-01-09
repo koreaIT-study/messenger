@@ -1,8 +1,8 @@
 
-window.load(() => {
+window.onload = () => {
     let fileInput = document.getElementById('send_file');
     fileInput.addEventListener('onChange',sendFile);
-})
+}
 
 function sendFile(){
     let form = new FormData();

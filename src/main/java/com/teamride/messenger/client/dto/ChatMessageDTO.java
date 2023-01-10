@@ -19,4 +19,5 @@ public class ChatMessageDTO {
     private String writerName;
     // timestamp + roomId = pk
     private String extension;
+    private String profileImg;
 }

@@ -1,0 +1,61 @@
+server:
+  port: 8081
+
+spring:
+  mvc:
+    view:
+      suffix: .html
+  web:
+    resources:
+      static-locations: classpath:/static/
+  devtools:
+    livereload:
+      enabled: true
+    restart:
+      enabled: true
+  kafka:
+    consumer:
+      bootstrap-servers:
+      - 35.216.1.250:9092 
+      group-id: chatting
+      enable-auto-commit: false
+      
+    producer:
+      bootstrap-servers:
+      - 35.216.1.250:9092
+  servlet:
+    multiPart:
+      max-file-size: 10MB
+  mail:
+    host: smtp.naver.com
+    port: 465
+    username: # naver id
+    password: # naver pwd
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.ssl.enable: true
+      mail.smtp.ssl.trust: smtp.naver.com
+     
+#  thymeleaf:
+#    prefix: classpath:/templates
+
+messenger:
+  kakao:
+    rest_api_key: dd0b678881f8ea6c47e2012b37fb8c90
+    redirect_url: http://localhost:8081/oauth
+  naver:
+    rest_api_key: uSS2XZqtURcJU2R6feyR
+    redirect_url: http://localhost:8081/api/naver/oauth
+    client_secret: vKSB1WVm2g
+logging:
+  logback:
+    rollingpolicy:
+      max-file-size: 100MB
+      max-history: 7
+  level:
+    root: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} [%4L] - %m%n"
+    file: "[%d{HH:mm:ss.SSS}][%-5level][%t][%logger.%method:line%line] - %msg%n"
+  file:
+    name: "${messenger.home:/tmp}/logs/messenger-client.log"

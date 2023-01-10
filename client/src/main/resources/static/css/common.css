@@ -1,0 +1,129 @@
+* {
+	padding: 0;
+	margin: 0;
+}
+
+html {
+	height: 100%
+}
+
+#wrap {
+	width: 1000px;
+	margin: 20px auto;
+	height: 100%;
+	border: 1px solid lightgray;
+	border-radius: 12px;
+	display: flex;
+}
+
+#header {
+	width: 100px;
+	height: 900px;
+	background-color: RGB(198, 189, 244);
+	border-top-left-radius: 12px;
+	border-bottom-left-radius: 12px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.header_icon img {
+	width: 50px;
+	height: 50px;
+	margin-top: 30px;
+	cursor: pointer;
+}
+
+.header_icon {
+	text-align: center;
+}
+
+.header_profile {
+	margin-bottom: 30px;
+}
+
+.btn_img {
+	width: 30px;
+	height: 30px;
+	vertical-align: middle;
+	cursor: pointer;
+}
+
+/* chat */
+#chat {
+	width: 550px;
+	background: white;
+	height: 900px;
+	border-top-right-radius: 12px;
+	border-bottom-right-radius: 12px;
+}
+
+.modal-bg {
+	width: 100%;
+	height: 100%;
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	background: rgba(0, 0, 0, 0.6);
+	z-index: 999;
+	display: none;
+}
+
+#modal-addChatRoom {
+	overflow-y: scroll;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 320px;
+	height: 500px;
+	background: #fff;
+	z-index: 1000;
+	display: none;
+}
+
+.modal-addChatRoom-bg {
+	width: 100%;
+	height: 100%;
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	background: rgba(0, 0, 0, 0.6);
+	z-index: 999;
+	display: none;
+}
+
+.modal-wrap {
+	overflow-y: scroll;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 320px;
+	height: 500px;
+	background: #fff;
+	z-index: 1000;
+	display: none;
+}
+
+#modal_friend-list-box>li {
+	zoom: 0.86;
+}
+
+#modal-chatroom-list-box {
+	overflow-y: hidden;
+}
+
+#modal-chatroom-list-box>label {
+	zoom: 0.84;
+}
+
+.btnMakeChatRoom {
+	width: 81px;
+	height: 38px;
+	background: RGB(198, 189, 244);
+	border: none;
+	cursor: pointer;
+}

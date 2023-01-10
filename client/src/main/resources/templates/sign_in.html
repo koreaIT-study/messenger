@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/common.css">
+<link rel="stylesheet" href="/css/sign.css">
+<script src="/js/cmmn-ajax.js"></script>
+<script src="/js/cmmn-alert.js"></script>
+<title>Sign In</title>
+</head>
+
+<body>
+	<div class="sign_in_wrap">
+		<div class="sign_in">
+			<div class="sign_in_tit">
+				<h1 class="tit_sign_in">
+					<span>Login</span>
+				</h1>
+			</div>
+			<!-- 로그인  -->
+			<div class="sign_in_body">
+				<div class="sign_in_input" style="margin-top: 10px;">
+					<div>
+						<span> <input type="text" id="email" name="email"
+							placeholder="이메일" title="이메일" onkeyup="idEnterKey()"></span> <span>
+							<input type="password" id="pwd" name="password"
+							placeholder="비밀번호" title="비밀번호" onkeyup="pwEnterKey()">
+						</span> <span class="sign_in_check"> <label for="rememberId"><input
+								type="checkbox" id="rememberId">이메일 기억하기</label>
+						</span>
+
+					</div>
+					<div>
+						<button type="button" class="btn_sign_in" onclick="loginAction()">로그인</button>
+					</div>
+				</div>
+			</div>
+			<div>
+				<button type="button" class="btn_sign_up"  onclick="location.href='sign_up'">회원가입</button>
+			</div>
+		</div>
+		<!-- OAUTH2  -->
+		<div class="social_sign_in">
+			<div id="kakao">
+				<img alt="" src="/img/kakao_login.png"
+					onclick="location.href='kakao_login';">
+			</div>
+			<div id="naver">
+				<img alt="" src="/img/naver_login.png"
+					onclick="location.href='naver_login';">
+			</div>
+		</div>
+	</div>
+</body>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+<script type="text/javascript">
+  function openPopup(url) {
+    var _width = '464';
+    var _height = '682';
+
+    // 팝업을 가운데 위치시키기 위해 아래와 같이 값 구하기
+    var _left = Math.ceil((window.screen.width - _width) / 2);
+    var _top = Math.ceil((window.screen.height - _height) / 2);
+
+    window.open(url, 'popup-test', 'width=' + _width + ', height=' +
+      _height + ', left=' + _left + ', top=' + _top);
+
+  }
+
+  function idEnterKey() {
+    if (window.event.keyCode == 13) {
+      $('#userPw').focus();
+    }
+  }
+
+  function pwEnterKey() {
+    if (window.event.keyCode == 13) {
+      loginAction();
+    }
+  }
+
+  function loginAction() {
+    const email = document.querySelector('#email').value;
+    const pwd = document.querySelector('#pwd').value;
+
+    if (!email) {
+      alert('아이디를 입력해주세요.');
+      return;
+    }
+
+    if (!pwd) {
+      alert('비밀번호를 입력해주세요.');
+      return;
+    }
+
+    const params = {
+      email,
+      pwd
+    }
+
+    jsAjaxPostJsonCall('/loginAction', params, function (response) {
+      const errno = response.errno;
+      if (errno !== 0) {
+        _cmmnAlert.postFailed();
+        return;
+      }
+
+      const data = response.data;
+
+      if (data === "NOT_FOUND") {
+        alert("아이디 또는 비밀번호를 잘못 입력했습니다.");
+        return;
+      }
+
+      location.href = "/friend"
+    })
+  }
+</script>
+
+<!-- EMAIL 저장 -->
+<script>
+  window.onload = function () {
+    const key = getCookie("key")
+    const userId = document.querySelector("#email");
+    userId.value = key;
+
+    const saveBtn = document.querySelector("#rememberId");
+    if (userId.value !== "") {
+      saveBtn.checked = true;
+    }
+
+    saveBtn.addEventListener("change", function () {
+      if (saveBtn.checked) {
+        setCookie("key", userId.value, 365);
+      } else {
+        deleteCookie("key");
+      }
+    });
+
+    userId.addEventListener("keyup", function () {
+      if (saveBtn.checked) {
+        setCookie("key", userId.value, 365);
+      }
+    })
+  }
+
+  function setCookie(cookieName, value, days) {
+    const date = new Date();
+    date.setDate(date.getDate() + days);
+    const cookieValue = escape(value) + ((days == null) ? "" : "; expires=" + date.toUTCString());
+    document.cookie = cookieName + "=" + cookieValue;
+  }
+
+  function deleteCookie(cookieName) {
+    const expireDate = new Date();
+    expireDate.setDate(expireDate.getDate() - 1);
+    document.cookie = cookieName + "= " + "; expires=" + expireDate.toUTCString();
+  }
+
+  function getCookie(cookieName) {
+    cookieName = cookieName + '=';
+    const cookieData = document.cookie;
+    let start = cookieData.indexOf(cookieName);
+    let cookieValue = ''
+    if (start != -1) {
+      start += cookieName.length;
+      let end = cookieData.indexOf(';', start);
+      if (end == -1) end = cookieData.length;
+      cookieValue = cookieData.substring(start, end);
+    }
+    return unescape(cookieValue);
+  }
+</script>
+
+</html>

@@ -1,0 +1,43 @@
+server:
+  port: 12000
+
+spring:
+  mvc:
+    view:
+      suffix: .html
+  thymeleaf:
+    prefix: classpath:/templates
+  servlet:
+    multipart:
+      file-size-threshold: 1MB # 파일이 메모리에 기록되는 임계값 (default: 0B)
+  #    location: C:/Temp # 임시 저장 공간
+      max-file-size: 100MB
+      max-request-size: 100MB
+  r2dbc:
+    url: r2dbc:mariadb://35.216.1.250:13535/messenger?characterEncoding=utf8&serverTimezone=UTC
+    username: teamride
+    password: 1234
+  
+messenger:
+  file:
+    location: /home/mshmsh0814/deploy/data_files/profiles
+   
+#mybatis:
+#  mapper-locations:
+#  - classpath:mappers/**/*.xml
+#  configuration:
+#    map-underscore-to-camel-case: true
+
+logging:
+  logback:
+    rollingpolicy:
+      max-file-size: 100MB
+      max-history: 7
+  level:
+    org.springframework.r2dbc.core: debug
+    root: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} [%4L] - %m%n"
+    file: "[%d{HH:mm:ss.SSS}][%-5level][%t][%logger.%method:line%line] - %msg%n"
+  file:
+    name: "${messenger.home:/tmp}/logs/messenger-server.log"

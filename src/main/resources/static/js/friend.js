@@ -256,9 +256,10 @@ function searchRoomInfo(roomId) {
 	// roomId로 채팅방 정보를 찾아주는 method
 	jsParamAjaxCall('GET', '/chat/room?roomId=' + roomId, {}, function(response) {
 		let title = $('.chat_title').children();
-		console.log(response)
+		console.log("response",response)
 		title[0].innerHTML = response.roomName;
 		title[1].innerHTML = "멤버 " + response.cnt;
+		$('#header_profile').attr('src', `${profilePath}/${response.roomImagePath}`);
 	});
 }
 

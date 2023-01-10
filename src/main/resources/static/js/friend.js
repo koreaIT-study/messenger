@@ -100,15 +100,9 @@ const sendMessage = () => {
 	stomp.send("/pub/chat/message", {}, JSON.stringify(param));
 }
 window.onload = function() {
-
-
 	document.getElementById('friendListBtn').click();
 	getFriendList();
 	getRoomList();
-
-
-	//	let sockJs = new SockJS("/stomp/chat");
-	//	let stomp = Stomp.over(sockJs);
 
 	const userId = $('#myId').val();
 	// 채팅방 목록 관리
@@ -119,8 +113,6 @@ window.onload = function() {
 		})
 	})
 
-
-	//	ondblclick='connect(this);'
 	// message 보내기
 	$("#chat_writer").on("keyup", (e) => {
 		let header = document.getElementById('chat_header');
@@ -146,7 +138,6 @@ window.onload = function() {
 		}
 		sendMessage();
 	})
-
 
 	let searchInput = document.getElementById('searchText');
 	searchInput.addEventListener('keyup', (e) => {
@@ -256,7 +247,6 @@ function searchRoomInfo(roomId) {
 	// roomId로 채팅방 정보를 찾아주는 method
 	jsParamAjaxCall('GET', '/chat/room?roomId=' + roomId, {}, function(response) {
 		let title = $('.chat_title').children();
-		console.log("response",response)
 		title[0].innerHTML = response.roomName;
 		title[1].innerHTML = "멤버 " + response.cnt;
 		$('#header_profile').attr('src', `${profilePath}/${response.roomImagePath}`);
@@ -279,6 +269,8 @@ function getMessages(roomId, time) {
 		let messageHtml = "";
 
 		let html = "";
+
+		console.log("response", response)
 
 		for (let i = 0; i < messages.length; i++) {
 			if (i != 0 && messages[i - 1].writer != messages[i].writer) {
@@ -323,7 +315,7 @@ function getMessages(roomId, time) {
 // message를 subscribe해서 view에 뿌려주는 method
 function subMessage(message) {
 
-
+	console.log("message", message)
 	let wrap = document.getElementById('chat_msg_template');
 	let lastChildDiv = wrap.lastChild;
 
@@ -360,25 +352,25 @@ function isMyMessage(message) {
 	return false;
 }
 
-function downFile(){
+function downFile() {
 
 }
 
-function getHtmlMsgTag(msg){
+function getHtmlMsgTag(msg) {
 	let ext = msg.extension;
-    let htmlTag = ``;
-    if(['.img', '.jpg', '.png', '.jpeg','.gif'].includes(ext)){
-        htmlTag = `<img src="${msgFilePath + "/" +msg.roomId + "/" + msg.message}" onclick="downFile();" class="img_file">`
-    }else if (ext){
-        htmlTag = `<div class="txt_file" onclick="downFile();"><img src="img/txtFile.png"><span>${msg.message.substr(msg.message.lastIndexOf('||'))}</span></div>`
-    }else{
-        htmlTag = msg.message.replaceAll("\n", `<br>`)
-    }
-    return htmlTag;
+	let htmlTag = ``;
+	if (['.img', '.jpg', '.png', '.jpeg', '.gif'].includes(ext)) {
+		htmlTag = `<img src="${msgFilePath + "/" + msg.roomId + "/" + msg.message}" onclick="downFile();" class="img_file">`
+	} else if (ext) {
+		htmlTag = `<div class="txt_file" onclick="downFile();"><img src="img/txtFile.png"><span>${msg.message.substr(msg.message.lastIndexOf('||'))}</span></div>`
+	} else {
+		htmlTag = msg.message.replaceAll("\n", `<br>`)
+	}
+	return htmlTag;
 }
 
 function myMessage(msg) {
-    let htmlMsgTag = getHtmlMsgTag(msg);
+	let htmlMsgTag = getHtmlMsgTag(msg);
 	let myMessage = "<div class='my_chat_flexable'>";
 	myMessage += `<span class='write_date' data-wdate='${msg.timestamp}'>`;
 	myMessage += `${msg.timestamp.split('.')[0].split(' ')[1]}</span>`;
@@ -396,7 +388,7 @@ function myMessageTemplate(messages, message) {
 }
 
 function otherMessage(msg) {
-    let htmlMsgTag = getHtmlMsgTag(msg);
+	let htmlMsgTag = getHtmlMsgTag(msg);
 	let otherMessage = "<div class='chat_msg_flexable'>";
 	otherMessage += `<div class='chat_msg'>${htmlMsgTag}</div>`;
 	otherMessage += `<span class='write_date' data-wdate='${msg.timestamp}'>`;
@@ -406,9 +398,11 @@ function otherMessage(msg) {
 }
 
 function otherMessageTemplate(messages, message) {
+	let profileImg = message.profileImg != null ? `${profilePath}/${message.profileImg}` : "img/anonymous_profile.png";
+
 	let otherTemplate = "<div class='chat_person_wrap' data-uid='" + message.writer + "'>";
 	otherTemplate += "<div class='chat_person_profile'>";
-	otherTemplate += "<img src='img/anonymous_profile.png'></div>";
+	otherTemplate += `<img src=${profileImg} style="width:50px; height:50px;"></div>`;
 	otherTemplate += "<div class='chat_person'><div class='chat_person_name'>";
 	otherTemplate += message.writerName + "</div>";
 	otherTemplate += messages;

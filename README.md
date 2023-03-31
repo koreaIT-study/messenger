@@ -1,6 +1,6 @@
 # Messenger Application
 
-> 개발 기간 : 2022.10.26 ~ 2023.01.10 (2개월)
+> 개발 기간 : 2022.10.26 ~ 2023.01.10 (2개월)  
 
 ## 개발팀 소개
 
@@ -8,16 +8,17 @@
 | :------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | 
 |   <img width="160px" src="https://avatars.githubusercontent.com/u/82895809?v=4" />    |                      <img width="160px" src="https://avatars.githubusercontent.com/u/67637716?v=4" />    |                   <img width="160px" src="https://avatars.githubusercontent.com/u/92290312?v=4"/>   |
 |   [@Dongjin0224](https://github.com/Dongjin0224)   |    [@shmin7777](https://github.com/shmin7777)  | [@alswo1212](https://github.com/alswo1212)  |
-<br>
+<br>  
+
 ## 프로젝트 소개
 
 Non-Blocking과 MQ 숙련도 향상을 위해 진행하였으며, 저희
 서비스에 가입한 사용자는 1:1 채팅이나 그룹 채팅을 이용하여 다른
 사람들과 빠르게 채팅을 주고 받을 수 있습니다.
-<br>
+<br>  
 ## CI/CD Process
 ![image](https://user-images.githubusercontent.com/67637716/229171222-9f33422b-2f08-4500-aee5-d5c091edc9d3.png)  
-<br>
+<br>  
 ## Architecture
 ![image](https://user-images.githubusercontent.com/67637716/229171296-5bcc1ac0-ab7c-41d9-a4c1-c8167e724fd5.png)
 <br>
